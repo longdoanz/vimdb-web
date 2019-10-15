@@ -54,6 +54,14 @@
         </dependency>-->
 
         <dependency>
+            <groupId>com.viettel.imdb</groupId>
+            <artifactId>imdb-client</artifactId>
+            <version>3.0.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/imdb-client-3.0.2.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.2</version>
