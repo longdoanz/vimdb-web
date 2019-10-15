@@ -1,0 +1,16 @@
+{
+  "username": "hungpv",
+  "password": "123456aA@",
+  "privileges": [
+    {
+      "type": "READ",
+      "dbName": "school",
+      "tables": [
+        "Student"
+      ]
+    }
+  ],
+  "parentRoles": [
+    "US02"
+  ]
+}
