@@ -1,0 +1,134 @@
+package com.viettel.imdb.rest.service;
+
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.viettel.imdb.ErrorCode;
+import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.TestUtil;
+import com.viettel.imdb.rest.domain.RestIndexModel;
+import com.viettel.imdb.util.CBOREncodeDecoderNew;
+import com.viettel.imdb.util.IMDBEncodeDecoder;
+import org.springframework.http.HttpStatus;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.Map;
+
+import static com.viettel.imdb.rest.common.Common.*;
+import static org.testng.Assert.*;
+
+/**
+ * @author quannh22
+ * @since 10/08/2019
+ */
+public class DataServiceImplTest extends TestUtil {
+    private HTTPRequest http;
+    private IMDBEncodeDecoder encoder;
+    @BeforeMethod
+    public void setUp() throws Exception {
+        http = new HTTPRequest(HOST_URL);
+        encoder = new CBOREncodeDecoderNew();
+    }
+
+    @Test(priority = 1)
+    public void testCreateTableValid() throws Exception {
+        final String TABLE_PREFIX = "TABLE_";
+        for(int i = 0; i < 100; i++) {
+            testCreateTable(TABLE_PREFIX + i, HttpStatus.CREATED, null);
+            testDropTable(TABLE_PREFIX + i, HttpStatus.NO_CONTENT, null);
+        }
+    }
+
+    @Test(priority = 2)
+    public void testCreateTableExisted() throws Exception {
+        final String TABLE_PREFIX = "TABLE_";
+        for(int i = 0; i < 100; i++) {
+            testCreateTable(TABLE_PREFIX + i, HttpStatus.CREATED, null);
+        }
+        for(int i = 0; i < 100; i++) {
+            String expectedResponse = "{\"error\":\"" + ErrorCode.TABLE_EXIST.name() + "\"}";
+            testCreateTable(TABLE_PREFIX + i, HttpStatus.BAD_REQUEST, expectedResponse);
+        }
+    }
+
+    @Test(priority = 3)
+    public void testCreateTableWithInvalidTableName() {
+        String tableName = "InvalidU*()U()J:LFKDSJFKL";
+        String expectedResponse = "{\"error\":\"" + ErrorCode.TABLENAME_INVALID.name() + "\"}";
+        testCreateTable(tableName, HttpStatus.BAD_REQUEST, expectedResponse);
+    }
+
+    @Test(priority = 4)
+    public void testDropTable() {
+        final String TABLE_PREFIX = "TABLE_";
+        for(int i = 0; i < 100; i++) {
+            testCreateTable(TABLE_PREFIX + i, HttpStatus.CREATED, null);
+        }
+        for(int i = 0; i < 100; i++) {
+            testDropTable(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_PREFIX + i), HttpStatus.NO_CONTENT, null);
+        }
+    }
+
+    @Test(priority = 5)
+    public void testCreateIndex() {
+        final String TABLE_NAME = "TABLE_0";
+        final String INDEX_NAME = "$.justAnIndexName";
+        testCreateTable(TABLE_NAME, HttpStatus.CREATED, null);
+        testCreateIndex(TABLE_NAME, INDEX_NAME, HttpStatus.CREATED, null);
+        testDropTable(TABLE_NAME, HttpStatus.NO_CONTENT, null);
+    }
+
+    @Test(priority = 6)
+    public void testDropIndex() {
+    }
+
+    @Test(priority = 7)
+    public void testSelect() throws Exception {
+        StringBuilder tableName = new StringBuilder();
+        for(int i = 0; i < 255; i++) {
+            tableName.append("a");
+        }
+        Map res = http.sendGet(DATA_PATH + "/namespace" + "/table" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4");
+        System.out.println(res);
+    }
+
+    @Test
+    public void testInsert() {
+    }
+
+    @Test
+    public void testInsert1() {
+    }
+
+    @Test
+    public void testUpdate() {
+    }
+
+    @Test
+    public void testUpdate1() {
+    }
+
+    @Test
+    public void testUpsert() {
+    }
+
+    @Test
+    public void testUpsert1() {
+    }
+
+    @Test
+    public void testReplace() {
+    }
+
+    @Test
+    public void testReplace1() {
+    }
+
+    @Test
+    public void testScan() {
+    }
+
+    @Test
+    public void testDelete() {
+    }
+}
