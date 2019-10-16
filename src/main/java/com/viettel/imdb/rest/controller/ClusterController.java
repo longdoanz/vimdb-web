@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/info")
     @ApiOperation(value = GET_CLUSTER_INFO_NOTES, nickname = "getClusterInfo")
-    @ResponseStatus(HttpStatus.OK)
+        @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 777,
@@ -45,7 +46,7 @@ public class ClusterController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getClusterInfo(
-            @ApiParam(required = false, value = NODE_LIST_NOTES) @RequestBody List<String> nodes
+        @ApiParam(required = false, value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
     ) {
         return service.getClusterInfo(nodes);
     }

@@ -1,9 +1,11 @@
 package com.viettel.imdb.rest.controller;
 
-import com.viettel.imdb.common.Field;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
 import com.viettel.imdb.rest.util.RequestParamHandler;
 import io.swagger.annotations.*;
@@ -32,6 +34,9 @@ public class DataController {
      *             CONSTANTS COME HERE              *
      ************************************************
      */
+    private static final String CREATE_NAMESPACE_NOTES = "Create a namespace with input namespace name";
+    private static final String DROP_NAMESPACE_NOTES = "Drop a namespace with input namespace name";
+    private static final String UPDATE_NAMESPACE_NOTES = "Update a namespace with inpuinsertt namespace name";
     private static final String CREATE_TABLE_NOTES = "Create a table with input namespace and table name";
     private static final String DROP_TABLE_NOTES = "Drop the given table with input namespace and table name";
     private static final String CREATE_INDEX_NOTES = "Create a secondary index inside a table";
@@ -46,6 +51,7 @@ public class DataController {
     private static final String REPLACE_FIELD_LIST_NOTES = "Replace a record with input field list";
     private static final String REPLACE_JSON_NOTES = "Replace a record with input json";
     private static final String SCAN_NOTES = "Scan records in a table";
+    private static final String SCAN_NAMESPACE_NOTES = "Scan namespace and table";
 
     private static final String NAMESPACE_NOTES = "Namespace contains tables, equals to db in relational database";
     private static final String TABLE_NOTES = "Table contains records";
@@ -64,6 +70,84 @@ public class DataController {
      */
     @Autowired private DataService service;
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "")
+    @ApiOperation(value=SCAN_NAMESPACE_NOTES, nickname = "scan")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 777,
+                    response = RestClientError.class,
+                    message = "Key does not exist",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public ResponseEntity<?> getDataInfo(
+    ) {
+        return service.getDataInfo();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "")
+    @ApiOperation(value=CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 444,
+                    response = RestClientError.class,
+                    message = "Table exist",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public DeferredResult<ResponseEntity<?>> createNamespace(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace
+    ) {
+        Logger.error("Create namespace({})", namespace);
+        return service.createNamespace(namespace);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
+    @ApiOperation(value=DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 666,
+                    response = RestClientError.class,
+                    message = "Drop not exist",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public DeferredResult<ResponseEntity<?>> dropNamespace(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace
+    ) {
+        Logger.error("Drop namespace({}, {})", namespace);
+        return service.dropNamespace(namespace);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}")
+    @ApiOperation(value = UPDATE_NAMESPACE_NOTES, nickname = "updateNamespace")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 777,
+                    response = RestClientError.class,
+                    message = "Key does not exist",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public DeferredResult<ResponseEntity<?>> updateNamespace(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
+            @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
+    ) {
+        Logger.error("update(old name{}  new name )", namespace, newname);
+        return service.updateNamespace(namespace, newname);
+    }
+
+
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}")
     @ApiOperation(value=CREATE_TABLE_NOTES, nickname = "createTable")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
@@ -78,10 +162,10 @@ public class DataController {
     })
     public DeferredResult<ResponseEntity<?>> createTable(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace,
-            @ApiParam(required = true, value = TABLE_NOTES) @RequestBody String tableName
+            @ApiParam(required = true, value = TABLE_NOTES) @RequestBody TableModel tableName
     ) {
         Logger.error("Create table({}, {})", namespace, tableName);
-        return service.createTable(namespace, tableName);
+        return service.createTable(namespace, tableName.getTableName());
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}")
@@ -128,9 +212,11 @@ public class DataController {
         return service.createIndex(indexModel);
     }
 
+    // TODO COMMENT OUT DROP INDEX NEED REVERSE
+/*
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}/{indexname}")
     @ApiOperation(value = DROP_INDEX_NOTES, nickname = "dropIndex")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 555,
@@ -148,6 +234,7 @@ public class DataController {
         Logger.error("Drop Index({}, {}, {})", namespace, tableName, indexName);
         return service.dropIndex(namespace, tableName, indexName);
     }
+*/
 
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = SELECT_NOTES, nickname = "select")
@@ -188,11 +275,12 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
-            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody List<Field> fieldList,
-            @ApiIgnore @RequestParam Map<String, String> requestParams /* additional input - no need by now*/
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode/*,
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody List<Field> fieldList*/
     ) {
-        Logger.error("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
-        return service.insert(namespace, tableName, key, fieldList);
+        System.out.println(jsonNode);
+        Logger.error("insert({}, {}, {}, {})", namespace, tableName, key);
+        return service.insert(namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
 
     /*
@@ -235,11 +323,11 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
-            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody List<Field> fieldList,
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.error("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
-        return service.update(namespace, tableName, key, fieldList);
+        Logger.error("update({}, {}, {}, {})", namespace, tableName, key);
+        return service.update(namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
     /*
 

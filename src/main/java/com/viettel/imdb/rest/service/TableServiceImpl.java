@@ -45,7 +45,7 @@ public class TableServiceImpl implements TableService {
         Promise<Result> future = Promise.apply();
         Result res = new Result();
 
-        imdbClient.createTable(tableModel.getName()).onSuccess(aVoid -> {
+        imdbClient.createTable(tableModel.getTableName()).onSuccess(aVoid -> {
             res.setHttpStatus(HttpStatus.CREATED);
             future.setValue(res);
         }).onFailure(throwable -> {
@@ -61,7 +61,7 @@ public class TableServiceImpl implements TableService {
         Promise<Result> future = Promise.apply();
         Result res = new Result();
 
-        imdbClient.dropTable(tableModel.getName()).onSuccess(aVoid -> {
+        imdbClient.dropTable(tableModel.getTableName()).onSuccess(aVoid -> {
             res.setHttpStatus(HttpStatus.NO_CONTENT);
             future.setValue(res);
 

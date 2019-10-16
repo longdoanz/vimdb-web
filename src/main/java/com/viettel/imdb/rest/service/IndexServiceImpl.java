@@ -42,7 +42,7 @@ public class IndexServiceImpl implements IndexService {
     public Future<Result> createIndex(TableModel tableModel, IndexModel indexModel) {
         Promise<Result> future = Promise.apply();
 
-        imdbClient.createIndex(tableModel.getName(), indexModel.getName(), indexModel.getType()).onSuccess(aVoid -> {
+        imdbClient.createIndex(tableModel.getTableName(), indexModel.getName(), indexModel.getType()).onSuccess(aVoid -> {
             future.setValue(new Result(HttpStatus.CREATED));
         }).onFailure(throwable -> {
             handleException(future, throwable);
@@ -59,7 +59,7 @@ public class IndexServiceImpl implements IndexService {
             tableModel.validateData();
 
 
-            imdbClient.dropIndex(tableModel.getName(), fieldName).onSuccess(aVoid -> {
+            imdbClient.dropIndex(tableModel.getTableName(), fieldName).onSuccess(aVoid -> {
                 future.setValue(new Result(HttpStatus.NO_CONTENT));
             }).onFailure(throwable -> {
                 handleException(future, throwable);

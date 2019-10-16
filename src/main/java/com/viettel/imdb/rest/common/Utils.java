@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.common.Field;
-import com.viettel.imdb.util.CBOREncodeDecoderNew;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -27,7 +26,7 @@ import java.util.Map;
 
 public class Utils {
 
-    private static final IMDBEncodeDecoder encodeDecoder = new CBOREncodeDecoderNew();
+    private static final IMDBEncodeDecoder encodeDecoder = IMDBEncodeDecoder.getInstance();
 
     public static Map<String, List<Field>> convertJsonToMap(JsonNode jsonNode) {
         Map<String, List<Field>> records = new HashMap<>();

@@ -53,6 +53,7 @@ public class HTTPRequest {
         dataOut.write(("username="+username+"&password="+password).getBytes());
         dataOut.flush();
         dataOut.close();
+        System.out.println("1. "+username+" "+password);
 
         int res = http.getResponseCode();
         /*if (res != 200) {
@@ -61,6 +62,7 @@ public class HTTPRequest {
 
         this.cookie = http.getHeaderField("Set-Cookie");
         http.disconnect();
+        System.out.println("2. "+username+" "+password);
     }
 
     public String getCookie() {
@@ -183,6 +185,17 @@ public class HTTPRequest {
         return sendWithoutData("GET", path, filter);
     }
 
+    public Map<String, Object> sendGetwithBody(String path, String body) throws Exception {
+        return sendWithData("GET", path, new HashMap<String, String>(){
+            {
+                put("Content-Type", "application/json");
+                put("Accept", "application/json");
+                put("Cookie", cookie);
+            }
+        }, body);
+    }
+
+
     // HTTP POST request
     public Map<String, Object> sendPost(String path, String body) throws Exception {
 
@@ -197,6 +210,15 @@ public class HTTPRequest {
     public Map<String, Object> sendPut(String path, String body) throws Exception {
 
         return sendWithData("PUT", path, new HashMap<String, String>() {{
+            put("Content-Type", "application/json");
+            put("Accept", "application/json");
+            put("Cookie", cookie);
+        }}, body);
+    }
+    // HTTP PUT request
+    public Map<String, Object> sendPatch(String path, String body) throws Exception {
+
+        return sendWithData("PATCH", path, new HashMap<String, String>() {{
             put("Content-Type", "application/json");
             put("Accept", "application/json");
             put("Cookie", cookie);

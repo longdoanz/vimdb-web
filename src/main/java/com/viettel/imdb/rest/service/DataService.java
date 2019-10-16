@@ -3,6 +3,7 @@ package com.viettel.imdb.rest.service;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.model.NamespaceInformation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -13,6 +14,14 @@ import java.util.List;
  * @since 08/08/2019
  */
 public interface DataService {
+    ResponseEntity<?> getDataInfo();
+
+    DeferredResult<ResponseEntity<?>> createNamespace(String namespace);
+
+    DeferredResult<ResponseEntity<?>> dropNamespace(String namespace);
+
+    DeferredResult<ResponseEntity<?>> updateNamespace(String namespace, String newname);
+
     DeferredResult<ResponseEntity<?>> createTable(String namespace, String tableName);
 
     DeferredResult<ResponseEntity<?>> dropTable(String namespace, String tableName);

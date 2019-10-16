@@ -2,8 +2,11 @@ package com.viettel.imdb.rest.config;
 
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.JavaClient;
+import com.viettel.imdb.common.ClientConfig;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
-import com.viettel.imdb.util.CBOREncodeDecoderNew;
+import com.viettel.imdb.rest.mock.server.ClusterSimulator;
+import com.viettel.imdb.rest.mock.server.NodeSimulator;
+import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +28,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import javax.xml.ws.EndpointReference;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +39,14 @@ public class Config extends WebSecurityConfigurerAdapter {
 
     @Value("${host}")
     private String host;
+    @Value("${security.enabled}")
+    private boolean securityEnabled;
+    @Value("${username}")
+    private String username;
+    @Value("${password}")
+    private String password;
+
+    private ClusterSimulator cluster = new ClusterSimulator();;
 
 //    @Autowired
 //    private AuthenticationProvider authenticationProvider;
@@ -86,11 +100,26 @@ public class Config extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public ClusterSimulator getCluster() {
+        List<NodeSimulator> nodes = new ArrayList<>();
+
+        int clusterSize = ThreadLocalRandom.current().nextInt(3, 7);
+
+        for (int i = 0; i < clusterSize; i++) {
+            nodes.add(new NodeSimulatorImpl("172.16.28." + ThreadLocalRandom.current().nextInt(10, 254), 10000));
+        }
+        System.err.println("------------------------------------- NEW CLUSTER SIZE: " + nodes.size() + " --------------------------");
+        cluster.setNodes(nodes);
+
+        return cluster;
+    }
+
+    @Bean
     public IMDBClient imdbClient() throws Exception {
-//        IMDBClient imdbClient = new JavaClient(host);
-//        imdbClient.echo(1).get(Duration.ofDays(1));
-//        return imdbClient;
-        return new ClientSimulator();
+//        IMDBClient imdbClient = new JavaClient(host, new ClientConfig(securityEnabled, username, password));
+//        imdbClient.echo(1).get(Duration.ofDays(1)); // todo do i need to do it here??
+
+        return new ClientSimulator(cluster);
     }
 
     @Bean
@@ -100,6 +129,6 @@ public class Config extends WebSecurityConfigurerAdapter {
 
     @Bean
     public IMDBEncodeDecoder encodeDecoder() {
-        return new CBOREncodeDecoderNew();
+        return IMDBEncodeDecoder.getInstance();
     }
 }

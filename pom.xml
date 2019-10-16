@@ -43,10 +43,11 @@
     </build>
 
     <repositories>
+        <!--other repositories if any-->
         <repository>
             <id>project.local</id>
             <name>project</name>
-            <url>file:${project.basedir}/libs</url>
+            <url>file://${project.basedir}/repo</url>
         </repository>
     </repositories>
 
@@ -86,9 +87,7 @@
         <dependency>
             <groupId>com.viettel.imdb</groupId>
             <artifactId>imdb-client</artifactId>
-            <version>3.0.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/imdb-client-3.0.2.jar</systemPath>
+            <version>4.0.0</version>
         </dependency>
 
         <dependency>

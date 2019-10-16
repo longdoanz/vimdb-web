@@ -9,15 +9,15 @@ import com.viettel.imdb.rest.RestErrorCode;
 
 public class TableModel {
     private String db;
-    private String name;
+    private String tableName;
 //    public String encode;
 
     public TableModel() {
     }
 
-    public TableModel(String db, String name) {
+    public TableModel(String db, String tableName) {
         this.db = db;
-        this.name = name;
+        this.tableName = tableName;
     }
 
     public void setDb(String db) {
@@ -28,18 +28,18 @@ public class TableModel {
         if (db == null || db.isEmpty() || !db.equals("default")) {
             return RestErrorCode.DATABASE_NOT_EXIST;
         }
-        if (name == null || name.isEmpty()) {
+        if (tableName == null || tableName.isEmpty()) {
             return RestErrorCode.TABLENAME_LENGTH_INVALID;
         }
         return RestErrorCode.OK;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTableName() {
+        return this.tableName;
     }
 
     @Override
     public String toString() {
-        return "TableModel{name: " + this.name + "}";
+        return "TableModel{name: " + this.tableName + "}";
     }
 }

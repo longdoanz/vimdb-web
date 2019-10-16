@@ -11,6 +11,7 @@ import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,40 @@ class DataServiceImpl implements DataService {
     //==========================================================
     // Main process function
     //==========================================================
+
+
+    @Override
+    public ResponseEntity<?> getDataInfo() {
+//        List<NamespaceInformation> namespaces = (ClientSimulator)client
+        return new ResponseEntity<>(((ClientSimulator)client).getNamespaces(), HttpStatus.OK);
+    }
+
+    @Override
+    public DeferredResult<ResponseEntity<?>> createNamespace(String namespace) {
+        Logger.error("Create Namespace");
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
+        return returnValue;
+    }
+
+    @Override
+    public DeferredResult<ResponseEntity<?>> updateNamespace(String namespace, String newname) {
+        Logger.error("Delete Namespace");
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
+        return returnValue;
+    }
+
+    @Override
+    public DeferredResult<ResponseEntity<?>> dropNamespace(String namespace) {
+        Logger.error("Delete Namespace");
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
+        return returnValue;
+    }
 
     @Override
     public DeferredResult<ResponseEntity<?>> createTable(String namespace, String tableName) {

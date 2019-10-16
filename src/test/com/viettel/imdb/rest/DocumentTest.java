@@ -2,6 +2,7 @@ package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.QueryParam;
+import com.viettel.imdb.rest.common.TestUtil;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -22,16 +23,16 @@ public class DocumentTest {
     private HTTPRequest http;
 
 
-    String tableName = "table01";
+    String tableName = "TABLE_NAME";
     String recordKey = "key-03";
 
-    @BeforeMethod
+    /*@BeforeMethod
     public void setUp() throws Exception {
         http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
 //        http.sendDelete(buildFromPath(DB_PATH, tableName));
         String body = "{ \"name\": \"table01\" }";
         http.sendPost(DB_PATH, body);
-    }
+    }*/
 
     @Test
     public void httpCookie() {
@@ -40,34 +41,52 @@ public class DocumentTest {
 
     @Test(priority = 1)
     public void testInsert() throws Exception {
-        String body = "{\n" +
-                "  \"key\": \"key-03\",\n" +
-                "  \"record\": {\n" +
-                "    \"sub1\": 145,\n" +
-                "    \"sub4\": \"String\",\n" +
-                "    \"sub2\": [1, 3, 5],\n" +
-                "    \"sub3\": {\n" +
-                "      \"ssub1\": [1],\n" +
-                "      \"SUB23\": {\n" +
-                "        \"S42\": \"TESTING\"\n" +
-                "      }\n" +
+        http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
+//        http.sendDelete(buildFromPath(DB_PATH, tableName));
+        String body = "{ \"name\": \""+ tableName + "\" }";
+        http.sendPost(DATA_PATH_WITH_NAMESPACE, body);
+
+        String body2 = "{\n" +
+                "  \"sub1\": 145,\n" +
+                "  \"sub4\": \"String\",\n" +
+                "  \"sub2\": [1, 3, 5],\n" +
+                "  \"sub3\": {\n" +
+                "    \"ssub1\": [1],\n" +
+                "    \"SUB23\": {\n" +
+                "      \"S42\": \"TESTING\"\n" +
                 "    }\n" +
                 "  }\n" +
                 "}";
-        Map res = http.sendPost(buildFromPath(DB_PATH, tableName), body);
+        Map res = http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, "key-03"), body2);
         System.out.println(res);
         assertEquals(res.get("code"), HttpStatus.CREATED.value());
 
     }
 
+
+
     @Test(priority = 2)
     public void testSelectKey() throws Exception {
+        http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
+
         String expectData = "{\"sub1\":145,\"sub2\":[1,3,5],\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendGet(buildFromPath(DB_PATH, tableName, recordKey));
+        Map res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
         System.out.println(res);
         assertEquals(res.get("code"), HttpStatus.OK.value());
         assertEquals(res.get("response").toString(), expectData);
     }
+
+
+    @Test(priority = 2)
+    public void testDeleteKey() throws Exception {
+        http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
+
+        Map res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
+        System.out.println(res);
+        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+    }
+
+
 
     @Test(priority = 2, description = "Using scan API")
     public void testSelectWithSecondaryIndexField_2() throws Exception {
@@ -107,15 +126,17 @@ public class DocumentTest {
 
     @Test(priority = 3)
     public void testUpdate() throws Exception {
+        http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
+
         String body = "{\n" +
                 "  \"sub1\": \"TESTING 1\",\n" +
                 "  \"sub2\": \"Testing 1111\"\n" +
                 "}";
         String expectData = "{\"sub1\":\"TESTING 1\",\"sub2\":\"Testing 1111\",\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendPut(buildFromPath(DB_PATH, tableName, recordKey), body);
+        Map res = http.sendPut(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey), body);
         System.out.println(res);
         assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
-        res = http.sendGet(buildFromPath(DB_PATH, tableName, recordKey));
+        res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
         System.out.println(res);
         assertEquals(res.get("code"), HttpStatus.OK.value());
         assertEquals(res.get("response").toString(), expectData);
