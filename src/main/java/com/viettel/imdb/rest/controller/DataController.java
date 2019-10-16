@@ -7,6 +7,7 @@ import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
+import com.viettel.imdb.rest.service.StatisticService;
 import com.viettel.imdb.rest.util.RequestParamHandler;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
@@ -69,7 +70,6 @@ public class DataController {
      * Data Service to mainly serve request from this controller
      */
     @Autowired private DataService service;
-
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     @ApiOperation(value=SCAN_NAMESPACE_NOTES, nickname = "scan")

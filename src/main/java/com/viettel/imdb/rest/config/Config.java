@@ -7,6 +7,8 @@ import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
+import com.viettel.imdb.rest.util.SimulatorMonitorStatisticClient;
+import com.viettel.imdb.rest.util.StatisticClient;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,15 +101,27 @@ public class Config extends WebSecurityConfigurerAdapter {
 //                .logout();
     }
 
-    @Bean
-    public ClusterSimulator getCluster() {
-        List<NodeSimulator> nodes = new ArrayList<>();
+    private static List<NodeSimulator> nodes;
+
+    static {
+        nodes = new ArrayList<>();
 
         int clusterSize = ThreadLocalRandom.current().nextInt(3, 7);
 
         for (int i = 0; i < clusterSize; i++) {
             nodes.add(new NodeSimulatorImpl("172.16.28." + ThreadLocalRandom.current().nextInt(10, 254), 10000));
         }
+    }
+
+    @Bean
+    public ClusterSimulator getCluster() {
+//        List<NodeSimulator> nodes = new ArrayList<>();
+//
+//        int clusterSize = ThreadLocalRandom.current().nextInt(3, 7);
+//
+//        for (int i = 0; i < clusterSize; i++) {
+//            nodes.add(new NodeSimulatorImpl("172.16.28." + ThreadLocalRandom.current().nextInt(10, 254), 10000));
+//        }
         System.err.println("------------------------------------- NEW CLUSTER SIZE: " + nodes.size() + " --------------------------");
         cluster.setNodes(nodes);
 
@@ -120,6 +134,15 @@ public class Config extends WebSecurityConfigurerAdapter {
 //        imdbClient.echo(1).get(Duration.ofDays(1)); // todo do i need to do it here??
 
         return new ClientSimulator(cluster);
+    }
+
+    @Bean
+    public StatisticClient statisticClient() throws Exception {
+        StatisticClient client = new SimulatorMonitorStatisticClient();
+        for(NodeSimulator node : nodes) {
+            client.addNode(node.getHost());
+        }
+        return client;
     }
 
     @Bean

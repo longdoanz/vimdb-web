@@ -6,6 +6,7 @@ import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
 import com.viettel.imdb.rest.model.AddClusterNodeRequest;
+import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.RemoveClusterNodeRequest;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,16 @@ public class ClusterServiceImpl implements ClusterService {
         this.cluster = cluster;
     }
 
+
+
     @Override
     public DeferredResult<ResponseEntity<?>> getClusterInfo(List<String> nodes) {
         Logger.error("getClusterInfo({})", nodes);
-        return null;
+        ClusterInfo clusterInfo = cluster.getClusterInfo(nodes);
+        DeferredResult returnValue = new DeferredResult<>();
+        returnValue.setResult(clusterInfo);
+        return returnValue;
+        //return null;
     }
 
     @Override

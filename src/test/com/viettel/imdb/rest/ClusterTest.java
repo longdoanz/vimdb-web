@@ -37,18 +37,21 @@ public class ClusterTest {
 //                        " ]";
 
         System.out.println(body);
-        Map res = http.sendGet(buildFromPath("/v1/cluster/info"));
+        Map res = http.sendGet(buildFromPath("/v1/cluster/info"), "nodes=172.16.28.69:10000,172.16.28.19:10000");
         System.out.println(res);
     }
 
     @Test
     public void test_Add_New_Node() throws Exception {
         Map res = http.sendPost(CLUSTER_PATH + "/add_node", "{\n" +
-                "  " +
-                "\"sshInfo\": {\"ip\": \"172.16.28.129\"},\n" +
+                "  \"sshInfo\": {\n" +
+                "    \"ip\": \"172.16.28.123\",\n" +
+                "    \"password\": \"admin\",\n" +
+                "    \"username\": \"admin\"\n" +
+                "  },\n" +
                 "  \"vimdbServerInfo\": {\n" +
-                "    \"host\": \"172.16.28.120\",\n" +
-                "    \"port\": 12834\n" +
+                "    \"privileges\": \"privileges list\",\n" +
+                "    \"roleName\": \"string\"\n" +
                 "  }\n" +
                 "}");
         System.out.println(res);

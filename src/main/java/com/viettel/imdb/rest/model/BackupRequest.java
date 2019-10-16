@@ -17,7 +17,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -31,11 +31,11 @@ public class BackupRequest {
     @ApiModelProperty(value= "backupConfig", example = " ")
     private BackupConfig backupConfig;
 
-    public BackupRequest() {
-        this.clusterAuthInfo = new ClusterAuthInfo();
-        this.clusterNodeSSHInfo = new ClusterNodeSSHInfo();
-        this.backupConfig = new BackupConfig();
-    }
+//    public BackupRequest() {
+//        this.clusterAuthInfo = new ClusterAuthInfo();
+//        this.clusterNodeSSHInfo = new ClusterNodeSSHInfo();
+//        this.backupConfig = new BackupConfig();
+//    }
 
     @NoArgsConstructor
     @AllArgsConstructor
@@ -67,7 +67,7 @@ public class BackupRequest {
         private String password;
     }
 
-    //@NoArgsConstructor
+    @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
@@ -86,14 +86,14 @@ public class BackupRequest {
         @ApiModelProperty(value = " backupDirectory", example = " ")
         private String backupDirectory;
 
-        public BackupConfig() {
-            this.isPartionRange = true;
-            this.partionRangeStart = 0;
-            this.backupPartionEnd = 4096;
-            this.partionList = new ArrayList<>(
-                    Arrays.asList(1, 2, 3, 5, 10)
-            );
-            this.backupDirectory = "backupDirectory";
-        }
+//        public BackupConfig() {
+//            this.isPartionRange = true;
+//            this.partionRangeStart = 0;
+//            this.backupPartionEnd = 4096;
+//            this.partionList = new ArrayList<>(
+//                    Arrays.asList(1, 2, 3, 5, 10)
+//            );
+//            this.backupDirectory = "backupDirectory";
+//        }
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author quannh22
@@ -46,8 +47,10 @@ public class ClusterController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getClusterInfo(
+        //@ApiParam(required = false, value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
         @ApiParam(required = false, value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
     ) {
+        //List<String> nodes = new ArrayList<String>();
         return service.getClusterInfo(nodes);
     }
 

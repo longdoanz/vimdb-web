@@ -44,7 +44,7 @@ public class NodeSimulatorImpl implements NodeSimulator {
     public boolean equals(Object o) {
         if(this == o) return true;
         NodeSimulatorImpl node = (NodeSimulatorImpl) o;
-        if(!this.host.equals(node.host) || this.port != node.port) {
+        if(this.host == null || !this.host.equals(node.host) || this.port != node.port) {
             return false;
         }
         return true;

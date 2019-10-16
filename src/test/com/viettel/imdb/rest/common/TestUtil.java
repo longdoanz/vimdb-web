@@ -171,4 +171,89 @@ public class TestUtil {
     /// SECURITY TESTS - END
     ///================================================
 
+
+    ///================================================
+    /// METRICS TESTS - BEGIN
+    ///================================================
+    public void testGetMetrics(List<String> serverList, HttpStatus expectedReturnCode, String expectedResponse) {
+        // todo expectedResponse can be error or value
+        try {
+            Map res;
+            String filterStr = "";
+            if(serverList!= null && !serverList.isEmpty()) {
+                filterStr = "servers=";
+                for(String server : serverList) {
+                    filterStr += server +",";
+                }
+                filterStr = filterStr.substring(0, filterStr.length()-1);
+            }
+            if(filterStr.isEmpty())
+                res = http.sendGet(buildFromPath(STATISTIC_PATH, "metrics")/*, "servers="*/);
+            else
+                res = http.sendGet(buildFromPath(STATISTIC_PATH, "metrics"),filterStr);
+            System.out.println(res);
+            assertEquals(res.get("code"), expectedReturnCode.value());
+            if(expectedResponse == null)
+                Assert.assertNull(res.get("response"));
+            else
+                Assert.assertEquals(
+                        encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())),
+                        encoder.decodeJsonNode(encoder.encodeJsonString(expectedResponse))
+                );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Assert.fail("Cannot call getUsers()", ex);
+        }
+    }
+
+    public void testGetStatistic(List<String> serverList, List<String> metricList, HttpStatus expectedReturnCode, String expectedResponse) {
+        // todo expectedResponse can be error or value
+        try {
+            Map res;
+            String serverFilterStr = "";
+            if(serverList!= null && !serverList.isEmpty()) {
+                serverFilterStr = "servers=";
+                for(String server : serverList) {
+                    serverFilterStr += server +",";
+                }
+                serverFilterStr = serverFilterStr.substring(0, serverFilterStr.length()-1);
+            }
+
+            String metricFilterStr = "";
+            if(metricList!= null && !metricList.isEmpty()) {
+                metricFilterStr = "metrics=";
+                for(String metric : metricList) {
+                    metricFilterStr += metric +",";
+                }
+                metricFilterStr = metricFilterStr.substring(0, metricFilterStr.length()-1);
+            }
+            
+            
+            if(serverFilterStr.isEmpty() && metricFilterStr.isEmpty()) {
+                res = http.sendGet(buildFromPath(STATISTIC_PATH));
+            } else if(serverFilterStr.isEmpty()) {
+                res = http.sendGet(buildFromPath(STATISTIC_PATH), metricFilterStr);
+            } else if(metricFilterStr.isEmpty()) {
+                res = http.sendGet(buildFromPath(STATISTIC_PATH), serverFilterStr );
+            } else {
+                res = http.sendGet(buildFromPath(STATISTIC_PATH), serverFilterStr + "&" + metricFilterStr);
+            }
+            System.out.println(res);
+            assertEquals(res.get("code"), expectedReturnCode.value());
+            if(expectedResponse == null)
+                Assert.assertNull(res.get("response"));
+            else
+                Assert.assertEquals(
+                        encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())),
+                        encoder.decodeJsonNode(encoder.encodeJsonString(expectedResponse))
+                );
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Assert.fail("Cannot call getUsers()", ex);
+        }
+    }
+    ///================================================
+    /// METRICS TESTS - END
+    ///================================================
+
 }

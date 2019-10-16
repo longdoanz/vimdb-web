@@ -12,6 +12,7 @@ import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
+import com.viettel.imdb.rest.util.StatisticClient;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,13 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
 @Service
 class DataServiceImpl implements DataService {
     private final IMDBClient client;
+    // todo add StatisticClient here
+    private final StatisticClient statisticClient;
 
     @Autowired
-    public DataServiceImpl(IMDBClient client) {
+    public DataServiceImpl(IMDBClient client, StatisticClient statisticClient) {
         this.client = client;
+        this.statisticClient = statisticClient;
     }
 
     //==========================================================
@@ -83,9 +87,18 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> createTableFuture = client.createTable(tableName);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = createTableFuture
-                .map(aVoid -> new Result(HttpStatus.CREATED))
-                .rescue(throwable -> throwableToHttpStatus(throwable));
+                .map(aVoid -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.CREATED);
+                })
+                .rescue(throwable -> {
+//                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", 1);
+//                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return throwableToHttpStatus(throwable);
+                });
         return restResultToDeferredResult(resultFuture);
     }
 
@@ -96,8 +109,13 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> dropTableFuture = client.dropTable(tableName);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = dropTableFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
+                .map(aVoid -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", -1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.NO_CONTENT);
+                })
                 .rescue(throwable -> throwableToHttpStatus(throwable));
         return restResultToDeferredResult(resultFuture);
     }
@@ -109,12 +127,17 @@ class DataServiceImpl implements DataService {
         String tableName = indexModel.getTable();
         String indexName = indexModel.getName();
         ValueType indexType = indexModel.getType();
+        long previousTime = System.nanoTime();
         if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> createIndexFuture = client.createIndex(tableName, indexName, indexType);
         Future<Result> resultFuture = createIndexFuture
-                .map(aVoid -> new Result(HttpStatus.CREATED))
+                .map(aVoid -> {
+//                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.CREATED);
+                })
                 .rescue(throwable -> throwableToHttpStatus(throwable));
         return restResultToDeferredResult(resultFuture);
 
@@ -127,8 +150,13 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> dropIndexFuture = client.dropIndex(tableName, indexName);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = dropIndexFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
+                .map(aVoid -> {
+//                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", -1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.NO_CONTENT);
+                })
                 .rescue(throwable -> throwableToHttpStatus(throwable));
         return restResultToDeferredResult(resultFuture);
 
@@ -141,9 +169,18 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Record> selectFuture = client.select(tableName, key, fieldNameList);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = selectFuture
-                .map(record -> new Result(HttpStatus.OK, record))
-                .rescue(throwable -> throwableToHttpStatus(throwable));
+                .map(record -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_read_success", 1);
+                    statisticClient.addLatencyInUsToRandomNode("read", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.OK, record);
+                })
+                .rescue(throwable -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_read_failed", 1);
+                    statisticClient.addLatencyInUsToRandomNode("read", (System.nanoTime() - previousTime) / 1000);
+                    return throwableToHttpStatus(throwable);
+                });
         return restResultToDeferredResult(resultFuture);
     }
 
@@ -154,9 +191,18 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> insertFuture = client.insert(tableName, key, fieldList);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = insertFuture
-                .map(aVoid -> new Result(HttpStatus.CREATED))
-                .rescue(throwable -> throwableToHttpStatus(throwable));
+                .map(aVoid -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_write_success", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.CREATED);
+                })
+                .rescue(throwable -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_write_failed", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return throwableToHttpStatus(throwable);
+                });
         return restResultToDeferredResult(resultFuture);
     }
 
@@ -173,9 +219,18 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> updateFuture = client.update(tableName, key, fieldList);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = updateFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
-                .rescue(throwable -> throwableToHttpStatus(throwable));
+                .map(aVoid -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_write_success", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.NO_CONTENT);
+                })
+                .rescue(throwable -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_write_failed", 1);
+                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
+                    return throwableToHttpStatus(throwable);
+                });
         return restResultToDeferredResult(resultFuture);
     }
 
@@ -221,9 +276,18 @@ class DataServiceImpl implements DataService {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
         Future<Void> deleteFuture = client.delete(tableName, key, fieldNameList);
+        long previousTime = System.nanoTime();
         Future<Result> resultFuture = deleteFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
-                .onFailure(throwable -> throwableToHttpStatus(throwable));
+                .map(aVoid -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_delete_success", 1);
+                    statisticClient.addLatencyInUsToRandomNode("delete", (System.nanoTime() - previousTime) / 1000);
+                    return new Result(HttpStatus.NO_CONTENT);
+                })
+                .rescue(throwable -> {
+                    statisticClient.addStatisticValueToRandomNode("vimdb_request_delete_failed", 1);
+                    statisticClient.addLatencyInUsToRandomNode("delete", (System.nanoTime() - previousTime) / 1000);
+                    return throwableToHttpStatus(throwable);
+                });
         return restResultToDeferredResult(resultFuture);
     }
 }

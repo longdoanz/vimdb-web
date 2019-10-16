@@ -34,7 +34,7 @@ public class ClusterInfo {
     @Setter
     @ToString
     @ApiModel(value="ClusterInfo", description = "Cluster info")
-    class ClusterDRInfo{
+    public class ClusterDRInfo{
         @ApiModelProperty(value= "db ", example = " ")
         private String db;
         @ApiModelProperty(value= "method", example = " ")
@@ -54,7 +54,7 @@ public class ClusterInfo {
     @Setter
     @ToString
     @ApiModel(value="ClusterInfo", description = "Cluster info")
-    class ClusterNodeInfo{
+    public class ClusterNodeInfo{
         @ApiModelProperty(value= "name", example = "abz")
         private String name;
         @ApiModelProperty(value= "ip", example = "12.1234.346")
@@ -85,7 +85,7 @@ public class ClusterInfo {
     @Setter
     @ToString
     @ApiModel(value="ClusterNodeDataInfo", description = "Cluster info")
-    class ClusterNodeDataInfo{
+    public class ClusterNodeDataInfo{
         @ApiModelProperty(value= "tables", example = "1000")
         private long tables;
         @ApiModelProperty(value= "records", example = "1000")
@@ -100,7 +100,7 @@ public class ClusterInfo {
     @Setter
     @ToString
     @ApiModel(value="ClusterNodePerformanceInfo", description = "Cluster Node Performanceinfo")
-    class ClusterNodePerformanceInfo{
+    public class ClusterNodePerformanceInfo{
         @ApiModelProperty(value= "write", example = "1000")
         private long write;
         @ApiModelProperty(value= "writeSuccess", example = "1000")
