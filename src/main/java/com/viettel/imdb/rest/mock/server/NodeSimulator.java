@@ -8,4 +8,6 @@ public interface NodeSimulator {
     void setHost(String host);
     int getPort();
     void setPort(int port);
+
+    String getAddress();
 }

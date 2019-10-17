@@ -9,10 +9,7 @@ import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
-import com.viettel.imdb.rest.model.AddRoleRequest;
-import com.viettel.imdb.rest.model.AddUserRequest;
-import com.viettel.imdb.rest.model.EditRoleRequest;
-import com.viettel.imdb.rest.model.EditUserRequest;
+import com.viettel.imdb.rest.model.*;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +20,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
 
-import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult;
-import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
+import static com.viettel.imdb.rest.common.Utils.*;
 
 /**
  * @author quannh22
@@ -46,21 +42,21 @@ public class SecurityServiceImpl implements SecurityService {
     public DeferredResult<ResponseEntity<?>> getUsers() {
         // todo fake here
         Logger.error("getUsers()");
-        Future<List<User>> getFuture = ((ClientSimulator)client).getUsers();
+        Future<List<UserInfo>> getFuture = ((ClientSimulator)client).getUsersInfo();
         Future<Result> resultFuture = getFuture
                 .map(users -> new Result(HttpStatus.OK, users))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
     public DeferredResult<ResponseEntity<?>> getUser(String username) {
         Logger.error("getUser({})", username);
-        Future<User> getUserFuture = client.readUser(username);
+        Future<UserInfo> getUserFuture = ((ClientSimulator)client).readUserInfo(username);;
         Future<Result> resultFuture = getUserFuture
                 .map(user -> new Result(HttpStatus.OK, user))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -70,7 +66,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -80,7 +76,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -90,7 +86,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = deleteFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .onFailure(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -102,7 +98,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = getFuture
                 .map(roles -> new Result(HttpStatus.OK, roles))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -112,7 +108,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = getRoleFuture
                 .map(user -> new Result(HttpStatus.OK, user))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -122,7 +118,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -142,7 +138,7 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = deleteFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .onFailure(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
@@ -154,6 +150,6 @@ public class SecurityServiceImpl implements SecurityService {
         Future<Result> resultFuture = getFuture
                 .map(logs -> new Result(HttpStatus.OK, logs))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+        return restResultToDeferredResult2(resultFuture);
     }
 }

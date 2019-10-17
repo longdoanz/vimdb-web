@@ -101,9 +101,11 @@ public class DataController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> createNamespace(
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace
+            @ApiParam(required = false, value = NAMESPACE_NOTES, example = "{'name': 'NS_01' }") @RequestBody(required = true) JsonNode body
     ) {
-        Logger.error("Create namespace({})", namespace);
+        System.out.println(body);
+        String namespace = "";
+        Logger.info("Create namespace({})", namespace);
         return service.createNamespace(namespace);
     }
 
@@ -150,7 +152,7 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}")
     @ApiOperation(value=CREATE_TABLE_NOTES, nickname = "createTable")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 444,

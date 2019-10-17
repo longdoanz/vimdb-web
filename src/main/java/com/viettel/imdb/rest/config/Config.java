@@ -107,10 +107,12 @@ public class Config extends WebSecurityConfigurerAdapter {
         nodes = new ArrayList<>();
 
         int clusterSize = ThreadLocalRandom.current().nextInt(3, 7);
+        int startIP = ThreadLocalRandom.current().nextInt(65, 72);
 
         for (int i = 0; i < clusterSize; i++) {
-            nodes.add(new NodeSimulatorImpl("172.16.28." + ThreadLocalRandom.current().nextInt(10, 254), 10000));
+            nodes.add(new NodeSimulatorImpl("172.16.28." + startIP++, 10000));
         }
+        nodes.forEach(System.out::println);
     }
 
     @Bean
@@ -140,7 +142,7 @@ public class Config extends WebSecurityConfigurerAdapter {
     public StatisticClient statisticClient() throws Exception {
         StatisticClient client = new SimulatorMonitorStatisticClient();
         for(NodeSimulator node : nodes) {
-            client.addNode(node.getHost());
+            client.addNode(node.getAddress());
         }
         return client;
     }

@@ -221,7 +221,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
             this.host = host;
             nodeStatistic = new StatisticResponse(host);
             for(MetricResponse metricResponse : SimulatorMonitorStatisticClient.metricNameMap.values()) {
-                nodeStatistic.addNewMetric(metricResponse.getName(), metricResponse.getType());
+                nodeStatistic.addNewMetric(metricResponse.getMetric(), metricResponse.getType());
             }
             addMetrics("system_total_ram", 100000000); // 100GB RAM
             addMetrics("system_total_disk", 1000000000); // 1000GB DISK
@@ -477,7 +477,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
         public void addMetrics(String statisticName, long value) {
             StatisticResponse.MetricValue metricValue = getMetricValue(statisticName);
             if(metricValue == null) {
-                Logger.error("Metric {} is NULL - do nothing", statisticName);
+                Logger.warn("Metric {} is NULL - do nothing", statisticName);
                 return;
             }
             switch (statisticName) {

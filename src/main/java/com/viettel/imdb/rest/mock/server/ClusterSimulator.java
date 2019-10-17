@@ -1,11 +1,11 @@
 package com.viettel.imdb.rest.mock.server;
 
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.Record;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.NamespaceInformation;
+import com.viettel.imdb.rest.model.UserInfo;
 import io.trane.future.Future;
 
 import java.util.*;
@@ -16,6 +16,7 @@ public class ClusterSimulator implements Storage, Security {
     private List<NodeSimulator> nodes;
     private int replicationFactor;
     private List<ClusterSimulator> drClusters;
+    private List<NodeSimulator> pendingNodes = new ArrayList<>();
 
     private DataStorage storage;
     Security security;
@@ -48,57 +49,53 @@ public class ClusterSimulator implements Storage, Security {
         clusterInfo.setNodeCount(nodes.size());
         clusterInfo.setReplicationFactor(replicationFactor);
         clusterInfo.setVersion("a.b.c");
-        clusterInfo.setUptime( new Random().nextInt(100));
+        clusterInfo.setUptime(new Random().nextInt(100));
         clusterInfo.setMonitorNodeCount(new Random().nextInt(nodes.size()));
 
         ClusterInfo.ClusterDRInfo clusterDRInfo = clusterInfo.new ClusterDRInfo();
         clusterDRInfo.setDb("vIMDB");
         clusterDRInfo.setMethod("method");
-        clusterDRInfo.setTotalOps(ThreadLocalRandom.current().nextLong());
-        clusterDRInfo.setOpsRead(ThreadLocalRandom.current().nextLong());
-        clusterDRInfo.setOpsTransferred(ThreadLocalRandom.current().nextLong());
+        clusterDRInfo.setTotalOps(ThreadLocalRandom.current().nextLong(20000));
+        clusterDRInfo.setOpsRead(ThreadLocalRandom.current().nextLong(20000));
+        clusterDRInfo.setOpsTransferred(ThreadLocalRandom.current().nextLong(20000));
         clusterInfo.setDrInfo(clusterDRInfo);
 
-        List<ClusterInfo.ClusterNodeInfo> nodesInfo = new ArrayList<ClusterInfo.ClusterNodeInfo>();
-        for(int i = 0; i < nodesHost.size(); i++){
-            int index = 0;
-            for(index = 0; index < nodes.size(); index++){
-                String node = nodes.get(index).getHost()+":"+nodes.get(i).getPort();
-                System.out.println(node  +   nodesHost.get(i));
-                if(node.equals(nodesHost.get(i))) break;
+        List<ClusterInfo.ClusterNodeInfo> nodesInfo = new ArrayList<>();
+        int index = 0;
+        for(NodeSimulator node : nodes) {
+            if(nodesHost == null || nodesHost.contains(node.getAddress())) {
+                index ++;
+                ClusterInfo.ClusterNodeInfo clusterNodeInfo = clusterInfo.new ClusterNodeInfo();
+                clusterNodeInfo.setName("node" + index);
+                clusterNodeInfo.setIp(node.getHost());
+                clusterNodeInfo.setPort(node.getPort());
+                clusterNodeInfo.setVersion("1.0.0.1");
+                clusterNodeInfo.setUptime(new Random().nextInt(100));
+                clusterNodeInfo.setOs("CentOS");
+                clusterNodeInfo.setHeartbeatSent(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodeInfo.setHearbeatReceived(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodeInfo.setRamUsagePercentage(new Random().nextFloat() * 100);
+                clusterNodeInfo.setDiskUsagePercentage(new Random().nextFloat() * 100);
+
+                ClusterInfo.ClusterNodeDataInfo clusterNodeDataInfo = clusterInfo.new ClusterNodeDataInfo();
+                clusterNodeDataInfo.setTables(ThreadLocalRandom.current().nextLong(2000));
+                clusterNodeDataInfo.setRecords(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodeDataInfo.setMaster(ThreadLocalRandom.current().nextLong(20));
+                clusterNodeInfo.setData(clusterNodeDataInfo);
+
+                ClusterInfo.ClusterNodePerformanceInfo clusterNodePerformanceInfo = clusterInfo.new ClusterNodePerformanceInfo();
+                clusterNodePerformanceInfo.setWrite(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setRead(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setDelete(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setDeleteSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setScan(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setScanSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodeInfo.setPerformance(clusterNodePerformanceInfo);
+
+                nodesInfo.add(clusterNodeInfo);
             }
-            if(index == nodes.size()) continue;
-
-
-            ClusterInfo.ClusterNodeInfo clusterNodeInfo = clusterInfo.new ClusterNodeInfo();
-            clusterNodeInfo.setName("node"+index);
-            clusterNodeInfo.setIp(nodes.get(index).getHost());
-            clusterNodeInfo.setVersion("a.b.c.Z");
-            clusterNodeInfo.setUptime(new Random().nextInt(100));
-            clusterNodeInfo.setOs("CentOS");
-            clusterNodeInfo.setHeartbeatSent(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodeInfo.setHearbeatReceived(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodeInfo.setRamUsagePercentage(new Random().nextFloat()*100);
-            clusterNodeInfo.setDiskUsagePercentage(new Random().nextFloat()*100);
-
-            ClusterInfo.ClusterNodeDataInfo clusterNodeDataInfo = clusterInfo.new ClusterNodeDataInfo();
-            clusterNodeDataInfo.setTables(ThreadLocalRandom.current().nextLong(2000));
-            clusterNodeDataInfo.setRecords(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodeDataInfo.setMaster(ThreadLocalRandom.current().nextLong(20));
-            clusterNodeInfo.setData(clusterNodeDataInfo);
-
-            ClusterInfo.ClusterNodePerformanceInfo clusterNodePerformanceInfo = clusterInfo.new ClusterNodePerformanceInfo();
-            clusterNodePerformanceInfo.setWrite(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setRead(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setDelete(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setDeleteSuccess(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setScan(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodePerformanceInfo.setScanSuccess(ThreadLocalRandom.current().nextLong(200000));
-            clusterNodeInfo.setPerformance(clusterNodePerformanceInfo);
-
-            nodesInfo.add(clusterNodeInfo);
         }
         clusterInfo.setNodes(nodesInfo);
 
@@ -119,21 +116,23 @@ public class ClusterSimulator implements Storage, Security {
 
 
     public boolean addNode(NodeSimulator node, boolean... currently) {
-        if(nodes.contains(node)) {
+        if (nodes.contains(node) || pendingNodes.contains(node)) {
             return false;
         }
-        if(node.start()) {
+        if (node.start()) {
             // Simulate like cluster remove node after 50HB
-            if(currently.length != 0 && currently[0]) {
+            if (currently.length != 0 && currently[0]) {
                 nodes.add(node);
                 return true;
             }
+            pendingNodes.add(node);
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     nodes.add(node);
+                    pendingNodes.remove(node);
                     timer.cancel();
                 }
             }, 5000);
@@ -141,18 +140,24 @@ public class ClusterSimulator implements Storage, Security {
         return true;
     }
 
-    public void removeNode(NodeSimulator node) {
-        if(node.stop()) {
+    public boolean removeNode(NodeSimulator node) {
+        if (!nodes.contains(node) || pendingNodes.contains(node)) {
+            return false;
+        }
+        if (node.stop()) {
+            pendingNodes.add(node);
             // Simulate like cluster remove node after 50HB
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     nodes.add(node);
+                    pendingNodes.remove(node);
                     timer.cancel();
                 }
             }, 15000);
         }
+        return true;
     }
 
     @Override
@@ -209,6 +214,11 @@ public class ClusterSimulator implements Storage, Security {
     }
 
     @Override
+    public Future<List<UserInfo>> getAllUsersInfo() {
+        return security.getAllUsersInfo();
+    }
+
+    @Override
     public Future<List<Role>> getAllRoles() {
         return security.getAllRoles();
     }
@@ -221,6 +231,11 @@ public class ClusterSimulator implements Storage, Security {
     @Override
     public Future<User> readUser(String username) {
         return security.readUser(username);
+    }
+
+    @Override
+    public Future<UserInfo> readUserinfo(String username) {
+        return security.readUserinfo(username);
     }
 
     @Override

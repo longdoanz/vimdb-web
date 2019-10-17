@@ -1,10 +1,7 @@
 package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.rest.domain.RestClientError;
-import com.viettel.imdb.rest.model.AddRoleRequest;
-import com.viettel.imdb.rest.model.AddUserRequest;
-import com.viettel.imdb.rest.model.EditRoleRequest;
-import com.viettel.imdb.rest.model.EditUserRequest;
+import com.viettel.imdb.rest.model.*;
 import com.viettel.imdb.rest.service.SecurityService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.List;
 
 /**
  * @author quannh22
@@ -49,6 +48,13 @@ public class SecurityController {
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
+                    code = 200,
+                    response = User.class,
+                    responseContainer = "List",
+                    message = "Key does not exist"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
+            @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
@@ -64,6 +70,12 @@ public class SecurityController {
     @ApiOperation(value = GET_USER_NOTES, nickname = "getUser")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    response = User.class,
+                    message = "Key does not exist"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
             @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
@@ -82,6 +94,13 @@ public class SecurityController {
     @ApiOperation(value = ADD_USER_NOTES, nickname = "addUser")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    response = User.class,
+                    responseContainer = "List",
+                    message = "Key does not exist"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
             @ApiResponse(
                     code = 777,
                     response = RestClientError.class,

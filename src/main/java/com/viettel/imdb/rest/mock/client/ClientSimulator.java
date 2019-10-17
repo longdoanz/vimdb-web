@@ -8,6 +8,7 @@ import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.model.NamespaceInformation;
+import com.viettel.imdb.rest.model.UserInfo;
 import com.viettel.imdb.secondaryindex.ResultSet;
 import io.trane.future.Future;
 import io.trane.future.Promise;
@@ -197,12 +198,18 @@ public class ClientSimulator implements IMDBClient {
     /// FAKE APIs come here - NO NEED FUTURE
     ///============================================
 
+    public Future<UserInfo> readUserInfo(String s) {
+        return cluster.readUserinfo(s);
+    }
     public List<NamespaceInformation> getNamespaces() {
         return cluster.getNamespaces();
     };
 
     public Future<List<User>> getUsers() {
         return cluster.getAllUsers();
+    }
+    public Future<List<UserInfo>> getUsersInfo() {
+        return cluster.getAllUsersInfo();
     }
 
     public Future<List<Role>> getRoles() {

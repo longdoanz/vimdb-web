@@ -34,7 +34,6 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
     Map<Long, StateProcess> processState = new HashMap<Long, StateProcess>();
     @Override
     public DeferredResult<ResponseEntity<?>> backup(BackupRequest request) {
-        System.out.println("akejfbkajwebfk");
         Random random = new Random();
         long backupProcessid = random.nextLong();
         if (backupProcessid < 0) backupProcessid = -backupProcessid;

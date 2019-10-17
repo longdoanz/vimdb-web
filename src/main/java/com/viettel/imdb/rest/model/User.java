@@ -1,7 +1,9 @@
 package com.viettel.imdb.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viettel.imdb.core.security.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -11,8 +13,10 @@ public class User {
     private List<Privilege> privileges;
     private List<String> parentRoles;
 
+
     public String getUsername() {
         return username;
+
     }
 
     public void setUsername(String username) {
@@ -39,8 +43,8 @@ public class User {
         return parentRoles;
     }
 
+
     public void setParentRoles(List<String> parentRoles) {
         this.parentRoles = parentRoles;
     }
-
 }

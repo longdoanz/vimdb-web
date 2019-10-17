@@ -33,6 +33,8 @@ public class StatisticServiceImpl implements StatisticService{
     }
 
     public DeferredResult<ResponseEntity<?>> getMetrics(String servers){
+        DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
+
         try {
             Logger.error("Get metric {}", servers);
             if(servers == null)
@@ -41,42 +43,45 @@ public class StatisticServiceImpl implements StatisticService{
             List<String> serverList = Arrays.asList(serverArr);
             Logger.error("Get metric {}", serverList);
 
-            Future<List<MetricResponse>> getMetricsFuture = client.getMetrics(serverList);
-            Future<Result> resultFuture = getMetricsFuture
-                    .map(metricList -> new Result(HttpStatus.OK, metricList))
-                    .rescue(throwable -> throwableToHttpStatus(throwable));
-            return restResultToDeferredResult(resultFuture);
+            client.getMetrics(serverList)
+                    .onSuccess(metricList -> {
+                        res.setResult(new ResponseEntity<>(metricList, HttpStatus.OK));
+                    })
+                    .onFailure(throwable -> {
+                        res.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                    });
         } catch (Exception ex){
             return restResultToDeferredResult(Future.exception(ex));
         }
+        return res;
     }
     public DeferredResult<ResponseEntity<?>> getStatistics(String servers, String metrics){
-        try {
-            Logger.error("Get statistics servers {} --- metrics {}", servers, metrics);
-            List<String> serverList;
-            List<String> metricList;
-            if(servers == null || servers.isEmpty()) {
-                serverList = new ArrayList<>();
-            } else {
-                String[] serverArr = servers.trim().split(",");
-                serverList = Arrays.asList(serverArr);
-            }
-            if(metrics == null || metrics.isEmpty()) {
-                metricList = new ArrayList<>();
-            } else {
-                String[] metricArr = metrics.trim().split(",");
-                metricList = Arrays.asList(metricArr);
-            }
+        DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
 
-
-            Future<List<StatisticResponse>> getMetricsFuture = client.getStatistics(serverList, metricList);
-            Future<Result> resultFuture = getMetricsFuture
-                    .map(metricResponseList -> new Result(HttpStatus.OK, metricResponseList))
-                    .rescue(throwable -> throwableToHttpStatus(throwable));
-            return restResultToDeferredResult(resultFuture);
-        } catch (Exception ex){
-            return restResultToDeferredResult(Future.exception(ex));
+        Logger.error("Get statistics servers {} --- metrics {}", servers, metrics);
+        List<String> serverList;
+        List<String> metricList;
+        if(servers == null || servers.isEmpty()) {
+            serverList = new ArrayList<>();
+        } else {
+            String[] serverArr = servers.trim().split(",");
+            serverList = Arrays.asList(serverArr);
         }
+        if(metrics == null || metrics.isEmpty()) {
+            metricList = new ArrayList<>();
+        } else {
+            String[] metricArr = metrics.trim().split(",");
+            metricList = Arrays.asList(metricArr);
+        }
+
+        client.getStatistics(serverList, metricList)
+                .onSuccess(metricResponseList -> {
+                    res.setResult(new ResponseEntity<>(metricResponseList, HttpStatus.OK));
+                })
+                .onFailure(throwable -> {
+                    res.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                });
+        return res;
     }
 
 

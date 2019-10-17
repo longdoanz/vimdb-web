@@ -55,7 +55,6 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> createNamespace(String namespace) {
-        Logger.error("Create Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));

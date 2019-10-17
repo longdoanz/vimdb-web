@@ -112,7 +112,23 @@ public class Utils {
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         restFuture
                 .onSuccess(result ->
-                        returnValue.setResult(new ResponseEntity<>(result.getResponse(), result.getHttpStatus()))
+                        returnValue.setResult(new ResponseEntity<>(result.getData(), result.getHttpStatus()))
+                )
+                .onFailure(throwable -> {
+                    throwable.printStackTrace();
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("error", throwable.getMessage());
+                    returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                });
+
+
+        return returnValue;
+    }
+    public static DeferredResult<ResponseEntity<?>> restResultToDeferredResult2(Future<Result> restFuture) {
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        restFuture
+                .onSuccess(result ->
+                        returnValue.setResult(new ResponseEntity<>(result.getData(), result.getHttpStatus()))
                 )
                 .onFailure(throwable -> {
                     throwable.printStackTrace();

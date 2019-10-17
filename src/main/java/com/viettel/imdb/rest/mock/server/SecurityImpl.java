@@ -4,6 +4,7 @@ import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
+import com.viettel.imdb.rest.model.UserInfo;
 import io.trane.future.Future;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class SecurityImpl implements Security {
     private static SecurityImpl instance;
     private Map<String, User> userMap;
+    private Map<String, UserInfo> userInfoMap;
     private Map<String, Role> roleMap;
 
     public static Security getInstance() {
@@ -31,17 +33,27 @@ public class SecurityImpl implements Security {
     private SecurityImpl() {
         userMap = new ConcurrentHashMap<>();
         roleMap = new ConcurrentHashMap<>();
+        userInfoMap = new ConcurrentHashMap<>();
         userMap.put("admin", new User("admin", "admin", new ArrayList<String>() {{
             add("admin");
         }}));
         roleMap.put("admin", new Role("admin", new ArrayList<String>() {{
             add("*");
         }}));
+
+        userInfoMap.put("admin", new UserInfo("admin", "RBAC", new ArrayList<Role>(){{
+            add(roleMap.get("admin"));
+        }}));
     }
 
     @Override
     public Future<List<User>> getAllUsers() {
         return Future.value(new ArrayList<>(userMap.values()));
+    }
+
+    @Override
+    public Future<List<UserInfo>> getAllUsersInfo() {
+        return Future.value(new ArrayList<>(userInfoMap.values()));
     }
 
     @Override
@@ -68,6 +80,14 @@ public class SecurityImpl implements Security {
     }
 
     @Override
+    public Future<UserInfo> readUserinfo(String username) {
+        // todo validate
+        if(!userInfoMap.containsKey(username))
+            return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
+        return Future.value(userInfoMap.get(username));
+    }
+
+    @Override
     public Future<Void> createUser(String username, byte[] password, List<String> roleNameList) {
         if(userMap.containsKey(username))
             return Future.exception(new ClientException(ErrorCode.KEY_EXIST));
@@ -75,6 +95,13 @@ public class SecurityImpl implements Security {
             if(!roleMap.containsKey(roleName))
                 return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
         userMap.put(username, new User(username, new String(password), roleNameList)); // todo multithread here
+
+
+        List<Role> roleList = new ArrayList<Role>();
+        for(String roleName:roleNameList) {
+            roleList.add(roleMap.get(roleName));
+        }
+        userInfoMap.put(username, new UserInfo(username, "RBAC", roleList));
         return Future.VOID;
     }
 
@@ -87,6 +114,14 @@ public class SecurityImpl implements Security {
                 return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
         User user = userMap.get(username);
         user.setRolenameList(roleNameList);
+
+
+        UserInfo userInfo = userInfoMap.get(username);
+        List<Role> roleList = new ArrayList<Role>();
+        for(String roleName:roleNameList) {
+            roleList.add(roleMap.get(roleName));
+        }
+        userInfo.setRoles(roleList);
         return Future.VOID;
     }
 
@@ -95,6 +130,7 @@ public class SecurityImpl implements Security {
         if(userMap.containsKey(username))
             return Future.exception(new ClientException(ErrorCode.KEY_EXIST));
         userMap.remove(username);
+        userInfoMap.remove(username);
         return Future.VOID;
     }
 

@@ -59,7 +59,9 @@ public class ClusterInfo {
         private String name;
         @ApiModelProperty(value= "ip", example = "12.1234.346")
         private String ip;
-        @ApiModelProperty(value= "version", example = "1000")
+        @ApiModelProperty(value= "port", example = "10000")
+        private int port;
+        @ApiModelProperty(value= "version", example = "1.0.0.0")
         private String version;
         @ApiModelProperty(value= "uptime", example = "1030")
         private long uptime;

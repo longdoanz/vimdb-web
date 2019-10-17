@@ -63,13 +63,11 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/add_node")
     @ApiOperation(value = ADD_NODE_TO_CLUSTER, nickname = "addNode")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    code = 401,
+                    message = "Unauthorized"
             )
             // other @ApiResponses
     })
@@ -82,13 +80,11 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/remove_node")
     @ApiOperation(value = REMOVE_NODE_FROM_CLUSTER, nickname = "removeNode")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    code = 401,
+                    message = "Unauthorized"
             )
             // other @ApiResponses
     })

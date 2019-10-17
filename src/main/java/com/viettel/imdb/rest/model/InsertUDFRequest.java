@@ -11,17 +11,18 @@ import lombok.*;
 @ToString
 @ApiModel(value="InsertUDFRequest", description = "  ")
 public class InsertUDFRequest {
-    @ApiModelProperty(value = " udf_name", example = "")
-    private String udf_name;
-    @ApiModelProperty(value = " type", example = "")
+    @ApiModelProperty(value = "fileName", example = "BalanceUpdateTrigger.lua")
+    private String fileName;
+    @ApiModelProperty(value = "type", example ="LUA")
     private UDFType type;
-    @ApiModelProperty(value = " syncedOnAllNodes", example = "")
+    @ApiModelProperty(value = "syncedOnAllNodes", example = "true")
     private boolean syncedOnAllNodes;
-    @ApiModelProperty(value = " content", example = "")
+    @ApiModelProperty(value = "content", example = "")
     private String content;
-    public void setName(String udf_name){
-        this.udf_name = udf_name;
-    }
+
+//    public void setFileName(String udf_name) {
+//        this.fileName = udf_name +"."+type.toString();
+//    }
 
     public void setContent(String content) {
         this.content = content;

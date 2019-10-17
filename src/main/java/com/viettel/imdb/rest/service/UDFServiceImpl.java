@@ -35,11 +35,11 @@ public class UDFServiceImpl implements UDFService{
     public DeferredResult<ResponseEntity<?>> insertUDF(InsertUDFRequest request) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            if(request.getUdf_name().equals(UDFList.get(index).getFileName())) break;
+            if(request.getFileName().equals(UDFList.get(index).getFileName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if(index == UDFList.size()){
-            UDFInfo newUDF = new UDFInfo(request.getUdf_name(), request.getType(),request.isSyncedOnAllNodes(), System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
+            UDFInfo newUDF = new UDFInfo(request.getFileName(), request.getType(),request.isSyncedOnAllNodes(), System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
             UDFList.add(newUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;
@@ -53,11 +53,11 @@ public class UDFServiceImpl implements UDFService{
     public DeferredResult<ResponseEntity<?>> updateUDF(String udf_name, EditUDFRequest request) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            if(udf_name.equals(UDFList.get(index).getFileName())) break;
+            if(udf_name.equals(UDFList.get(index).udf_name())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if (index < UDFList.size()){
-            UDFInfo updateUDF = new UDFInfo(request.getUdf_name(), request.getType(),request.isSyncedOnAllNodes(), UDFList.get(index).getCreateon(),System.currentTimeMillis(), request.getContent());
+            UDFInfo updateUDF = new UDFInfo(request.getFileName(), request.getType(),request.isSyncedOnAllNodes(), UDFList.get(index).getCreateon(),System.currentTimeMillis(), request.getContent());
             UDFList.set(index, updateUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;
@@ -71,7 +71,8 @@ public class UDFServiceImpl implements UDFService{
     public DeferredResult<ResponseEntity<?>> delete(String udfname) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            if(udfname.equals(UDFList.get(index).getFileName())) break;
+            System.out.println("udf_name: "+ UDFList.get(index).udf_name());
+            if(udfname.equals(UDFList.get(index).udf_name())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if (index < UDFList.size()){

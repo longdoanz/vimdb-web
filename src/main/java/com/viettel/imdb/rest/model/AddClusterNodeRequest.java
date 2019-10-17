@@ -26,7 +26,7 @@ public class AddClusterNodeRequest {
     @ToString
     @ApiModel(value = "ClusterNodeSSHInfo", description = "ssh info including ip, username and raw password")
     class ClusterNodeSSHInfo {
-        @ApiModelProperty(value = " Host ip", example = "172.16.28.123")
+        @ApiModelProperty(value = "Host ip", example = "172.16.28.123")
         private String ip;
         @ApiModelProperty(value = "username of the machine", example = "admin")
         private String username;
@@ -44,8 +44,9 @@ public class AddClusterNodeRequest {
     class NewClusterNodeServerInfo {
         @ApiModelProperty(value = "Server host", example = "172.16.28.123:12345")
         private String host;
-
+        @ApiModelProperty(value = "Server Port", example = "10000")
         private int port;
+
         @ApiModelProperty(value = "Path of vIMDB runnable binary", example = "/home/imdb/bin/vimdb")
         private String binaryPath;
         @ApiModelProperty(value = "Configuration file path", example = "/home/imdb/conf/conf.toml")

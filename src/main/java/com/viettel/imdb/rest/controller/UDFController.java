@@ -4,6 +4,8 @@ import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
+import com.viettel.imdb.rest.model.UDFInfo;
+import com.viettel.imdb.rest.model.UDFRespone;
 import com.viettel.imdb.rest.service.UDFService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
@@ -36,6 +38,12 @@ public class UDFController {
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
+                    code = 200,
+                    response = UDFInfo.class,
+                    message = "OK"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
+            @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
@@ -51,6 +59,7 @@ public class UDFController {
     @RequestMapping(method = RequestMethod.POST, value = "/{udf_name}")
     @ApiOperation(value = ADD_UDF, nickname = "addUDF")
     @ResponseStatus(HttpStatus.ACCEPTED)
+
     @ApiResponses(value = {
             @ApiResponse(
                     code = 777,
@@ -64,7 +73,7 @@ public class UDFController {
             @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udf_name,
             @ApiParam(required = true, value = ADD_UDF_NOTES) @RequestBody InsertUDFRequest request
     ) {
-        request.setName(udf_name);
+        request.setFileName(udf_name+"."+request.getType());
         return service.insertUDF(request);
     }
 

@@ -7,25 +7,29 @@ import lombok.*;
  * @author quannh22
  * @since 16/10/2019
  */
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Getter
-//@Setter
-//@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class MetricResponse {
-    @ApiModelProperty(value= "name", example = "metrics list")
+    @ApiModelProperty(value= "name", example = "metric name")
     private String name;
+    @ApiModelProperty(value= "name", example = "metric")
+    private String metric;
     @ApiModelProperty(value= "type", example = "metrics type")
     private String type;
 
-    public MetricResponse() {
+    /*public MetricResponse() {
     }
-
-    public MetricResponse(String name, String type) {
-        this.name = name;
+*/
+    public MetricResponse(String metric, String type) {
+        this.metric = metric;
         this.type = type;
-    }
 
+        this.name = metric.replace("_", " ");
+    }
+/*
     public String getName() {
         return name;
     }
@@ -48,5 +52,5 @@ public class MetricResponse {
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 '}';
-    }
+    }*/
 }

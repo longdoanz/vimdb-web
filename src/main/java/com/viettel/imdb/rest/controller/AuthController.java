@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.service.AuthService;
 import io.swagger.annotations.*;
@@ -33,7 +34,7 @@ public class AuthController {
     // todo password as String @PathVariable or byte[] @RequestBody
     @Autowired private AuthService service;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/login") // todo why not work with "/" only :-?
+    @RequestMapping(method = RequestMethod.POST, value = "/login") // todo why not work with "/" only :-?
     @ApiOperation(value = LOGIN_NOTES, nickname = "login")
     @ResponseStatus(HttpStatus.OK)
     public DeferredResult<ResponseEntity<?>> login(
@@ -42,11 +43,16 @@ public class AuthController {
 //            @RequestParam(value = "username") String username,
 //            @RequestParam(value = "password") String password
 
-            @RequestParam MultiValueMap<String, String> requestParams
+            @ApiParam(value = "user and password body")
+            @RequestBody JsonNode body
     ) {
-        String username= requestParams.getFirst("username");
+        System.out.println(body);
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        returnValue.setResult(new ResponseEntity<>("{\"token\":  \"yIVBD5b73C75osbmwwshQNRC7frWUYrqaTjTpza2y4\"}", HttpStatus.CREATED));
+        return returnValue;
+        /*String username= requestParams.getFirst("username");
         String password = requestParams.getFirst("password");
         Logger.error("login({}, {})", username, password);
-        return service.login(username, password);
+        return service.login(username, password);*/
     }
 }

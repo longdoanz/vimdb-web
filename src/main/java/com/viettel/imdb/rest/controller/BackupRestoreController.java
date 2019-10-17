@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-@Api(tags = "Bacup/Restore related operations", description = "Perform operations related to Bacup/Restore ")
+@Api(tags = "Backup/Restore related operations", description = "Perform operations related to Bacup/Restore ")
 @RestController
 @RequestMapping("/v1/tool")
 public class BackupRestoreController {

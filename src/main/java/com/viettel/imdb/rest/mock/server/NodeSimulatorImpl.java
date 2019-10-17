@@ -58,6 +58,16 @@ public class NodeSimulatorImpl implements NodeSimulator {
         this.port = port;
     }
 
+    @Override
+    public String getAddress() {
+        return host + ":" + port;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{host=" + host + ", port=" + port + "}";
+    }
+
     /*@Override
     public int hashCode() {
     }*/

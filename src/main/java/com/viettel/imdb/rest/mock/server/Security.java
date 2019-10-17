@@ -3,6 +3,7 @@ package com.viettel.imdb.rest.mock.server;
 import com.viettel.imdb.common.Record;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
+import com.viettel.imdb.rest.model.UserInfo;
 import io.trane.future.Future;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public interface Security {
      * @return all users
      */
     Future<List<User>> getAllUsers();
+    Future<List<UserInfo>> getAllUsersInfo();
 
     /**
      * Get all roels of the system
@@ -40,6 +42,8 @@ public interface Security {
      * @return the user data wrapped by {@link Future}
      */
     Future<User> readUser(String username);
+
+    Future<UserInfo> readUserinfo(String username);
 
     /**
      * Create a new user
