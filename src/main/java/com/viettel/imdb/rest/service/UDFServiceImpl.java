@@ -39,7 +39,7 @@ public class UDFServiceImpl implements UDFService{
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if(index == UDFList.size()){
-            UDFInfo newUDF = new UDFInfo(request.getUdf_name(), request.getType(), System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
+            UDFInfo newUDF = new UDFInfo(request.getUdf_name(), request.getType(),request.isSyncedOnAllNodes(), System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
             UDFList.add(newUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;
@@ -57,7 +57,7 @@ public class UDFServiceImpl implements UDFService{
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if (index < UDFList.size()){
-            UDFInfo updateUDF = new UDFInfo(request.getUdf_name(), request.getType(), UDFList.get(index).getCreateon(),System.currentTimeMillis(), request.getContent());
+            UDFInfo updateUDF = new UDFInfo(request.getUdf_name(), request.getType(),request.isSyncedOnAllNodes(), UDFList.get(index).getCreateon(),System.currentTimeMillis(), request.getContent());
             UDFList.set(index, updateUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;

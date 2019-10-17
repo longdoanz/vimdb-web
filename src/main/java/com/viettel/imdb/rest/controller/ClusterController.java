@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.AddClusterNodeRequest;
+import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.RemoveClusterNodeRequest;
 import com.viettel.imdb.rest.service.ClusterService;
 import io.swagger.annotations.*;
@@ -39,10 +40,16 @@ public class ClusterController {
         @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
-                    code = 777,
+                    code = 200,
+                    response = ClusterInfo.class,
+                    message = "Success"
+//                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
+            @ApiResponse(
+                    code = 401,
                     response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    message = "Unauthorized"
+//                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })

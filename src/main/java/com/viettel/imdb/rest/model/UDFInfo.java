@@ -15,6 +15,8 @@ public class UDFInfo {
     private String fileName;
     @ApiModelProperty(value= "UDFType", example = "    ")
     private UDFType type;
+    @ApiModelProperty(value= "synced On All Nodes", example = "    ")
+    private boolean syncedOnAllNodes;
     @ApiModelProperty(value= "createon", example = "    ")
     private long createon;
     @ApiModelProperty(value= "lastupdate", example = "    ")
