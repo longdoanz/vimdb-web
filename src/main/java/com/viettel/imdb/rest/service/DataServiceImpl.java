@@ -1,6 +1,9 @@
 package com.viettel.imdb.rest.service;
 
 
+import com.facebook.presto.sql.parser.SqlParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Field;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult;
@@ -32,6 +36,8 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 class DataServiceImpl implements DataService {
+    SqlParser sqlParser = new SqlParser();
+
     private final IMDBClient client;
     // todo add StatisticClient here
     private final StatisticClient statisticClient;
@@ -288,5 +294,36 @@ class DataServiceImpl implements DataService {
                     return throwableToHttpStatus(throwable);
                 });
         return restResultToDeferredResult(resultFuture);
+    }
+
+    @Override
+    public DeferredResult<ResponseEntity<?>> cmd() {
+        DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        String value = "{\n" +
+                "  \"status\": 0,\n" +
+                "  " +
+                "\"data\": [\n" +
+                "    {\n" +
+                "      \"custId\": 1,\n" +
+                "      \"custs\": [\n" +
+                "        {\n" +
+                "          \"name\": \"Record 01\",\n" +
+                "          \"value\": \"tooooooooooooooooooooooooooo long value\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "      " +
+                "    \"name\": \"Record 02\",\n" +
+                "          \"value\": \"tooooooooooooooooooooooooooo long value\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+//        JsonNode node = mapper.convertValue(, JsonNode.class);
+        res.setResult(new ResponseEntity<>(value, HttpStatus.OK));
+        return res;
     }
 }

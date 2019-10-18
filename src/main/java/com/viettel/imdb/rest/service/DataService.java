@@ -51,4 +51,6 @@ public interface DataService {
     DeferredResult<ResponseEntity<?>> scan(String namespace, String tableName, RestScanModel restScanModel);
 
     DeferredResult<ResponseEntity<?>> delete(String namespace, String tableName, String key, List<String> fieldNameList);
+
+    DeferredResult<ResponseEntity<?>> cmd();
 }

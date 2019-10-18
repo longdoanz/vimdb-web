@@ -55,7 +55,7 @@ public class RestoreRequest {
     @Getter
     @Setter
     @ToString
-    @ApiModel(value = "BackupConfig", description = "BackupConfig")
+    @ApiModel(value = "RestoreConfig", description = "BackupConfig")
     class RestoreConfig {
         @ApiModelProperty(value = " isPartionRange", example = " ")
         private boolean isPartionRange;
@@ -64,7 +64,7 @@ public class RestoreRequest {
         @ApiModelProperty(value = " backupPartionEnd", example = " ")
         private int backupPartionEnd;
         @ApiModelProperty(value = " partionList", example = "1")
-        private List<String> partionList;
+        private List<Integer> partionList;
         @ApiModelProperty(value = " restoreDirectory", example = " ")
         private String restoreDirectory;
     }

@@ -49,7 +49,7 @@ public class SecurityController {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200,
-                    response = User.class,
+                    response = UserInfo.class,
                     responseContainer = "List",
                     message = "Key does not exist"
                     //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
@@ -72,8 +72,8 @@ public class SecurityController {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200,
-                    response = User.class,
-                    message = "Key does not exist"
+                    response = UserInfo.class,
+                    message = "OK"
                     //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             ),
             @ApiResponse(
@@ -94,13 +94,6 @@ public class SecurityController {
     @ApiOperation(value = ADD_USER_NOTES, nickname = "addUser")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
-            @ApiResponse(
-                    code = 200,
-                    response = User.class,
-                    responseContainer = "List",
-                    message = "Key does not exist"
-                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            ),
             @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
@@ -129,7 +122,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> addUser(
+    public DeferredResult<ResponseEntity<?>> editUser(
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest
     ) {
@@ -258,6 +251,13 @@ public class SecurityController {
     @ApiOperation(value = GET_ROLE_NOTES, nickname = "getAuditLogs")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    response = AuditLog.class,
+                    message = "OK",
+                    responseContainer = "List"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
             @ApiResponse(
                     code = 777,
                     response = RestClientError.class,

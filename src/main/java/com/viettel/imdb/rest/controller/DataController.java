@@ -65,6 +65,8 @@ public class DataController {
     private static final String SCAN_MODEL_NOTES = "Scan model contains secondary index name, type, min and max values";
     private static final String DELETE_NOTES = "Delete a key or some fields of a key";
 
+    private final String RUN_CMD_NOTES = "Run SQL command";
+
 
     /**
      * Data Service to mainly serve request from this controller
@@ -491,6 +493,28 @@ public class DataController {
         Logger.error("scan({}, {}, {}", namespace, tableName, restScanModel);
         return service.scan(namespace, tableName, restScanModel);
     }
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json"})
+    @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
+    @ResponseStatus(value = HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 777,
+                    response = RestClientError.class,
+                    message = "Key does not exist",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public DeferredResult<ResponseEntity<?>> runCmd(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body
+    ) {
+//        Logger.info("CMD ({})", body);
+        return service.cmd();
+    }
+
+
 
 
 }
