@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.service;
 
 
-import com.facebook.presto.sql.parser.SqlParser;
+//import com.facebook.presto.sql.parser.SqlParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.ErrorCode;
@@ -36,7 +36,7 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 class DataServiceImpl implements DataService {
-    SqlParser sqlParser = new SqlParser();
+//    SqlParser sqlParser = new SqlParser();
 
     private final IMDBClient client;
     // todo add StatisticClient here
