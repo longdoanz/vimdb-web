@@ -204,6 +204,17 @@ public class ClusterSimulator implements Storage, Security {
         }};
     }
 
+    public NamespaceInformation getTableList(String namespace) {
+        NamespaceInformation namespaceInformation = new NamespaceInformation();
+        namespaceInformation.setName(NS_DEFAULT);
+
+        List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
+        storage.getData().forEach((tableName, tableData) -> {
+            namespaceInformation.addTableInfo(tableName, tableData.data.size());
+        });
+        return namespaceInformation;
+    }
+
     ///==================================================================================
     /// SECURITY - START
     ///==================================================================================

@@ -7,7 +7,6 @@ import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
-import com.viettel.imdb.rest.service.StatisticService;
 import com.viettel.imdb.rest.util.RequestParamHandler;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
@@ -36,6 +35,7 @@ public class DataController {
      ************************************************
      */
     private static final String CREATE_NAMESPACE_NOTES = "Create a namespace with input namespace name";
+    private static final String GET_TABLE_IN_NAMESPACE_NOTES = "Get table list from a namespace";
     private static final String DROP_NAMESPACE_NOTES = "Drop a namespace with input namespace name";
     private static final String UPDATE_NAMESPACE_NOTES = "Update a namespace with inpuinsertt namespace name";
     private static final String CREATE_TABLE_NOTES = "Create a table with input namespace and table name";
@@ -109,6 +109,24 @@ public class DataController {
         String namespace = "";
         Logger.info("Create namespace({})", namespace);
         return service.createNamespace(namespace);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{namespace}")
+    @ApiOperation(value=GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
+    @ResponseStatus(value = HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 666,
+                    response = RestClientError.class,
+                    message = "Failed",
+                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            )
+            // other @ApiResponses
+    })
+    public DeferredResult<ResponseEntity<?>> getTableList(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace
+    ) {
+        return service.getTableListInNamespace(namespace);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
@@ -495,23 +513,14 @@ public class DataController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json","application/xml"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> runCmd(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body
     ) {
 //        Logger.info("CMD ({})", body);
-        return service.cmd();
+        return service.cmd(body);
     }
 
 

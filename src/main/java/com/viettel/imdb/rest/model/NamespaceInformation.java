@@ -22,7 +22,7 @@ public class NamespaceInformation {
 
 
     public void addTableInfo(String name, int recordCount) {
-        tables.add(new TableInformation(name, recordCount));
+        tables.add(new TableInformation(name, 4096000L, recordCount, 2, 2048L));
     }
 
     @NoArgsConstructor
@@ -34,7 +34,13 @@ public class NamespaceInformation {
     public class TableInformation{
         @ApiModelProperty(value= "name", example = "qwer")
         private String name;
-        @ApiModelProperty(value= "record Count", example = "5")
+        @ApiModelProperty(value= "Table Size", example = "3834940")
+        private long size;
+        @ApiModelProperty(value= "record Count", example = "120")
         private int recordCount;
+        @ApiModelProperty(value= "Index Count", example = "2")
+        private int indexCount;
+        @ApiModelProperty(value= "Index Size", example = "2048")
+        private long indexSize;
     }
 }

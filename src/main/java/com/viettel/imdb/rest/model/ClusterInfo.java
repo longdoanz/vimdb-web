@@ -21,7 +21,7 @@ public class ClusterInfo {
     private String version;
     @ApiModelProperty(value= "uptime", example = " ")
     private int uptime;
-    @ApiModelProperty(value= "monitorNodeCount", example = " ")
+    @ApiModelProperty(value= "monitorNodeCount", example = "2")
     private long monitorNodeCount;
     @ApiModelProperty(value= "ClusterDRInfo", example = " ")
     private ClusterDRInfo drInfo;
@@ -39,11 +39,11 @@ public class ClusterInfo {
         private String db;
         @ApiModelProperty(value= "method", example = " ")
         private String method;
-        @ApiModelProperty(value= "totalOps", example = " ")
+        @ApiModelProperty(value= "totalOps", example = "2")
         private long totalOps;
-        @ApiModelProperty(value= "opsRead", example = " ")
+        @ApiModelProperty(value= "opsRead", example = "2")
         private long opsRead;
-        @ApiModelProperty(value= "opsTransferred", example = " ")
+        @ApiModelProperty(value= "opsTransferred", example = "3")
         private long opsTransferred;
 
     }

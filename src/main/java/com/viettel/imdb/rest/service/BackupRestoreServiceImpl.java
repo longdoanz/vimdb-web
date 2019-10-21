@@ -52,12 +52,17 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> backupProcessStatus(String process) {
+    public DeferredResult<?> backupProcessStatus(int processId) {
         //Timer timer = new Timer();
 
-        long processId = Long.parseLong(process);
         StateProcess state = processState.get(processId);
         DeferredResult returnValue = new DeferredResult<>();
+
+        if(state == null) {
+            returnValue.setResult(new ProcessStatus(COMPLETED));
+            return returnValue;
+        }
+
         String status = state.stateStatus;
         if(state.stateStatus.equals("failed")){
             //returnValue.setResult("failed");

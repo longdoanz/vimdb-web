@@ -6,6 +6,7 @@ package com.viettel.imdb.rest;
  */
 
 public enum RestErrorCode {
+    SOMETHING_WENT_WRONG,
     OK,
     DATABASE_NOT_EXIST,
     ONLY_SUPPORT_ONE_FIELD,

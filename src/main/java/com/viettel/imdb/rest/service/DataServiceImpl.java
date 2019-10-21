@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.service;
 
 
-//import com.facebook.presto.sql.parser.SqlParser;
+import com.facebook.presto.sql.parser.SqlParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.ErrorCode;
@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 
 import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult;
@@ -36,7 +36,7 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 class DataServiceImpl implements DataService {
-//    SqlParser sqlParser = new SqlParser();
+    SqlParser sqlParser = new SqlParser();
 
     private final IMDBClient client;
     // todo add StatisticClient here
@@ -68,8 +68,18 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
+    public DeferredResult<ResponseEntity<?>> getTableListInNamespace(String namespace) {
+        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
+            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
+        }
+        DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
+        res.setResult(new ResponseEntity<>(((ClientSimulator)client).getTableList(namespace), HttpStatus.OK));
+        return res;
+    }
+
+    @Override
     public DeferredResult<ResponseEntity<?>> updateNamespace(String namespace, String newname) {
-        Logger.error("Delete Namespace");
+        Logger.info("Delete Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
@@ -78,7 +88,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> dropNamespace(String namespace) {
-        Logger.error("Delete Namespace");
+        Logger.info("Delete Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
@@ -87,7 +97,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> createTable(String namespace, String tableName) {
-        Logger.error("Create table({}, {})", namespace, tableName);
+        Logger.info("Create table({}, {})", namespace, tableName);
         if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
             return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
         }
@@ -297,7 +307,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> cmd() {
+    public DeferredResult<ResponseEntity<?>> cmd(JsonNode req) {
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -322,8 +332,13 @@ class DataServiceImpl implements DataService {
                 "  ]\n" +
                 "}";
 
-//        JsonNode node = mapper.convertValue(, JsonNode.class);
-        res.setResult(new ResponseEntity<>(value, HttpStatus.OK));
+        JsonNode node = null;
+        try {
+            node = mapper.readTree(value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        res.setResult(new ResponseEntity<>(node, HttpStatus.OK));
         return res;
     }
 }

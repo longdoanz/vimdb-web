@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.common.Field;
+import com.viettel.imdb.rest.RestErrorCode;
+import com.viettel.imdb.rest.model.RestClientError;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -65,9 +67,10 @@ public class Utils {
 
     public static final DeferredResult<ResponseEntity<?>> INTERNAL_ERROR(String errorMessage) {
         DeferredResult<ResponseEntity<?>> result = new DeferredResult<>();
-        Map<String, Object> body = new HashMap<>();
-        body.put("error", errorMessage);
-        result.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+
+//        Map<String, Object> body = new HashMap<>();
+//        body.put("error", errorMessage);
+        result.setResult(new ResponseEntity<>(new RestClientError(RestErrorCode.SOMETHING_WENT_WRONG, errorMessage), HttpStatus.INTERNAL_SERVER_ERROR));
 
         return result;
     }

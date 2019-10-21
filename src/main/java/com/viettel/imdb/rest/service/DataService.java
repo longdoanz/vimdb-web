@@ -1,9 +1,9 @@
 package com.viettel.imdb.rest.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
-import com.viettel.imdb.rest.model.NamespaceInformation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -17,6 +17,8 @@ public interface DataService {
     ResponseEntity<?> getDataInfo();
 
     DeferredResult<ResponseEntity<?>> createNamespace(String namespace);
+
+    DeferredResult<ResponseEntity<?>> getTableListInNamespace(String namespace);
 
     DeferredResult<ResponseEntity<?>> dropNamespace(String namespace);
 
@@ -52,5 +54,5 @@ public interface DataService {
 
     DeferredResult<ResponseEntity<?>> delete(String namespace, String tableName, String key, List<String> fieldNameList);
 
-    DeferredResult<ResponseEntity<?>> cmd();
+    DeferredResult<ResponseEntity<?>> cmd(JsonNode req);
 }
