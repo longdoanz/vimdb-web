@@ -78,11 +78,12 @@
             <version>2.9.2</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.viettel.imdb</groupId>
-            <artifactId>imdb-client</artifactId>
-            <version>3.4.1</version>
-        </dependency>-->
+
+        <dependency>
+            <groupId>com.facebook.presto.parser</groupId>
+            <artifactId>presto-parser</artifactId>
+            <version>0.218</version>
+        </dependency>
 
         <dependency>
             <groupId>com.viettel.imdb</groupId>
@@ -97,11 +98,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.facebook.presto.parser</groupId>
-            <artifactId>presto-parser</artifactId>
-            <version>0.218</version>
-        </dependency>-->
     </dependencies>
 
 </project>
