@@ -7,6 +7,8 @@ import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
+import com.viettel.imdb.rest.service.AuthService;
+import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.util.SimulatorMonitorStatisticClient;
 import com.viettel.imdb.rest.util.StatisticClient;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
@@ -15,18 +17,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.xml.ws.EndpointReference;
 import java.time.Duration;
@@ -48,12 +54,36 @@ public class Config extends WebSecurityConfigurerAdapter {
     @Value("${password}")
     private String password;
 
-    private ClusterSimulator cluster = new ClusterSimulator();;
+    private ClusterSimulator cluster = new ClusterSimulator();
+
+
+
+    @Bean
+    public JwtRequestFilter jwtRequestFilter() {
+        return new JwtRequestFilter();
+    }
+    //@Autowired JwtRequestFilter jwtRequestFilter;
+
+
+    @Autowired AuthServiceImpl authService;
+
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        // Get AuthenticationManager bean
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CustomAuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider() {
+        };
+    }
 
 //    @Autowired
 //    private AuthenticationProvider authenticationProvider;
 //
-//    private AuthenticationEntryPoint authenticationEntryPoint = new RestAuthenticationEntryPoint();
+    private AuthenticationEntryPoint authenticationEntryPoint = new RestAuthenticationEntryPoint();
 //    private AuthenticationSuccessHandler successHandler = new MySavedRequestAwareAuthenticationSuccessHandler();
 //    private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
 
@@ -64,6 +94,10 @@ public class Config extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("user").password(encoder().encode("userPass")).roles("USER");*/
 //        auth.authenticationProvider(authenticationProvider);
+        auth.userDetailsService(authService); // Cung cáp userservice cho spring security
+        //.passwordEncoder(passwordEncoder()); // cung cấp password encoder
+
+        auth.authenticationProvider(customAuthenticationProvider());
     }
 
     private static final String[] AUTH_WHITELIST = {
@@ -72,7 +106,9 @@ public class Config extends WebSecurityConfigurerAdapter {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
-            "/webjars/**"
+            "/webjars/**",
+            "/v1/auth/login",
+            "/authenticate"
     };
 
     @Override
@@ -80,11 +116,18 @@ public class Config extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()/// todo need to disable this to edit data (PUT/POST/DELETE)
                 .authorizeRequests()
-                .anyRequest()
-                .permitAll();
+                .antMatchers(AUTH_WHITELIST)
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                .anyRequest()
+//                .permitAll();
 
 
-        http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
+        //http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
+        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 //        http.csrf().disable()
 //                .exceptionHandling()
 //                .authenticationEntryPoint(authenticationEntryPoint)
@@ -99,6 +142,7 @@ public class Config extends WebSecurityConfigurerAdapter {
 //                .failureHandler(failureHandler)
 //                .and()
 //                .logout();
+
     }
 
     private static List<NodeSimulator> nodes;

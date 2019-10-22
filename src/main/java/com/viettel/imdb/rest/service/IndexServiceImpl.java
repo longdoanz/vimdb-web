@@ -39,7 +39,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public Future<Result> createIndex(TableModel tableModel, IndexModel indexModel) {
+    public Future<Result> createIndex(IMDBClient imdbClient, TableModel tableModel, IndexModel indexModel) {
         Promise<Result> future = Promise.apply();
 
         imdbClient.createIndex(tableModel.getTableName(), indexModel.getName(), indexModel.getType()).onSuccess(aVoid -> {
@@ -51,7 +51,7 @@ public class IndexServiceImpl implements IndexService {
     }
 
     @Override
-    public Future<Result> dropIndex(TableModel tableModel, String fieldName) {
+    public Future<Result> dropIndex(IMDBClient imdbClient, TableModel tableModel, String fieldName) {
         Promise<Result> future = Promise.apply();
         Result res = new Result();
 

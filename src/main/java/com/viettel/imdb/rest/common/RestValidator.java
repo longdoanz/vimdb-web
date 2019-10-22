@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest.common;
 
 import com.viettel.imdb.ErrorCode;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import org.pmw.tinylog.Logger;
 
 /**
@@ -8,10 +9,10 @@ import org.pmw.tinylog.Logger;
  * @since 26/08/2019
  */
 public class RestValidator {
-    public static ErrorCode validateNamespace(String namespace) {
-        if(namespace.equals("namespace"))
-            return ErrorCode.NO_ERROR;
-        Logger.error("namespace must be \"namespace\" by now");
-        return ErrorCode.INTERNAL_ERROR;
+    public static void validateNamespace(String namespace) {
+        if(!namespace.equals("namespace")) {
+            Logger.error("namespace must be \"namespace\" by now");
+            throw new ExceptionType.VIMDBRestClientError("namespace must be \"namespace\" by now");
+        }
     }
 }

@@ -9,4 +9,6 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 public interface AuthService {
     DeferredResult<ResponseEntity<?>> login(String username, String password);
+    DeferredResult<ResponseEntity<?>> createAuthenticationToken(String username, String password);
+    public String getUsernameFromeToken(String token);
 }

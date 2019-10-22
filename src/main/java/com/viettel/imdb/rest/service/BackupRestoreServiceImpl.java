@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.validation.OverridesAttribute;
 import java.util.*;
 
 @Service
@@ -31,7 +30,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
             this.timeProcess = timeProcess;
         }
     }
-    Map<Long, StateProcess> processState = new HashMap<Long, StateProcess>();
+    Map<Long, StateProcess> processState = new HashMap<>();
     @Override
     public DeferredResult<ResponseEntity<?>> backup(BackupRequest request) {
         System.out.println("akejfbkajwebfk");
@@ -39,7 +38,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
         long backupProcessid = random.nextLong();
         if (backupProcessid < 0) backupProcessid = -backupProcessid;
 
-        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(60000)+20000);
+        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(50000)+20000);
         processState.put(backupProcessid, stateProcess);
         //String callback = "/v1/tool/backup?process="+backupProcessid;
         String callback = String.valueOf(backupProcessid);
@@ -94,7 +93,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
         Random random = new Random();
         long restoreProcessid = random.nextLong();
         if(restoreProcessid < 0) restoreProcessid = -restoreProcessid;
-        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(10000)+1000, random.nextInt(10000));
+        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(50000)+20000);
         processState.put(restoreProcessid, stateProcess);
         //String callback = "/v1/tool/restore?process="+restoreProcessid;
         String callback = String.valueOf(restoreProcessid);

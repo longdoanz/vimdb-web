@@ -1,7 +1,6 @@
 package com.viettel.imdb.rest.service;
 
 
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
@@ -39,7 +38,7 @@ public class SecurityServiceImpl implements SecurityService {
     //==========================================================
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getUsers() {
+    public DeferredResult<ResponseEntity<?>> getUsers(IMDBClient client) {
         // todo fake here
         Logger.error("getUsers()");
         Future<List<UserInfo>> getFuture = ((ClientSimulator)client).getUsersInfo();
@@ -50,7 +49,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getUser(String username) {
+    public DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username) {
         Logger.error("getUser({})", username);
         Future<UserInfo> getUserFuture = ((ClientSimulator)client).readUserInfo(username);;
         Future<Result> resultFuture = getUserFuture
@@ -60,7 +59,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> addUser(AddUserRequest addUserRequest) {
+    public DeferredResult<ResponseEntity<?>> addUser(IMDBClient client, AddUserRequest addUserRequest) {
         Logger.error("addUser({})", addUserRequest);
         Future<Void> addFuture = client.createUser(addUserRequest.getUserName(), addUserRequest.getPassword().getBytes(), addUserRequest.getRoles());
         Future<Result> resultFuture = addFuture
@@ -70,7 +69,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> editUser(EditUserRequest editUserRequest) {
+    public DeferredResult<ResponseEntity<?>> editUser(IMDBClient client, EditUserRequest editUserRequest) {
         Logger.error("editUser({})", editUserRequest);
         Future<Void> updateFuture = client.updateUser(editUserRequest.getUserName(), editUserRequest.getRoles()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
@@ -80,7 +79,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> deleteUser(String username) {
+    public DeferredResult<ResponseEntity<?>> deleteUser(IMDBClient client, String username) {
         Logger.error("deleteUser({})", username);
         Future<Void> deleteFuture = client.deleteUser(username);
         Future<Result> resultFuture = deleteFuture
@@ -90,7 +89,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getRoles() {
+    public DeferredResult<ResponseEntity<?>> getRoles(IMDBClient client) {
         // todo fake here
         Logger.error("getRoles()");
 
@@ -102,7 +101,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getRole(String roleName) {
+    public DeferredResult<ResponseEntity<?>> getRole(IMDBClient client, String roleName) {
         Logger.error("getRole({})", roleName);
         Future<Role> getRoleFuture = client.readRole(roleName);
         Future<Result> resultFuture = getRoleFuture
@@ -112,7 +111,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> addRole(AddRoleRequest addRoleRequest) {
+    public DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, AddRoleRequest addRoleRequest) {
         Logger.error("addRoleRequest({})", addRoleRequest);
         Future<Void> addFuture = client.createRole(addRoleRequest.getRoleName(), addRoleRequest.getPrivileges());
         Future<Result> resultFuture = addFuture
@@ -122,7 +121,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> editRole(EditRoleRequest editRoleRequest) {
+    public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client, EditRoleRequest editRoleRequest) {
         Logger.error("editRole({})", editRoleRequest);
         Future<Void> updateFuture = client.updateRole(editRoleRequest.getRoleName(), editRoleRequest.getPrivileges()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
@@ -132,7 +131,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> deleteRole(String roleName) {
+    public DeferredResult<ResponseEntity<?>> deleteRole(IMDBClient client, String roleName) {
         Logger.error("deleteRole({})", roleName);
         Future<Void> deleteFuture = client.deleteRole(roleName);
         Future<Result> resultFuture = deleteFuture
@@ -142,7 +141,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getAuditLogs() {
+    public DeferredResult<ResponseEntity<?>> getAuditLogs(IMDBClient client) {
         // todo fake here
         Logger.error("getAuditLogs()");
 

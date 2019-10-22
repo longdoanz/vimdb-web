@@ -6,13 +6,12 @@ import com.viettel.imdb.rest.model.RestoreRequest;
 import com.viettel.imdb.rest.service.BackupRestoreService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-@Api(tags = "Backup/Restore related operations", description = "Perform operations related to Bacup/Restore ")
+@Api(tags = "Backup/Restore related operations")
 @RestController
 @RequestMapping("/v1/tool")
 public class BackupRestoreController {
@@ -25,8 +24,11 @@ public class BackupRestoreController {
     private static final String RESTORE_DATA_REQUEST_NOTES = "   ";
     private static final String PROCESS_NOTES = " ";
 
-    @Autowired
-    private BackupRestoreService service;
+    private final BackupRestoreService service;
+
+    public BackupRestoreController(BackupRestoreService service) {
+        this.service = service;
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/backup")
     @ApiOperation(value = BACKUP_DATA_NOTES, nickname = "backup")

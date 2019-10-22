@@ -1,6 +1,6 @@
 //package com.viettel.imdb.rest.controller;
 //
-//import com.viettel.imdb.rest.RestErrorCode;
+//import com.viettel.imdb.rest.exception.RestErrorCode;
 //import com.viettel.imdb.rest.common.ResponseHandler;
 //import com.viettel.imdb.rest.model.IndexModel;
 //import com.viettel.imdb.rest.model.PrivilegeType;

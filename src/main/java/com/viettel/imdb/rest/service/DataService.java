@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.service;
 
+import com.viettel.imdb.IMDBClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestIndexModel;
@@ -13,46 +14,47 @@ import java.util.List;
  * @author quannh22
  * @since 08/08/2019
  */
+
 public interface DataService {
-    ResponseEntity<?> getDataInfo();
+    ResponseEntity<?> getDataInfo(IMDBClient client);
 
-    DeferredResult<ResponseEntity<?>> createNamespace(String namespace);
+    DeferredResult<ResponseEntity<?>> createNamespace(IMDBClient client, String namespace);
 
-    DeferredResult<ResponseEntity<?>> getTableListInNamespace(String namespace);
+    DeferredResult<ResponseEntity<?>> getTableListInNamespace(IMDBClient client, String namespace);
 
-    DeferredResult<ResponseEntity<?>> dropNamespace(String namespace);
+    DeferredResult<ResponseEntity<?>> dropNamespace(IMDBClient client, String namespace);
 
-    DeferredResult<ResponseEntity<?>> updateNamespace(String namespace, String newname);
+    DeferredResult<ResponseEntity<?>> updateNamespace(IMDBClient client, String namespace, String newname);
 
-    DeferredResult<ResponseEntity<?>> createTable(String namespace, String tableName);
+    DeferredResult<ResponseEntity<?>> createTable(IMDBClient client, String namespace, String tableName);
 
-    DeferredResult<ResponseEntity<?>> dropTable(String namespace, String tableName);
+    DeferredResult<ResponseEntity<?>> dropTable(IMDBClient client, String namespace, String tableName);
 
-    DeferredResult<ResponseEntity<?>> createIndex(RestIndexModel indexModel);
+    DeferredResult<ResponseEntity<?>> createIndex(IMDBClient client, RestIndexModel indexModel);
 
-    DeferredResult<ResponseEntity<?>> dropIndex(String namespace, String tableName, String indexName);
+    DeferredResult<ResponseEntity<?>> dropIndex(IMDBClient client, String namespace, String tableName, String indexName);
 
-    DeferredResult<ResponseEntity<?>> select(String namespace, String tableName, String key, List<String> fieldNameList);
+    DeferredResult<ResponseEntity<?>> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList);
 
-    DeferredResult<ResponseEntity<?>> insert(String namespace, String tableName, String key, List<Field> fieldList);
+    DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList);
 
-    DeferredResult<ResponseEntity<?>> insert(String namespace, String tableName, String key, String json);
+    DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, String json);
 
-    DeferredResult<ResponseEntity<?>> update(String namespace, String tableName, String key, List<Field> fieldList);
+    DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList);
 
-    DeferredResult<ResponseEntity<?>> update(String namespace, String tableName, String key, String json);
+    DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, String json);
 
-    DeferredResult<ResponseEntity<?>> upsert(String namespace, String tableName, String key, List<Field> fieldList);
+    DeferredResult<ResponseEntity<?>> upsert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList);
 
-    DeferredResult<ResponseEntity<?>> upsert(String namespace, String tableName, String key, String json);
+    DeferredResult<ResponseEntity<?>> upsert(IMDBClient client, String namespace, String tableName, String key, String json);
 
-    DeferredResult<ResponseEntity<?>> replace(String namespace, String tableName, String key, List<Field> fieldList);
+    DeferredResult<ResponseEntity<?>> replace(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList);
 
-    DeferredResult<ResponseEntity<?>> replace(String namespace, String tableName, String key, String json);
+    DeferredResult<ResponseEntity<?>> replace(IMDBClient client, String namespace, String tableName, String key, String json);
 
-    DeferredResult<ResponseEntity<?>> scan(String namespace, String tableName, RestScanModel restScanModel);
+    DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, RestScanModel restScanModel);
 
-    DeferredResult<ResponseEntity<?>> delete(String namespace, String tableName, String key, List<String> fieldNameList);
+    DeferredResult<ResponseEntity<?>> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList);
 
-    DeferredResult<ResponseEntity<?>> cmd(JsonNode req);
+    DeferredResult<ResponseEntity<?>> cmd(IMDBClient client, JsonNode req);
 }

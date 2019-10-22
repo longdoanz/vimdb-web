@@ -57,14 +57,14 @@ public class RestoreRequest {
     @ToString
     @ApiModel(value = "RestoreConfig", description = "BackupConfig")
     class RestoreConfig {
-        @ApiModelProperty(value = " isPartionRange", example = " ")
-        private boolean isPartionRange;
-        @ApiModelProperty(value = " partionRangeStart", example = " ")
-        private int partionRangeStart;
-        @ApiModelProperty(value = " backupPartionEnd", example = " ")
-        private int backupPartionEnd;
+        @ApiModelProperty(value = " isPartionRange", example = "true")
+        private boolean isPartitionRange;
+        @ApiModelProperty(value = " partionRangeStart", example = "0")
+        private int partitionRangeStart;
+        @ApiModelProperty(value = " backupPartionEnd", example = "4096")
+        private int backupPartitionEnd;
         @ApiModelProperty(value = " partionList", example = "1")
-        private List<Integer> partionList;
+        private List<Integer> partitionList;
         @ApiModelProperty(value = " restoreDirectory", example = " ")
         private String restoreDirectory;
     }

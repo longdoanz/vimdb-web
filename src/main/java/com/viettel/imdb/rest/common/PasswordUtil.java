@@ -1,6 +1,6 @@
 package com.viettel.imdb.rest.common;
 
-import com.viettel.imdb.rest.RestErrorCode;
+import com.viettel.imdb.rest.exception.RestErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

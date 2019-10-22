@@ -1,7 +1,7 @@
 //package com.viettel.imdb.rest.controller;
 //
 //import com.fasterxml.jackson.databind.JsonNode;
-//import com.viettel.imdb.rest.RestErrorCode;
+//import com.viettel.imdb.rest.exception.RestErrorCode;
 //import com.viettel.imdb.rest.common.ResponseHandler;
 //import com.viettel.imdb.rest.model.FilterModel;
 //import com.viettel.imdb.rest.model.PrivilegeType;

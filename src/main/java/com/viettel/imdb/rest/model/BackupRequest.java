@@ -75,14 +75,14 @@ public class BackupRequest {
     @ApiModel(value = "BackupConfig", description = "BackupConfig")
     class BackupConfig {
 
-        @ApiModelProperty(value = " isPartionRange", example = " ")
-        private boolean isPartionRange;
-        @ApiModelProperty(value = " partionRangeStart", example = " ")
-        private int partionRangeStart;
-        @ApiModelProperty(value = " backupPartionEnd", example = " ")
-        private int backupPartionEnd;
-        @ApiModelProperty(value = " partionList", example = "1")
-        private List<Integer> partionList;
+        @ApiModelProperty(value = " isPartitionRange", example = "true")
+        private boolean isPartitionRange;
+        @ApiModelProperty(value = " partitionRangeStart", example = "0")
+        private int partitionRangeStart;
+        @ApiModelProperty(value = " backupPartitionEnd", example = "4096")
+        private int backupPartitionEnd;
+        @ApiModelProperty(value = " partitionList", example = "1")
+        private List<Integer> partitionList;
         @ApiModelProperty(value = " backupDirectory", example = " ")
         private String backupDirectory;
 

@@ -196,9 +196,7 @@ public class ClusterSimulator implements Storage, Security {
         namespaceInformation.setName(NS_DEFAULT);
 
         List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
-        storage.getData().forEach((tableName, tableData) -> {
-            namespaceInformation.addTableInfo(tableName, tableData.data.size());
-        });
+        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.data.size()));
         return new ArrayList<NamespaceInformation>() {{
             add(namespaceInformation);
         }};
@@ -209,9 +207,7 @@ public class ClusterSimulator implements Storage, Security {
         namespaceInformation.setName(NS_DEFAULT);
 
         List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
-        storage.getData().forEach((tableName, tableData) -> {
-            namespaceInformation.addTableInfo(tableName, tableData.data.size());
-        });
+        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.data.size()));
         return namespaceInformation;
     }
 

@@ -4,6 +4,7 @@ import com.viettel.imdb.core.security.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Setter
 @ToString
 @ApiModel(value="UserInfo", description = "User info")
-public class UserInfo {
+public class UserInfo{
     @ApiModelProperty(value= "username", example = "admin")
     private String username;
     @ApiModelProperty(value= "authenticationMethod", example = "admin")

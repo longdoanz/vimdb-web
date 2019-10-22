@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.domain;
 
 import com.viettel.imdb.common.ClientException;
-import com.viettel.imdb.rest.util.RestClientErrors;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -35,7 +35,7 @@ public class RestClientError {
         this.internalErrorCode = ex.getErrorCode().get();
     }
 
-    public RestClientError(RestClientErrors.VIMDBRestClientError ex) {
+    public RestClientError(ExceptionType.VIMDBRestClientError ex) {
         this.message = ex.getMessage();
         this.inDoubt = false;
         this.internalErrorCode = null;

@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-@ApiModel(value="AddClusterNodeRequest", description = "Request to add a node to the current managed cluster")
+@ApiModel(value="AuthenRequest", description = "")
 public class AuthenRequest {
     @ApiModelProperty(value= "username", example = "admin")
     private String username;

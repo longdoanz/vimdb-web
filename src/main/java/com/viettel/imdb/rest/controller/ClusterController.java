@@ -6,15 +6,12 @@ import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.RemoveClusterNodeRequest;
 import com.viettel.imdb.rest.service.ClusterService;
 import io.swagger.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author quannh22
@@ -33,7 +30,11 @@ public class ClusterController {
     /**
      * Cluster Service to mainly serve request from this controller
      */
-    @Autowired private ClusterService service;
+    private final ClusterService service;
+
+    public ClusterController(ClusterService service) {
+        this.service = service;
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/info")
     @ApiOperation(value = GET_CLUSTER_INFO_NOTES, nickname = "getClusterInfo")
@@ -55,7 +56,7 @@ public class ClusterController {
     })
     public DeferredResult<ResponseEntity<?>> getClusterInfo(
         //@ApiParam(required = false, value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
-        @ApiParam(required = false, value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
+        @ApiParam(value = NODE_LIST_NOTES) @RequestParam(value = "nodes", required=false) List<String> nodes
     ) {
         //List<String> nodes = new ArrayList<String>();
         return service.getClusterInfo(nodes);

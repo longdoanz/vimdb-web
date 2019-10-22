@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.domain.RestClientError;
+import com.viettel.imdb.rest.model.AuthenRequest;
 import com.viettel.imdb.rest.service.AuthService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
@@ -25,6 +25,7 @@ public class AuthController {
     private static final String USERNAME_NOTES = "Input username";
     private static final String PASSWORD_NOTES = "Input password";
     private static final String USERNAME_AND_PASSWORD_NOTES = "Input username and password";
+    private static final String AUTHEN_REQUEST_NOTES = "Username and password request";
     /**
      ************************************************
      *             CONSTANTS COME HERE              *
@@ -43,16 +44,27 @@ public class AuthController {
 //            @RequestParam(value = "username") String username,
 //            @RequestParam(value = "password") String password
 
-            @ApiParam(value = "user and password body")
-            @RequestBody JsonNode body
+            //@RequestParam MultiValueMap<String, String> requestParams
+            @ApiParam(required = true, value = AUTHEN_REQUEST_NOTES) @RequestBody AuthenRequest request
     ) {
-        System.out.println(body);
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        returnValue.setResult(new ResponseEntity<>("{\"token\":  \"yIVBD5b73C75osbmwwshQNRC7frWUYrqaTjTpza2y4\"}", HttpStatus.CREATED));
-        return returnValue;
-        /*String username= requestParams.getFirst("username");
-        String password = requestParams.getFirst("password");
+        String username= request.getUsername();
+        String password = request.getPassword();
         Logger.error("login({}, {})", username, password);
-        return service.login(username, password);*/
+
+        return service.login(username, password);
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/authenticate") // todo why not work with "/" only :-?
+    @ApiOperation(value = LOGIN_NOTES, nickname = "authenticate")
+    @ResponseStatus(HttpStatus.OK)
+    public DeferredResult<ResponseEntity<?>> createAuthenticationToken(
+            @ApiParam(required = true, value = AUTHEN_REQUEST_NOTES) @RequestBody AuthenRequest request
+    ){
+
+        String username= request.getUsername();
+        String password = request.getPassword();
+        Logger.error("login authen({}, {})", username, password);
+        return service.createAuthenticationToken(username, password);
     }
 }

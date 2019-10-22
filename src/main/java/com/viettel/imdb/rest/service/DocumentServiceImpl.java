@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.common.Filter;
-import com.viettel.imdb.rest.RestErrorCode;
+import com.viettel.imdb.rest.exception.RestErrorCode;
 import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.model.FilterModel;
@@ -56,7 +56,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public Future<Result> scan(String db, String tableName, FilterModel filter, String fields) {
+    public Future<Result> scan(IMDBClient imdbClient, String db, String tableName, FilterModel filter, String fields) {
         Promise<Result> future = Promise.apply();
 
 
@@ -75,7 +75,7 @@ public class DocumentServiceImpl implements DocumentService {
         return future;
     }
 
-    public Future<Result> select(String db, String tableName, String key, String fields) {
+    public Future<Result> select(IMDBClient imdbClient, String db, String tableName, String key, String fields) {
         Promise<Result> future = Promise.apply();
 
         List<String> fieldNameList = null;
@@ -95,7 +95,7 @@ public class DocumentServiceImpl implements DocumentService {
         return future;
     }
 
-    public Future<Result> insert(String db, String tableName, JsonNode jsonNode) {
+    public Future<Result> insert(IMDBClient imdbClient, String db, String tableName, JsonNode jsonNode) {
 
         Promise<Result> future = Promise.apply();
 
@@ -129,7 +129,7 @@ public class DocumentServiceImpl implements DocumentService {
         return future;
     }
 
-    public Future<Result> update(String db, String tableName, String key, JsonNode jsonNode) {
+    public Future<Result> update(IMDBClient imdbClient, String db, String tableName, String key, JsonNode jsonNode) {
 
         Promise<Result> future = Promise.apply();
         Result result = new Result();
@@ -145,7 +145,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
 
-    public Future<Result> delete(String db, String tableName, String key) {
+    public Future<Result> delete(IMDBClient imdbClient, String db, String tableName, String key) {
 
         Promise<Result> future = Promise.apply();
         Result result = new Result();
