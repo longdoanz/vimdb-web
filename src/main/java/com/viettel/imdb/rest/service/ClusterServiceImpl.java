@@ -1,13 +1,13 @@
 package com.viettel.imdb.rest.service;
 
 
+import com.viettel.imdb.rest.exception.RestClientError;
 import com.viettel.imdb.rest.exception.RestErrorCode;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
 import com.viettel.imdb.rest.model.AddClusterNodeRequest;
 import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.RemoveClusterNodeRequest;
-import com.viettel.imdb.rest.exception.RestClientError;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

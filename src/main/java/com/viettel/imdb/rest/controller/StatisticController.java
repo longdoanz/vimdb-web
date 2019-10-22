@@ -1,7 +1,6 @@
 package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.rest.domain.RestClientError;
-import com.viettel.imdb.rest.model.StatisticFilter;
 import com.viettel.imdb.rest.service.StatisticService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;

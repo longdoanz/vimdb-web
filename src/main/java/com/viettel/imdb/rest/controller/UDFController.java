@@ -1,11 +1,9 @@
 package com.viettel.imdb.rest.controller;
 
-import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
-import com.viettel.imdb.rest.model.UDFRespone;
 import com.viettel.imdb.rest.service.UDFService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;

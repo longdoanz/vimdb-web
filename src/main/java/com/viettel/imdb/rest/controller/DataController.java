@@ -1,19 +1,16 @@
 package com.viettel.imdb.rest.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
-import com.viettel.imdb.rest.service.StatisticService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
 import com.viettel.imdb.rest.util.RequestParamHandler;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -88,7 +85,7 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
     @ApiOperation(value=SCAN_NAMESPACE_NOTES, nickname = "scan")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 777,

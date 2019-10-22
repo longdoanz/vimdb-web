@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.common;
 
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.rest.exception.ExceptionType;
 import org.pmw.tinylog.Logger;
 

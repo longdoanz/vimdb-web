@@ -1,13 +1,10 @@
 package com.viettel.imdb.rest.config;
 
 import com.viettel.imdb.IMDBClient;
-import com.viettel.imdb.JavaClient;
-import com.viettel.imdb.common.ClientConfig;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
-import com.viettel.imdb.rest.service.AuthService;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.util.SimulatorMonitorStatisticClient;
 import com.viettel.imdb.rest.util.StatisticClient;
@@ -16,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -29,13 +24,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.xml.ws.EndpointReference;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -54,7 +44,7 @@ public class Config extends WebSecurityConfigurerAdapter {
     @Value("${password}")
     private String password;
 
-    private ClusterSimulator cluster = new ClusterSimulator();
+    public ClusterSimulator cluster = new ClusterSimulator();
 
 
 

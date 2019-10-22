@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.common.Field;
-import com.viettel.imdb.rest.exception.RestErrorCode;
-import com.viettel.imdb.rest.exception.RestClientError;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import io.trane.future.Future;
 import org.springframework.http.HttpStatus;
@@ -61,16 +59,6 @@ public class Utils {
 
     public static String convertToIndexField(String fieldName) {
         return fieldName.startsWith("$.") ? fieldName : "$." + fieldName;
-    }
-
-    public static DeferredResult<ResponseEntity<?>> INTERNAL_ERROR(String errorMessage) {
-        DeferredResult<ResponseEntity<?>> result = new DeferredResult<>();
-
-//        Map<String, Object> body = new HashMap<>();
-//        body.put("error", errorMessage);
-        result.setResult(new ResponseEntity<>(new RestClientError(RestErrorCode.SOMETHING_WENT_WRONG, errorMessage), HttpStatus.INTERNAL_SERVER_ERROR));
-
-        return result;
     }
 
 

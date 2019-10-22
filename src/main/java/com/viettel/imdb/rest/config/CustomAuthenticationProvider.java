@@ -1,27 +1,15 @@
 package com.viettel.imdb.rest.config;
 
-import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.model.CustomUserDetails;
-import com.viettel.imdb.rest.model.Privilege;
-import com.viettel.imdb.rest.model.PrivilegeType;
-import com.viettel.imdb.rest.model.User;
-import com.viettel.imdb.rest.service.AuthService;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.service.UserService;
-import io.trane.future.CheckedFutureException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {

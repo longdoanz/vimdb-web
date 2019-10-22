@@ -2,16 +2,15 @@ package com.viettel.imdb.rest.service;
 
 
 //import com.facebook.presto.sql.parser.SqlParser;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.common.Record;
 import com.viettel.imdb.common.ValueType;
 import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.exception.ExceptionType;

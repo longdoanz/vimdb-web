@@ -2,12 +2,7 @@ package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
-import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.common.Utils;
-import com.viettel.imdb.rest.model.MetricResponse;
-import com.viettel.imdb.rest.model.StatisticFilter;
-import com.viettel.imdb.rest.model.StatisticResponse;
 import com.viettel.imdb.rest.util.StatisticClient;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;

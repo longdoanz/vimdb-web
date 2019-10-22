@@ -43,6 +43,9 @@ public class TokenManager {
     }
 
     public boolean validateToken(String token){
+        if(token == null || token.isEmpty()) {
+            return false;
+        }
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
@@ -55,7 +58,7 @@ public class TokenManager {
         } catch (UnsupportedJwtException ex) {
             Logger.error("Unsupported JWT token");
             SecurityContextHolder.clearContext();
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
             Logger.error("JWT claims string is empty.");
             SecurityContextHolder.clearContext();
         }

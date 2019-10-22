@@ -1,17 +1,16 @@
 package com.viettel.imdb.rest.controller;
 
-import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.AuthenRequest;
 import com.viettel.imdb.rest.service.AuthService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author quannh22
