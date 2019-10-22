@@ -101,7 +101,7 @@ public class DataController {
     public ResponseEntity<?> getDataInfo(
             @RequestHeader("Authorization") String token
     ) {
-        Logger.info("Get data info token {}", token);
+        Logger.error("Get data info token {}", token);
 
         return service.getDataInfo(IMDBClientToken.getClient(token));
     }
@@ -122,7 +122,7 @@ public class DataController {
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace
     ) {
-        Logger.info("Create namespace({})", namespace);
+        Logger.error("Create namespace({})", namespace);
         return service.createNamespace(IMDBClientToken.getClient(token),namespace);
     }
 
@@ -159,7 +159,7 @@ public class DataController {
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace
     ) {
-        Logger.info("Drop namespace({}, {})", namespace);
+        Logger.error("Drop namespace({}, {})", namespace);
         return service.dropNamespace(IMDBClientToken.getClient(token),namespace);
     }
 
@@ -181,7 +181,7 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.info("update(old name{}  new name )", namespace, newname);
+        Logger.error("update(old name{}  new name )", namespace, newname);
         return service.updateNamespace(IMDBClientToken.getClient(token), namespace, newname);
     }
 
@@ -203,7 +203,7 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @RequestBody TableModel tableName
     ) {
-        Logger.info("Create table({}, {})", namespace, tableName);
+        Logger.error("Create table({}, {})", namespace, tableName);
         return service.createTable(IMDBClientToken.getClient(token),namespace, tableName.getTableName());
     }
 
@@ -222,9 +222,9 @@ public class DataController {
     public DeferredResult<ResponseEntity<?>> dropTable(
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
-            @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName) {
-
-        Logger.info("Drop table({}, {})", namespace, tableName);
+            @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName
+    ) {
+        Logger.error("Drop table({}, {})", namespace, tableName);
         return service.dropTable(IMDBClientToken.getClient(token),namespace, tableName);
     }
 
@@ -244,9 +244,10 @@ public class DataController {
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
-            @ApiParam(required = true, value = INDEX_MODEL_NOTES) @RequestBody RestIndexModel indexModel) {
+            @ApiParam(required = true, value = INDEX_MODEL_NOTES) @RequestBody RestIndexModel indexModel
 
-        Logger.info("Create Index({}, {}, {})", namespace, tableName, indexModel);
+    ) {
+        Logger.error("Create Index({}, {}, {})", namespace, tableName, indexModel);
         indexModel.setNamespace(namespace);
         indexModel.setTable(tableName);
         return service.createIndex(IMDBClientToken.getClient(token),indexModel);
@@ -297,10 +298,10 @@ public class DataController {
         @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
         @ApiParam(required = true, value = TABLE_NOTES) @PathVariable(value = "tablename") String tableName,
         @ApiParam(required = true, value = KEY_NOTES) @PathVariable(value = "key") String key,
-        @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams) {
-        
+        @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams
+    ) {
         List<String> fieldNameList = RequestParamHandler.getFieldNameListFromMap(requestParams);
-        Logger.info("Select({}, {}, {})", tableName, key, fieldNameList);
+        Logger.error("Select({}, {}, {})", tableName, key, fieldNameList);
         return service.select(IMDBClientToken.getClient(token),namespace, tableName, key, fieldNameList);
     }
 
@@ -321,10 +322,11 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
-            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode) {
-        
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode/*,
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody List<Field> fieldList*/
+    ) {
         System.out.println(jsonNode);
-        Logger.info("insert({}, {}, {}, {})", namespace, tableName, key);
+        Logger.error("insert({}, {}, {}, {})", namespace, tableName, key);
         return service.insert(IMDBClientToken.getClient(token),namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
 
@@ -370,9 +372,9 @@ public class DataController {
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
             @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
-
-        Logger.info("update({}, {}, {}, {})", namespace, tableName, key);
+            @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
+    ) {
+        Logger.error("update({}, {}, {}, {})", namespace, tableName, key);
         return service.update(IMDBClientToken.getClient(token),namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
     /*
@@ -509,7 +511,7 @@ public class DataController {
             @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams
     ) {
         List<String> fieldNameList = RequestParamHandler.getFieldNameListFromMap(requestParams);
-        Logger.info("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
+        Logger.error("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
         return service.delete(IMDBClientToken.getClient(token),namespace, tableName, key, fieldNameList);
     }
 
@@ -534,7 +536,7 @@ public class DataController {
     ) {
         restScanModel.setNamespace(namespace);
         restScanModel.setTable(tableName);
-        Logger.info("scan({}, {}, {}", namespace, tableName, restScanModel);
+        Logger.error("scan({}, {}, {}", namespace, tableName, restScanModel);
         return service.scan(IMDBClientToken.getClient(token),namespace, tableName, restScanModel);
     }
 
