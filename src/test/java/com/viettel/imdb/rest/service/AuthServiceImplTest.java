@@ -1,24 +1,9 @@
 package com.viettel.imdb.rest.service;
 
-import com.viettel.imdb.IMDBClient;
-import com.viettel.imdb.JavaClient;
-import com.viettel.imdb.common.ClientConfig;
-import com.viettel.imdb.rest.common.Common;
-import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.TestUtil;
-import com.viettel.imdb.util.IMDBEncodeDecoder;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
-import java.util.ArrayList;
-
-import static com.viettel.imdb.rest.common.Common.HOST_URL;
-import static org.testng.Assert.*;
 
 /**
  * @author quannh22

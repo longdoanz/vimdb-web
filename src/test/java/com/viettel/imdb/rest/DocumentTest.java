@@ -2,15 +2,12 @@ package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.QueryParam;
-import com.viettel.imdb.rest.common.TestUtil;
 import org.springframework.http.HttpStatus;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Map;
 
 import static com.viettel.imdb.rest.common.Common.*;
-
 import static org.testng.Assert.assertEquals;
 
 /**

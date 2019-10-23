@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author quannh22
@@ -53,6 +52,8 @@ public class TokenManager {
     }
 
     public boolean validateToken(String token){
+        if(token == null || token.isEmpty())
+            return false;
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;

@@ -2,12 +2,10 @@ package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.openhft.chronicle.core.annotation.NotNull;
-import org.springframework.web.util.UriUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 

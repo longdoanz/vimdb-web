@@ -6,7 +6,6 @@ import com.viettel.imdb.rest.model.RestoreRequest;
 import com.viettel.imdb.rest.service.BackupRestoreService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

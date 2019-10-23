@@ -1,14 +1,8 @@
 package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.ErrorCode;
-import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.ClientException;
-import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.common.Utils;
-import com.viettel.imdb.rest.model.MetricResponse;
-import com.viettel.imdb.rest.model.StatisticFilter;
-import com.viettel.imdb.rest.model.StatisticResponse;
 import com.viettel.imdb.rest.util.StatisticClient;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -19,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.*;
-
-import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult;
-import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
 
 @Service
 public class StatisticServiceImpl implements StatisticService{

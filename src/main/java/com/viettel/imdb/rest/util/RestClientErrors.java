@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.util;
 
-import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
 
 /**

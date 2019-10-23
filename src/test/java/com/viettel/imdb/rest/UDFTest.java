@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.viettel.imdb.rest.common.Common.*;
+import static com.viettel.imdb.rest.common.Common.HOST_URL;
+import static com.viettel.imdb.rest.common.Common.buildFromPath;
 
 public class UDFTest {
     private HTTPRequest http;

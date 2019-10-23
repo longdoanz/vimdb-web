@@ -1,13 +1,10 @@
 package com.viettel.imdb.rest.service;
 
 
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
-import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.model.*;
 import io.trane.future.Future;
@@ -23,7 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.viettel.imdb.rest.common.Utils.*;
+import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult2;
+import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
 
 /**
  * @author quannh22
@@ -99,7 +97,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username) {
         Logger.error("getUser({})", username);
-        Future<User> getUserFuture = ((ClientSimulator)client).readUser(username);;
+        Future<User> getUserFuture = client.readUser(username);
         Future<Result> resultFuture = getUserFuture
                 .map(user -> new Result(HttpStatus.OK, user))
                 .rescue(throwable -> throwableToHttpStatus(throwable));

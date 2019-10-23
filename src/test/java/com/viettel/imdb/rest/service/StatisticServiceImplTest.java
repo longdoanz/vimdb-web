@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.testng.Assert.*;
-
 /**
  * @author quannh22
  * @since 16/10/2019

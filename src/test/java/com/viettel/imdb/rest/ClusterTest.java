@@ -3,14 +3,10 @@ package com.viettel.imdb.rest;
 import com.viettel.imdb.rest.common.HTTPRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static com.viettel.imdb.rest.common.Common.*;
-
 
 import java.util.Map;
 
-import static com.viettel.imdb.rest.common.Common.HOST_URL;
-import static com.viettel.imdb.rest.common.Common.PASSWORD;
-import static com.viettel.imdb.rest.common.Common.USERNAME;
+import static com.viettel.imdb.rest.common.Common.*;
 
 public class ClusterTest {
     private HTTPRequest http;

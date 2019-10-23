@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.config;
 
-import com.viettel.imdb.rest.service.AuthService;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.util.TokenManager;
 import org.pmw.tinylog.Logger;

@@ -6,9 +6,6 @@ import com.viettel.imdb.common.Record;
 import io.trane.future.Future;
 import io.trane.future.Promise;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

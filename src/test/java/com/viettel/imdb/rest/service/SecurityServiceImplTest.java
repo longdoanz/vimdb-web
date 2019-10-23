@@ -1,21 +1,13 @@
 package com.viettel.imdb.rest.service;
 
-import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
-import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.TestUtil;
 import com.viettel.imdb.rest.model.AddUserRequest;
-import com.viettel.imdb.rest.model.UserInfo;
-import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.viettel.imdb.rest.common.Common.HOST_URL;
-import static org.testng.Assert.*;
 
 /**
  * @author quannh22

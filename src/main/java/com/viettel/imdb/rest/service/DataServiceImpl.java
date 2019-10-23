@@ -2,16 +2,15 @@ package com.viettel.imdb.rest.service;
 
 
 //import com.facebook.presto.sql.parser.SqlParser;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.common.Record;
 import com.viettel.imdb.common.ValueType;
 import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
@@ -70,9 +69,8 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> getTableListInNamespace(IMDBClient client, String namespace) {
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
         res.setResult(new ResponseEntity<>(((ClientSimulator)client).getTableList(namespace), HttpStatus.OK));
         return res;
@@ -99,9 +97,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> createTable(IMDBClient client, String namespace, String tableName) {
         Logger.error("Create table({}, {})", namespace, tableName);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> createTableFuture = client.createTable(tableName);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = createTableFuture
@@ -121,9 +118,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> dropTable(IMDBClient client, String namespace, String tableName) {
         Logger.error("dropTable({}, {})", namespace, tableName);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> dropTableFuture = client.dropTable(tableName);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = dropTableFuture
@@ -144,9 +140,8 @@ class DataServiceImpl implements DataService {
         String indexName = indexModel.getName();
         ValueType indexType = indexModel.getType();
         long previousTime = System.nanoTime();
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> createIndexFuture = client.createIndex(tableName, indexName, indexType);
         Future<Result> resultFuture = createIndexFuture
                 .map(aVoid -> {
@@ -162,9 +157,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> dropIndex(IMDBClient client, String namespace, String tableName, String indexName) {
         Logger.error("dropIndex({}, {}, {})", namespace, tableName, indexName);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> dropIndexFuture = client.dropIndex(tableName, indexName);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = dropIndexFuture
@@ -181,9 +175,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.error("select({}, {}, {}, {})\n", namespace, tableName, key, fieldNameList);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Record> selectFuture = client.select(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = selectFuture
@@ -203,9 +196,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.error("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> insertFuture = client.insert(tableName, key, fieldList);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = insertFuture
@@ -231,9 +223,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.error("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> updateFuture = client.update(tableName, key, fieldList);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = updateFuture
@@ -288,9 +279,8 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<ResponseEntity<?>> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.error("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
-        if(RestValidator.validateNamespace(namespace) != ErrorCode.NO_ERROR) {
-            return Utils.INTERNAL_ERROR("namespace must be \"namespace\" by now!!!");
-        }
+        RestValidator.validateNamespace(namespace);
+
         Future<Void> deleteFuture = client.delete(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();
         Future<Result> resultFuture = deleteFuture

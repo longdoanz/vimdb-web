@@ -1,12 +1,8 @@
 package com.viettel.imdb.rest;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-import net.minidev.json.parser.JSONParser;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

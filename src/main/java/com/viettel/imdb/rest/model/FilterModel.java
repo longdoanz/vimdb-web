@@ -20,7 +20,7 @@ public class FilterModel {
     private String fieldName;
 
     private enum queryOption {
-        $BT; // between
+        $BT // between
     }
 
     private int start;

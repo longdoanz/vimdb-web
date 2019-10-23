@@ -10,8 +10,6 @@ import com.viettel.imdb.rest.RestErrorCode;
 import com.viettel.imdb.rest.model.RestClientError;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import io.trane.future.Future;
-import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;

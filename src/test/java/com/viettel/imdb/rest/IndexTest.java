@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 import java.util.Map;
 
 import static com.viettel.imdb.rest.common.Common.*;
-import static com.viettel.imdb.rest.common.Common.DB_PATH;
 import static org.testng.Assert.assertEquals;
 
 /**

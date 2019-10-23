@@ -3,21 +3,16 @@ package com.viettel.imdb.rest.controller;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.common.Record;
-import com.viettel.imdb.rest.mock.server.ClusterSimulator;
-import com.viettel.imdb.rest.model.CallbackResponse;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import io.trane.future.CheckedFutureException;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest

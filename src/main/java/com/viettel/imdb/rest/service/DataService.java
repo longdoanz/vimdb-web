@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.service;
 
-import com.viettel.imdb.IMDBClient;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;

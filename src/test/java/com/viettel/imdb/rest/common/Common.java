@@ -1,7 +1,5 @@
 package com.viettel.imdb.rest.common;
 
-import org.springframework.beans.factory.annotation.Value;
-
 /**
  * @author longdt20
  * @since 17:01 15/02/2019

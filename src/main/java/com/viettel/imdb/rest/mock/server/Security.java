@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.mock.server;
 
-import com.viettel.imdb.common.Record;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.model.UserInfo;

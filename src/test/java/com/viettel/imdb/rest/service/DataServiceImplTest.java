@@ -1,20 +1,17 @@
 package com.viettel.imdb.rest.service;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.TestUtil;
-import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Map;
 
 import static com.viettel.imdb.rest.common.Common.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author quannh22

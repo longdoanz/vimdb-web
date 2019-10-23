@@ -1,10 +1,7 @@
 package com.viettel.imdb.rest.service;
 
 
-import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.rest.RestErrorCode;
-import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
 import com.viettel.imdb.rest.model.AddClusterNodeRequest;
