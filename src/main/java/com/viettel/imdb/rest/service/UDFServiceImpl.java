@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.service;
 
+import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.model.*;
 import org.pmw.tinylog.Logger;
 import org.springframework.http.HttpStatus;

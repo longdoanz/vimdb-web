@@ -6,6 +6,7 @@ import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.model.AddUserRequest;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
+import jdk.nashorn.internal.ir.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

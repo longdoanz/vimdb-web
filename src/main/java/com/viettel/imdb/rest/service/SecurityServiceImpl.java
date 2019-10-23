@@ -1,9 +1,13 @@
 package com.viettel.imdb.rest.service;
 
 
+import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.core.security.Role;
+import com.viettel.imdb.core.security.User;
+import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
+import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.model.*;
 import io.trane.future.Future;
@@ -14,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult2;
-import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
+import static com.viettel.imdb.rest.common.Utils.*;
 
 /**
  * @author quannh22
@@ -39,21 +45,84 @@ public class SecurityServiceImpl implements SecurityService {
     public DeferredResult<ResponseEntity<?>> getUsers(IMDBClient client) {
         // todo fake here
         Logger.error("getUsers()");
-        Future<List<UserInfo>> getFuture = ((ClientSimulator)client).getUsersInfo();
+        Future<List<User>> getFuture = ((ClientSimulator)client).getUsers();
+
         Future<Result> resultFuture = getFuture
                 .map(users -> new Result(HttpStatus.OK, users))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult2(resultFuture);
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        resultFuture
+                .onSuccess(result ->{
+                    List<User> userList = (List<User>)result.getData();
+                    List<UserInfo> userInfoList = new ArrayList<UserInfo>();
+                    for (User user:userList){
+                        UserInfo userInfo = new UserInfo();
+                        userInfo.setUsername(user.getUsername());
+                        List<Role> roleList = getRoles(client,user.getRolenameList());
+                        userInfo.setRoles(roleList);
+                        userInfo.setAuthenticationMethod("RBAC");
+                        userInfoList.add(userInfo);
+                    }
+                    returnValue.setResult(new ResponseEntity<>(userInfoList, result.getHttpStatus()));
+                    }
+                )
+                .onFailure(throwable -> {
+                    throwable.printStackTrace();
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("error", throwable.getMessage());
+                    returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                });
+
+        return returnValue;
     }
 
+    public List<Role> getRoles (IMDBClient client, List<String> roleNameList) {
+        //Logger.error("getRoles({})", username);
+        List<Role> roleList = new ArrayList<Role>();
+        for (String roleName : roleNameList){
+            Future<Role> getRoleFuture = client.readRole(roleName);
+            Future<Result> resultFuture = getRoleFuture
+                    .map(user -> new Result(HttpStatus.OK, user))
+                    .rescue(throwable -> throwableToHttpStatus(throwable));
+            resultFuture
+                    .onSuccess(result ->
+                            roleList.add((Role)result.getData())
+                    )
+                    .onFailure(throwable -> {
+                        throwable.printStackTrace();
+                    });
+        }
+
+        return roleList;
+    }
     @Override
     public DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username) {
         Logger.error("getUser({})", username);
-        Future<UserInfo> getUserFuture = ((ClientSimulator)client).readUserInfo(username);;
+        Future<User> getUserFuture = ((ClientSimulator)client).readUser(username);;
         Future<Result> resultFuture = getUserFuture
                 .map(user -> new Result(HttpStatus.OK, user))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult2(resultFuture);
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        resultFuture
+                .onSuccess(result ->{
+                    User user = (User) result.getData();
+                    UserInfo userInfo = new UserInfo();
+                    userInfo.setUsername(user.getUsername());
+                    userInfo.setAuthenticationMethod("RBAC");
+                    List<Role> roleList = getRoles(client, user.getRolenameList());
+                    userInfo.setRoles(roleList);
+                    returnValue.setResult(new ResponseEntity<>(userInfo, result.getHttpStatus()));
+                }
+
+                )
+                .onFailure(throwable -> {
+                    throwable.printStackTrace();
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("error", throwable.getMessage());
+                    returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                });
+        return returnValue;
     }
 
     @Override

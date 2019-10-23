@@ -1,6 +1,9 @@
 package com.viettel.imdb.rest.model;
 
+import com.viettel.imdb.core.security.Role;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,19 +19,22 @@ import java.util.List;
 //@ApiModel(value="EditUserRequest", description = "  ")
 public class EditUserRequest {
 
-    @ApiModelProperty(value= "username", example = "ClusterNodeSSHInfo")
+    @ApiModelProperty(value= "username", example = "admin13")
     private String userName;
-    @ApiModelProperty(value= "password", example = "ClusterNodeSSHInfo")
+    @ApiModelProperty(value= "password", example = "admin13")
     private String password;
-    @ApiModelProperty(value= "roles", example = "")
+    @ApiModelProperty(value= "roles", example = "[\n" +
+            "    \"read-write.data.CustInfo\",\n" +
+            "    \"read-write.data.MappingSubCust\"\n" +
+            "  ]\n")
     private List<String> roles;
     @ApiModelProperty(value= "newRoles", example = "")
-    private List<AddUserRequest.RoleInfo> newRoles; // todo NOT HERE
+    private List<Role> newRoles; // todo NOT HERE
 
     public EditUserRequest() {
     }
 
-    public EditUserRequest(String userName, String password, List<String> roles, List<AddUserRequest.RoleInfo> newRoles) {
+    public EditUserRequest(String userName, String password, List<String> roles, List<Role> newRoles) {
         this.userName = userName;
         this.password = password;
         this.roles = roles;
@@ -59,11 +65,11 @@ public class EditUserRequest {
         this.roles = roles;
     }
 
-    public List<AddUserRequest.RoleInfo> getNewRoles() {
+    public List<Role> getNewRoles() {
         return newRoles;
     }
 
-    public void setNewRoles(List<AddUserRequest.RoleInfo> newRoles) {
+    public void setNewRoles(List<Role> newRoles) {
         this.newRoles = newRoles;
     }
 

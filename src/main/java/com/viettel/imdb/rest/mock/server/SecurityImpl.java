@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author quannh22
@@ -45,6 +46,15 @@ public class SecurityImpl implements Security {
 
         roleMap.put("admin", new Role("admin", new ArrayList<String>() {{
             add("*");
+        }}));
+        roleMap.put("read-write.data.SessionData", new Role("read-write.data.SessionData", new ArrayList<String>() {{
+            add("read.data.SessionData");
+            add("write.data.SessionData");
+        }}));
+        roleMap.put("read-write.user.SessionData", new Role("read-write.user.SessionData", new ArrayList<String>() {{
+            add("read.user.SessionData");
+            add("write.user.SessionData");
+
         }}));
 
         userInfoMap.put("admin", new UserInfo("admin", "RBAC", new ArrayList<Role>(){{
@@ -139,8 +149,8 @@ public class SecurityImpl implements Security {
 
     @Override
     public Future<Void> deleteUser(String username) {
-        if(userMap.containsKey(username))
-            return Future.exception(new ClientException(ErrorCode.KEY_EXIST));
+        if(!userMap.containsKey(username))
+            return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
         userMap.remove(username);
         userInfoMap.remove(username);
         return Future.VOID;

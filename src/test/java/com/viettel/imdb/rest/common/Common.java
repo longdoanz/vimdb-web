@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class Common {
     public static final String DB_PATH = "namespace";
+    public static final String LOGIN_PATH = "v1/auth/login";
     public static final String CLUSTER_PATH = "v1/cluster";
     public static final String DATA_PATH = "v1/data";
     public static final String DEFAULT_NAMESPACE = "namespace";

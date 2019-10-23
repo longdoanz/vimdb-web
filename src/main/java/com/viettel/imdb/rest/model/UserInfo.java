@@ -4,6 +4,7 @@ import com.viettel.imdb.core.security.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 

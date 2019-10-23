@@ -10,12 +10,17 @@ import com.viettel.imdb.rest.model.AuthenRespone;
 import com.viettel.imdb.rest.model.CustomUserDetails;
 import com.viettel.imdb.rest.util.IMDBClientToken;
 import com.viettel.imdb.rest.util.TokenManager;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,9 +31,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * @author quannh22
@@ -43,7 +50,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     private Map<String, String> tokenToUserMap;
     //private Map<Pair<String, byte[]>, String> userPassToTokenMap;
-    private Map<Pair<String, String>, String> userPassToTokenMap;
+    //private Map<Pair<String, String>, String> userPassToTokenMap;
     private Map<String, IMDBClient> tokenToClientMap;
     private IMDBClientToken imdbClientToken;
     // todo a timer to close an idle client after IDLE_TIMEOUT_IN_MS (ms)
@@ -70,8 +77,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     public AuthServiceImpl(IMDBClient client) {
         this.client = client;
 
-        userPassToTokenMap = new ConcurrentHashMap<>();
-        tokenToClientMap = new ConcurrentHashMap<>();
+//        userPassToTokenMap = new ConcurrentHashMap<>();
+//        tokenToClientMap = new ConcurrentHashMap<>();
+        imdbClientToken = new IMDBClientToken();
     }
 
     @Override
@@ -190,7 +198,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     private Pair<IMDBClient, String> getClient(String username, String password) {
         //Pair<String, byte[]> pairUserPass = new Pair<>(username, password.getBytes());
         Pair<String, String> pairUserPass = new Pair<>(username, password);
-        String token2 = userPassToTokenMap.get(pairUserPass);
+        String token2 = IMDBClientToken.getToken(pairUserPass);
         Logger.error("get token client {} {}",password.getBytes(), password.getBytes());
         byte[] a = password.getBytes();
         System.out.println(a);
@@ -198,16 +206,16 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             System.out.print(b);
         }
         System.out.println("leng"+ a.toString());
-        if(!userPassToTokenMap.containsKey(pairUserPass))
+        if(!IMDBClientToken.userPassToTokenMapContainsKey(pairUserPass))
             return null;
-        String token = userPassToTokenMap.get(pairUserPass);
-        IMDBClient client = IMDBClientToken.tokenToClientMap.get(token);
+        String token = IMDBClientToken.getToken(pairUserPass);
+        IMDBClient client = IMDBClientToken.getClient(token);
         return new Pair<>(client, token);
     }
 
     private boolean isToCreateNewClient() {
-        Logger.error("isToCreateNewClient: userPassToTokenMapSize: {}", userPassToTokenMap.size());
-        return userPassToTokenMap.size() < MAX_ACTIVE_CLIENTS;
+        Logger.error("isToCreateNewClient: userPassToTokenMapSize: {}", IMDBClientToken.getUserPassToTokenMapSize());
+        return IMDBClientToken.getUserPassToTokenMapSize() < MAX_ACTIVE_CLIENTS;
     }
 
     private Pair<IMDBClient, String> createNewClientWithToken(String username, String password, String newToken) {
@@ -217,8 +225,8 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
 //            IMDBClient client = new JavaClient(host, new ClientConfig(securityEnabled, username,password));
             //userPassToTokenMap.put(new Pair<>(username, password.getBytes()), newToken);
-            userPassToTokenMap.put(new Pair<>(username, password), newToken);
-            IMDBClientToken.tokenToClientMap.put(newToken, client);
+            IMDBClientToken.putUserPassToTokenMap(new Pair<>(username, password), newToken);
+            IMDBClientToken.putClient(newToken, client);
             //tokenToUserMap.put(newToken, username);
             return new Pair<>(client, newToken);
         } catch (Exception ex) {
@@ -269,7 +277,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Future<User> getUserFuture = ((ClientSimulator)client).readUser(s);
+        Future<User> getUserFuture = client.readUser(s);
         CustomUserDetails userResult = new CustomUserDetails();
         getUserFuture
                 .onSuccess(user ->{

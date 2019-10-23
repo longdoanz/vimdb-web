@@ -12,7 +12,7 @@ import lombok.*;
 @ApiModel(value="AuthenRespone", description = "Request")
 public class AuthenRespone {
     @ApiModelProperty(value= "token", example = "admin-admin")
-    private String jwttoken;
+    private String token;
 
 //    public AuthenRespone(String jwttoken) {
 //        this.jwttoken = jwttoken;

@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.config;
 
+import com.viettel.imdb.rest.service.AuthService;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.util.TokenManager;
 import org.pmw.tinylog.Logger;
@@ -35,6 +36,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwtToken = null;
         // JWT Token is in the form "Bearer token". Remove Bearer word and get
         // only the Token
+        try{
             jwtToken = getJwtFromRequest(httpServletRequest);
 
             if(tokenManager.validateToken(jwtToken)&&StringUtils.hasText(jwtToken)){
@@ -45,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UserDetails userDetails = service.loadUserByUsername(username);
                 if(userDetails != null) {
                     // set thông tin cho Seturity Context
-                    Logger.info("set context");
+                    Logger.error("set context");
                     UsernamePasswordAuthenticationToken
                             authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
@@ -56,7 +58,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                filterChain.doFilter(httpServletRequest, httpServletResponse);
 //                return;
 //            }
-
+        }catch (Exception ex){
+            Logger.error("failed on set user authentication", ex);
+//            SecurityContextHolder.clearContext();
+        }
 
         Logger.error("done filter");
         filterChain.doFilter(httpServletRequest, httpServletResponse);

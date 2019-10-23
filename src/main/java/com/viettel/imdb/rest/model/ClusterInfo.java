@@ -19,13 +19,13 @@ public class ClusterInfo {
     private int replicationFactor;
     @ApiModelProperty(value= "Sversion", example = "1")
     private String version;
-    @ApiModelProperty(value= "uptime", example = "36000")
+    @ApiModelProperty(value= "uptime", example = " ")
     private int uptime;
     @ApiModelProperty(value= "monitorNodeCount", example = "2")
     private long monitorNodeCount;
-    @ApiModelProperty(value= "ClusterDRInfo")
+    @ApiModelProperty(value= "ClusterDRInfo", example = " ")
     private ClusterDRInfo drInfo;
-    @ApiModelProperty(value= "ClusterNodeInfo")
+    @ApiModelProperty(value= "ClusterNodeInfo", example = " ")
     private List<ClusterNodeInfo> nodes;
 
     @NoArgsConstructor
@@ -75,9 +75,9 @@ public class ClusterInfo {
         private float ramUsagePercentage;
         @ApiModelProperty(value= "diskUsagePercentage", example = "10.2")
         private float diskUsagePercentage;
-        @ApiModelProperty(value= "ClusterNodeDataInfo")
+        @ApiModelProperty(value= "ClusterNodeDataInfo", example = "  ")
         private ClusterNodeDataInfo data;
-        @ApiModelProperty(value= "ClusterNodePerformanceInfo")
+        @ApiModelProperty(value= "ClusterNodePerformanceInfo", example = "  ")
         private ClusterNodePerformanceInfo performance;
     }
 

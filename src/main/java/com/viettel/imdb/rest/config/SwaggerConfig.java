@@ -3,10 +3,13 @@ package com.viettel.imdb.rest.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 import com.viettel.imdb.rest.domain.RestClientError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -15,15 +18,15 @@ import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
  * @author quannh22
@@ -57,7 +60,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(Predicates.not(PathSelectors.regex("/error*"))) // We don't want the base error controller listed.
+                .paths(Predicates.not(regex("/error*"))) // We don't want the base error controller listed.
                 .build()
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.GET, default500Error())
@@ -67,6 +70,8 @@ public class SwaggerConfig {
                 .globalResponseMessage(RequestMethod.HEAD, default500Error())
                 .globalResponseMessage(RequestMethod.PUT, default500Error())
                 .additionalModels(typeResolver.resolve(RestClientError.class))
+                .securityContexts(Lists.newArrayList(securityContext()))
+                .securitySchemes(Lists.newArrayList(apiKey()))
                 .alternateTypeRules(alternateRules());
     }
 
@@ -92,5 +97,29 @@ public class SwaggerConfig {
                     .build()
             );
         }};
+    }
+
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String DEFAULT_INCLUDE_PATTERN = "/v1/.*";
+
+
+    private ApiKey apiKey() {
+        return new ApiKey("Bearer JWT", AUTHORIZATION_HEADER, "header");
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(regex(DEFAULT_INCLUDE_PATTERN))
+                .build();
+    }
+
+     List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope
+                = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Lists.newArrayList(
+                new SecurityReference("JWT", authorizationScopes));
     }
 }

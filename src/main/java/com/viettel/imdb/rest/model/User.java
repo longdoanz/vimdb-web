@@ -1,5 +1,9 @@
 package com.viettel.imdb.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viettel.imdb.core.security.Role;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {

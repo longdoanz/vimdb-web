@@ -4,7 +4,10 @@ import com.viettel.imdb.rest.common.HTTPRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.viettel.imdb.rest.common.Common.*;
 
@@ -70,6 +73,21 @@ public class UDFTest {
     @Test
     public void delete() throws Exception {
         http.sendDelete(buildFromPath("/v1/udf/thurv2"));
+    }
+    @Test
+    public void timerTest() throws Exception {
+        //http.sendDelete(buildFromPath("/v1/udf/thurv2"));
+        class MyTask extends TimerTask {
+            @Override
+            public void run() {
+                System.out.println("Run my Task " + new Date());
+            }
+        }
+        MyTask myTask = new MyTask();
+        Timer timer = new Timer();
+        System.out.println("Currnet time: " + new Date());
+        timer.schedule(myTask, 0, 2000);
+        System.out.println("anh thu");
     }
 
 }

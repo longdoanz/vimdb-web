@@ -43,4 +43,18 @@ public class UnitTest {
 
         when(client.select(tableName, key).get(Duration.ofMinutes(1))).thenReturn(new Record(fields));
     }
+
+    @Test
+    public void testDecodeJWT(){
+        String jwtToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTU3MTgxNjk5NywiZXhwIjoxNTcxODE3ODk3fQ.SRz-x0_Y1SGsE1lYPEeSPhYQv5MvvNSlSMjEF4Tw14yTLnwKDpa4ptvD1YIwXjPpYUlHLHh_nEe-1juUtVluAA";
+
+        java.util.Base64.Decoder decoder = java.util.Base64.getUrlDecoder();
+        String[] parts = jwtToken.split("\\."); // split out the "parts" (header, payload and signature)
+
+        String headerJson = new String(decoder.decode(parts[0]));
+        String payloadJson = new String(decoder.decode(parts[1]));
+        System.out.println(headerJson);
+        System.out.println(payloadJson);
+        //String signatureJson = new String(decoder.decode(parts[2]));
+    }
 }

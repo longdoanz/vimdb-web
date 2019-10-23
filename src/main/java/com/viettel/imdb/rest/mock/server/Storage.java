@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.mock.server;
 
+import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.Record;
 import io.trane.future.Future;
 

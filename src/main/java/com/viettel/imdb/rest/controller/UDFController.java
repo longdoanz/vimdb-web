@@ -1,9 +1,11 @@
 package com.viettel.imdb.rest.controller;
 
+import com.viettel.imdb.common.Field;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
+import com.viettel.imdb.rest.model.UDFRespone;
 import com.viettel.imdb.rest.service.UDFService;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "UDF related operations", description = "Perform operations related to UDF")
@@ -37,7 +40,9 @@ public class UDFController {
             @ApiResponse(
                     code = 200,
                     response = UDFInfo.class,
-                    message = "OK"
+                    message = "OK",
+                    responseContainer = "List"
+
                     //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             ),
             @ApiResponse(

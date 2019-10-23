@@ -1,9 +1,21 @@
 package com.viettel.imdb.rest.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.viettel.imdb.rest.domain.RestClientError;
+import com.viettel.imdb.rest.service.BackupRestoreService;
+import io.swagger.annotations.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.async.DeferredResult;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
@@ -63,14 +75,14 @@ public class BackupRequest {
     @ApiModel(value = "BackupConfig", description = "BackupConfig")
     class BackupConfig {
 
-        @ApiModelProperty(value = " isPartitionRange", example = "true")
-        private boolean isPartitionRange;
-        @ApiModelProperty(value = " partitionRangeStart", example = "0")
-        private int partitionRangeStart;
-        @ApiModelProperty(value = " backupPartitionEnd", example = "4096")
-        private int backupPartitionEnd;
-        @ApiModelProperty(value = " partitionList", example = "1")
-        private List<Integer> partitionList;
+        @ApiModelProperty(value = " isPartionRange", example = " ")
+        private boolean isPartionRange;
+        @ApiModelProperty(value = " partionRangeStart", example = " ")
+        private int partionRangeStart;
+        @ApiModelProperty(value = " backupPartionEnd", example = " ")
+        private int backupPartionEnd;
+        @ApiModelProperty(value = " partionList", example = "1")
+        private List<Integer> partionList;
         @ApiModelProperty(value = " backupDirectory", example = " ")
         private String backupDirectory;
 

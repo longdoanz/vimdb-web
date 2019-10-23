@@ -14,9 +14,9 @@ import lombok.*;
 @ToString
 @ApiModel(value="AddClusterNodeRequest", description = "Request to add a node to the current managed cluster")
 public class AddClusterNodeRequest {
-    @ApiModelProperty(value= "SSHInfo of the server. Should change to SSH key in future")
+    @ApiModelProperty(value= "SSHInfo of the server. Should change to SSH key in future", example = "ClusterNodeSSHInfo")
     private ClusterNodeSSHInfo sshInfo;
-    @ApiModelProperty(value = "vIMDB server cluster config")
+    @ApiModelProperty(value = "vIMDB server cluster config", example = "TOO LONG TO DESCRIBE HERE")
     private NewClusterNodeServerInfo vimdbServerInfo;
 
     @NoArgsConstructor
@@ -55,9 +55,9 @@ public class AddClusterNodeRequest {
         private boolean overridedSetting;
         @ApiModelProperty(value = "reload old data or not", example = "true")
         private boolean reloadOldData;
-        @ApiModelProperty(value = "Cluster authentication info")
+        @ApiModelProperty(value = "Cluster authentication info", example = "AuthenInfo")
         private ClusterAuthenInfo authenInfo;
-        @ApiModelProperty(value = "ClusterNodeOverridedConfig info")
+        @ApiModelProperty(value = "ClusterNodeOverridedConfig info", example = "ClusterNodeOverrideConfig")
         private ClusterNodeOverridedConfig overridedConfig;
     }
 

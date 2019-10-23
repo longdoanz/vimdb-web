@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.List;
+
 /**
  * @author quannh22
  * @since 08/08/2019
@@ -50,7 +52,7 @@ public class SecurityController {
                     code = 200,
                     response = UserInfo.class,
                     responseContainer = "List",
-                    message = "Key does not exist"
+                    message = "OK"
                     //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             ),
             @ApiResponse(
@@ -165,6 +167,13 @@ public class SecurityController {
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
+                    code = 200,
+                    response = RoleInfo.class,
+                    message = "OK",
+                    responseContainer = "List"
+                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+            ),
+            @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
@@ -197,7 +206,7 @@ public class SecurityController {
         return service.getRole(IMDBClientToken.getClient(token), rolename);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/role/{rolename}") // todo /role or /role/{rolename}
+    @RequestMapping(method = RequestMethod.POST, value = "/role") // todo /role or /role/{rolename}
     @ApiOperation(value = ADD_ROLE_NOTES, nickname = "addRole")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -211,10 +220,8 @@ public class SecurityController {
     })
     public DeferredResult<ResponseEntity<?>> addRole(
             @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
             @ApiParam(required = true, value = ADD_ROLE_REQUEST_NOTES) @RequestBody AddRoleRequest addRoleRequest
     ) {
-        addRoleRequest.setRoleName(rolename);
         return service.addRole(IMDBClientToken.getClient(token), addRoleRequest);
     }
 
@@ -230,7 +237,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> addRole(
+    public DeferredResult<ResponseEntity<?>> editRole(
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
             @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody EditRoleRequest editRoleRequest

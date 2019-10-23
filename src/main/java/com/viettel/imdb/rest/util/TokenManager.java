@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author quannh22
@@ -14,10 +16,18 @@ import java.util.Date;
  */
 @Component
 public class TokenManager {
+    Timer timer;
 
     private final String JWT_SECRET = "lodaaaaaa";
 
     public static final int IDLE_TIMEOUT_IN_MS = 15 * 60 * 1000;
+
+
+    public TokenManager(){
+
+    }
+
+
 
     // Tạo ra jwt từ thông tin user
     public String generateToken(CustomUserDetails userDetails) {
@@ -43,9 +53,6 @@ public class TokenManager {
     }
 
     public boolean validateToken(String token){
-        if(token == null || token.isEmpty()) {
-            return false;
-        }
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
@@ -58,7 +65,7 @@ public class TokenManager {
         } catch (UnsupportedJwtException ex) {
             Logger.error("Unsupported JWT token");
             SecurityContextHolder.clearContext();
-        } catch (Exception ex) {
+        } catch (IllegalArgumentException ex) {
             Logger.error("JWT claims string is empty.");
             SecurityContextHolder.clearContext();
         }

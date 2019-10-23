@@ -11,6 +11,7 @@ import com.viettel.imdb.rest.util.IMDBClientToken;
 import com.viettel.imdb.rest.util.RequestParamHandler;
 import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +32,9 @@ import java.util.Map;
 @RequestMapping("/v1/data")
 public class DataController {
     /**
-     ************************************************
-     *             CONSTANTS COME HERE              *
-     ************************************************
+     * ***********************************************
+     * CONSTANTS COME HERE              *
+     * ***********************************************
      */
     private static final String CREATE_NAMESPACE_NOTES = "Create a namespace with input namespace name";
     private static final String GET_TABLE_IN_NAMESPACE_NOTES = "Get table list from a namespace";
@@ -71,68 +73,62 @@ public class DataController {
     /**
      * Data Service to mainly serve request from this controller
      */
-    private final DataService service;
+    @Autowired
+    private DataService service;
 
-    public DataController(DataService service) {
-        this.service = service;
-    }
-
-    /*
-     **************************************************
-     *             API FOR NAMESPACE                  *
-     **************************************************
-     */
+    @Autowired
+    HttpServletRequest request;
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
-    @ApiOperation(value=SCAN_NAMESPACE_NOTES, nickname = "scan")
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    @ApiOperation(value = SCAN_NAMESPACE_NOTES, nickname = "scan")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
-    public ResponseEntity<?> getDataInfo(
-            @RequestHeader("Authorization") String token
-    ) {
-        Logger.error("Get data info token {}", token);
+    public ResponseEntity<?> getDataInfo() {
 
-        return service.getDataInfo(IMDBClientToken.getClient(token));
+//        Logger.info("Get data info token {}", token);
+
+        return service.getDataInfo(IMDBClientToken.getClient(request.getHeader("Authorization")));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "")
-    @ApiOperation(value=CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
+    @ApiOperation(value = CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 444,
                     response = RestClientError.class,
                     message = "Table exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> createNamespace(
             @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace
     ) {
-        Logger.error("Create namespace({})", namespace);
-        return service.createNamespace(IMDBClientToken.getClient(token),namespace);
+        Logger.info("Create namespace({})", namespace);
+        return service.createNamespace(IMDBClientToken.getClient(token), namespace);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}")
-    @ApiOperation(value=GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
+    @ApiOperation(value = GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
     @ResponseStatus(value = HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 666,
                     response = RestClientError.class,
                     message = "Failed",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
+            // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getTableList(
             @RequestHeader("Authorization") String token,
@@ -142,22 +138,23 @@ public class DataController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
-    @ApiOperation(value=DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
+    @ApiOperation(value = DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 666,
                     response = RestClientError.class,
                     message = "Drop not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
+            // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> dropNamespace(
             @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace
     ) {
-        Logger.error("Drop namespace({}, {})", namespace);
-        return service.dropNamespace(IMDBClientToken.getClient(token),namespace);
+        Logger.info("Drop namespace({}, {})", namespace);
+        return service.dropNamespace(IMDBClientToken.getClient(token), namespace);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}")
@@ -168,7 +165,7 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -178,41 +175,41 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.error("update(old name{}  new name )", namespace, newname);
+        Logger.info("update(old name{}  new name )", namespace, newname);
         return service.updateNamespace(IMDBClientToken.getClient(token), namespace, newname);
     }
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}")
-    @ApiOperation(value=CREATE_TABLE_NOTES, nickname = "createTable")
+    @ApiOperation(value = CREATE_TABLE_NOTES, nickname = "createTable")
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 444,
                     response = RestClientError.class,
                     message = "Table exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> createTable(
             @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value="namespace") String namespace,
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @RequestBody TableModel tableName
     ) {
-        Logger.error("Create table({}, {})", namespace, tableName);
-        return service.createTable(IMDBClientToken.getClient(token),namespace, tableName.getTableName());
+        Logger.info("Create table({}, {})", namespace, tableName);
+        return service.createTable(IMDBClientToken.getClient(token), namespace, tableName.getTableName());
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}")
-    @ApiOperation(value=DROP_TABLE_NOTES, nickname = "dropTable")
+    @ApiOperation(value = DROP_TABLE_NOTES, nickname = "dropTable")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 666,
                     response = RestClientError.class,
                     message = "Table not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -221,8 +218,8 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName
     ) {
-        Logger.error("Drop table({}, {})", namespace, tableName);
-        return service.dropTable(IMDBClientToken.getClient(token),namespace, tableName);
+        Logger.info("Drop table({}, {})", namespace, tableName);
+        return service.dropTable(IMDBClientToken.getClient(token), namespace, tableName);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}")
@@ -233,7 +230,7 @@ public class DataController {
                     code = 555,
                     response = RestClientError.class,
                     message = "Index exists",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -244,10 +241,10 @@ public class DataController {
             @ApiParam(required = true, value = INDEX_MODEL_NOTES) @RequestBody RestIndexModel indexModel
 
     ) {
-        Logger.error("Create Index({}, {}, {})", namespace, tableName, indexModel);
+        Logger.info("Create Index({}, {}, {})", namespace, tableName, indexModel);
         indexModel.setNamespace(namespace);
         indexModel.setTable(tableName);
-        return service.createIndex(IMDBClientToken.getClient(token),indexModel);
+        return service.createIndex(IMDBClientToken.getClient(token), indexModel);
     }
 
     // TODO COMMENT OUT DROP INDEX NEED REVERSE
@@ -273,11 +270,7 @@ public class DataController {
         return service.dropIndex(namespace, tableName, indexName);
     }
 */
-    /*
-     **************************************************
-     *                API FOR DATA                    *
-     **************************************************
-     */
+
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = SELECT_NOTES, nickname = "select")
     @ResponseStatus(HttpStatus.OK)
@@ -286,20 +279,20 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> select(
             @RequestHeader("Authorization") String token,
-        @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
-        @ApiParam(required = true, value = TABLE_NOTES) @PathVariable(value = "tablename") String tableName,
-        @ApiParam(required = true, value = KEY_NOTES) @PathVariable(value = "key") String key,
-        @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams
-    ) {
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
+            @ApiParam(required = true, value = TABLE_NOTES) @PathVariable(value = "tablename") String tableName,
+            @ApiParam(required = true, value = KEY_NOTES) @PathVariable(value = "key") String key,
+            @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams) {
+
         List<String> fieldNameList = RequestParamHandler.getFieldNameListFromMap(requestParams);
-        Logger.error("Select({}, {}, {})", tableName, key, fieldNameList);
-        return service.select(IMDBClientToken.getClient(token),namespace, tableName, key, fieldNameList);
+        Logger.info("Select({}, {}, {})", tableName, key, fieldNameList);
+        return service.select(IMDBClientToken.getClient(token), namespace, tableName, key, fieldNameList);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}/{key}")
@@ -310,7 +303,7 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key exists",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -319,12 +312,11 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
-            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode/*,
-            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody List<Field> fieldList*/
-    ) {
+            @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode) {
+        
         System.out.println(jsonNode);
-        Logger.error("insert({}, {}, {}, {})", namespace, tableName, key);
-        return service.insert(IMDBClientToken.getClient(token),namespace, tableName, key, Utils.getFieldValue(jsonNode));
+        Logger.info("insert({}, {}, {}, {})", namespace, tableName, key);
+        return service.insert(IMDBClientToken.getClient(token), namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
 
     /*
@@ -359,7 +351,7 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -369,10 +361,9 @@ public class DataController {
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
             @ApiParam(required = true, value = FIELD_LIST_NOTES) @RequestBody JsonNode jsonNode,
-            @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
-    ) {
-        Logger.error("update({}, {}, {}, {})", namespace, tableName, key);
-        return service.update(IMDBClientToken.getClient(token),namespace, tableName, key, Utils.getFieldValue(jsonNode));
+            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+        Logger.info("update({}, {}, {}, {})", namespace, tableName, key);
+        return service.update(IMDBClientToken.getClient(token), namespace, tableName, key, Utils.getFieldValue(jsonNode));
     }
     /*
 
@@ -495,7 +486,7 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -508,8 +499,8 @@ public class DataController {
             @ApiIgnore(value = FIELDNAME_LIST_NOTES) @RequestParam MultiValueMap<String, String> requestParams
     ) {
         List<String> fieldNameList = RequestParamHandler.getFieldNameListFromMap(requestParams);
-        Logger.error("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
-        return service.delete(IMDBClientToken.getClient(token),namespace, tableName, key, fieldNameList);
+        Logger.info("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
+        return service.delete(IMDBClientToken.getClient(token), namespace, tableName, key, fieldNameList);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}")
@@ -520,7 +511,7 @@ public class DataController {
                     code = 777,
                     response = RestClientError.class,
                     message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
+                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
             // other @ApiResponses
     })
@@ -533,12 +524,12 @@ public class DataController {
     ) {
         restScanModel.setNamespace(namespace);
         restScanModel.setTable(tableName);
-        Logger.error("scan({}, {}, {}", namespace, tableName, restScanModel);
-        return service.scan(IMDBClientToken.getClient(token),namespace, tableName, restScanModel);
+        Logger.info("scan({}, {}, {}", namespace, tableName, restScanModel);
+        return service.scan(IMDBClientToken.getClient(token), namespace, tableName, restScanModel);
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json","application/xml"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json", "application/xml"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
     public DeferredResult<ResponseEntity<?>> runCmd(
@@ -546,10 +537,8 @@ public class DataController {
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body
     ) {
 //        Logger.info("CMD ({})", body);
-        return service.cmd(IMDBClientToken.getClient(token),body);
+        return service.cmd(IMDBClientToken.getClient(token), body);
     }
-
-
 
 
 }

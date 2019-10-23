@@ -1,6 +1,6 @@
 package com.viettel.imdb.rest.model;
 
-import com.viettel.imdb.rest.exception.RestErrorCode;
+import com.viettel.imdb.rest.RestErrorCode;
 
 /**
  * @author longdt20
