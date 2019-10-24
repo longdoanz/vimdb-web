@@ -93,7 +93,7 @@ public class UDFController {
             @ApiParam(required = true, value = UPDATE_UDF_REQUEST_NOTES) @RequestBody EditUDFRequest request,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.error("update({})", udf_name);
+        Logger.info("update({})", udf_name);
         return service.updateUDF(udf_name, request);
     }
 
@@ -112,7 +112,7 @@ public class UDFController {
     public DeferredResult<ResponseEntity<?>> dropUDF(
             @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udf_name") String udf_name
     ) {
-        Logger.error("Drop udf({}, {})", udf_name);
+        Logger.info("Drop udf({}, {})", udf_name);
         return service.delete(udf_name);
     }
 }

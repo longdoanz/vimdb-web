@@ -128,7 +128,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
     // todo USE THIS
     public void updateStatisticValueToSpecificNode(String host, String statisticName, long value) {
         if(!nodeToMetricMap.containsKey(host)) {
-            Logger.error("Try to add statistic of a NOT_EXIST node");
+            Logger.info("Try to add statistic of a NOT_EXIST node");
         }
         NodeStatistic nodeStatistic = nodeToMetricMap.get(host);
         nodeStatistic.updateMetrics(statisticName, value);
@@ -150,7 +150,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
     // todo USE THIS
     public void addStatisticValueToSpecificNode(String host, String statisticName, long value) {
         if(!nodeToMetricMap.containsKey(host)) {
-            Logger.error("Try to add statistic of a NOT_EXIST node");
+            Logger.info("Try to add statistic of a NOT_EXIST node");
         }
         NodeStatistic nodeStatistic = nodeToMetricMap.get(host);
         nodeStatistic.addMetrics(statisticName, value);
@@ -169,7 +169,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
 
     public void addLatencyInUsToSpecificNode(String host, String category, long value) {
         if(!nodeToMetricMap.containsKey(host)) {
-            Logger.error("Try to add statistic of a NOT_EXIST node");
+            Logger.info("Try to add statistic of a NOT_EXIST node");
         }
         NodeStatistic nodeStatistic = nodeToMetricMap.get(host);
         nodeStatistic.addALatencyInUs(category, value);
@@ -196,7 +196,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
 
             NodeStatistic nodeStatistic = nodeToMetricMap.get(server);
             if(nodeStatistic == null) {
-                Logger.error("Node statistic is null with nodeToMetricMap {} and server {} --- serverList {}", nodeToMetricMap, server, serverList);
+                Logger.info("Node statistic is null with nodeToMetricMap {} and server {} --- serverList {}", nodeToMetricMap, server, serverList);
                 return Future.exception(new ClientException(ErrorCode.KEY_LENGTH_INVALID));
             }
             List<StatisticResponse.MetricValue> allMetrics = nodeStatistic.getNodeStatistic().getMetrics();
@@ -265,7 +265,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
         public void updateMetrics(String statisticName, long value) {
             StatisticResponse.MetricValue metricValue = getMetricValue(statisticName);
             if(metricValue == null) {
-                Logger.error("Metric {} is NULL - do nothing", statisticName);
+                Logger.info("Metric {} is NULL - do nothing", statisticName);
                 return;
             }
             switch (statisticName) {
@@ -690,7 +690,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
         public void setSINGLEMetricValue(String statisticName, long value) {
             StatisticResponse.MetricValue metricValue = getMetricValue(statisticName);
             if(metricValue == null) {
-                Logger.error("Metric {} is NULL - do nothing", statisticName);
+                Logger.info("Metric {} is NULL - do nothing", statisticName);
                 return;
             }
             metricValue.setValue(value);
@@ -699,7 +699,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
         public void increaseSINGLEMetricValue(String statisticName, long delta) {
             StatisticResponse.MetricValue metricValue = getMetricValue(statisticName);
             if(metricValue == null) {
-                Logger.error("Metric {} is NULL - do nothing", statisticName);
+                Logger.info("Metric {} is NULL - do nothing", statisticName);
                 return;
             }
             metricValue.setValue(metricValue.getValue() + delta);

@@ -8,8 +8,12 @@ import com.viettel.imdb.rest.domain.RestClientError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.AlternateTypeRule;
@@ -19,9 +23,13 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.SecurityConfiguration;
+import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +41,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
  */
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
+public class SwaggerConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private TypeResolver typeResolver;
@@ -98,18 +106,15 @@ public class SwaggerConfig {
         }};
     }
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String DEFAULT_INCLUDE_PATTERN = "/v1/.*";
-
 
     private ApiKey apiKey() {
-        return new ApiKey("Bearer JWT", AUTHORIZATION_HEADER, "header");
+        return new ApiKey("Bearer-JWT", "Authorization", "header");
     }
 
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
-                .forPaths(regex(DEFAULT_INCLUDE_PATTERN))
+                .forPaths(regex("/v1/.*"))
                 .build();
     }
 
@@ -119,6 +124,6 @@ public class SwaggerConfig {
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         return Lists.newArrayList(
-                new SecurityReference("JWT", authorizationScopes));
+                new SecurityReference("Bearer-JWT", authorizationScopes));
     }
 }

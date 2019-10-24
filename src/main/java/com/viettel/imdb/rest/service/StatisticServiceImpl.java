@@ -27,12 +27,12 @@ public class StatisticServiceImpl implements StatisticService{
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
 
         try {
-            Logger.error("Get metric {}", servers);
+            Logger.info("Get metric {}", servers);
             if(servers == null)
                 servers = "";
             String[] serverArr = servers.trim().split(",");
             List<String> serverList = Arrays.asList(serverArr);
-            Logger.error("Get metric {}", serverList);
+            Logger.info("Get metric {}", serverList);
 
             client.getMetrics(serverList)
                     .onSuccess(metricList -> {
@@ -49,7 +49,7 @@ public class StatisticServiceImpl implements StatisticService{
     public DeferredResult<ResponseEntity<?>> getStatistics(String servers, String metrics){
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
 
-        Logger.error("Get statistics servers {} --- metrics {}", servers, metrics);
+        Logger.info("Get statistics servers {} --- metrics {}", servers, metrics);
         List<String> serverList;
         List<String> metricList;
         if(servers == null || servers.isEmpty()) {

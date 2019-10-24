@@ -48,7 +48,7 @@ public class AuthController {
     ) {
         String username= request.getUsername();
         String password = request.getPassword();
-        Logger.error("login({}, {})", username, password);
+        Logger.info("login({}, {})", username, password);
 
         return service.login(username, password);
     }
@@ -63,7 +63,7 @@ public class AuthController {
 
         String username= request.getUsername();
         String password = request.getPassword();
-        Logger.error("login authen({}, {})", username, password);
+        Logger.info("login authen({}, {})", username, password);
         return service.createAuthenticationToken(username, password);
     }*/
 }

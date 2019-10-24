@@ -40,13 +40,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if(tokenManager.validateToken(jwtToken)&&StringUtils.hasText(jwtToken)){
                 //Lay username
-                Logger.error("Lay user");
+//                Logger.info("Lay user");
                 username = tokenManager.getUsernameFromJWT(jwtToken);
 
                 UserDetails userDetails = service.loadUserByUsername(username);
                 if(userDetails != null) {
                     // set thông tin cho Seturity Context
-                    Logger.error("set context");
+                    Logger.info("set context");
                     UsernamePasswordAuthenticationToken
                             authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
@@ -58,11 +58,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                return;
 //            }
         }catch (Exception ex){
-            Logger.error("failed on set user authentication", ex);
+            Logger.info("failed on set user authentication", ex);
 //            SecurityContextHolder.clearContext();
         }
 
-        Logger.error("done filter");
+//        Logger.info("done filter");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
@@ -70,10 +70,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
         // Kiểm tra xem header Authorization có chứa thông tin jwt không
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
         }
-        return bearerToken;
+        return null;
     }
 
 }

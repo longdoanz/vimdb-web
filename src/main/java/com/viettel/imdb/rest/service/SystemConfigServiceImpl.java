@@ -27,7 +27,7 @@ public class SystemConfigServiceImpl implements SystemConfigService{
     }
     @Override
     public DeferredResult<ResponseEntity<?>> currentUser(EditUserRequest request) {
-        Logger.error("editUser({})", request);
+        Logger.info("editUser({})", request);
         Future<Void> updateFuture = client.updateUser(request.getUserName(), request.getRoles()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))

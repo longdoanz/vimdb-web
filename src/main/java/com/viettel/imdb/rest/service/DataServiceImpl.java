@@ -60,7 +60,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> createNamespace(IMDBClient client, String namespace) {
-        Logger.error("Create Namespace");
+        Logger.info("Create Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
@@ -78,7 +78,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> updateNamespace(IMDBClient client, String namespace, String newname) {
-        Logger.error("Delete Namespace");
+        Logger.info("Delete Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
@@ -87,7 +87,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> dropNamespace(IMDBClient client, String namespace) {
-        Logger.error("Delete Namespace");
+        Logger.info("Delete Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
@@ -96,7 +96,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> createTable(IMDBClient client, String namespace, String tableName) {
-        Logger.error("Create table({}, {})", namespace, tableName);
+        Logger.info("Create table({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> createTableFuture = client.createTable(tableName);
@@ -117,7 +117,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> dropTable(IMDBClient client, String namespace, String tableName) {
-        Logger.error("dropTable({}, {})", namespace, tableName);
+        Logger.info("dropTable({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> dropTableFuture = client.dropTable(tableName);
@@ -134,7 +134,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> createIndex(IMDBClient client, RestIndexModel indexModel) {
-        Logger.error("createIndex({})", indexModel);
+        Logger.info("createIndex({})", indexModel);
         String namespace = indexModel.getNamespace();
         String tableName = indexModel.getTable();
         String indexName = indexModel.getName();
@@ -156,7 +156,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> dropIndex(IMDBClient client, String namespace, String tableName, String indexName) {
-        Logger.error("dropIndex({}, {}, {})", namespace, tableName, indexName);
+        Logger.info("dropIndex({}, {}, {})", namespace, tableName, indexName);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> dropIndexFuture = client.dropIndex(tableName, indexName);
@@ -174,7 +174,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
-        Logger.error("select({}, {}, {}, {})\n", namespace, tableName, key, fieldNameList);
+        Logger.info("select({}, {}, {}, {})\n", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
 
         Future<Record> selectFuture = client.select(tableName, key, fieldNameList);
@@ -195,7 +195,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
-        Logger.error("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
+        Logger.info("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> insertFuture = client.insert(tableName, key, fieldList);
@@ -222,7 +222,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
-        Logger.error("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
+        Logger.info("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> updateFuture = client.update(tableName, key, fieldList);
@@ -278,7 +278,7 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
-        Logger.error("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
+        Logger.info("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
 
         Future<Void> deleteFuture = client.delete(tableName, key, fieldNameList);

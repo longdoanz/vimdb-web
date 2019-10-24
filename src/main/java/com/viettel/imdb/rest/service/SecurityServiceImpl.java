@@ -42,7 +42,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<ResponseEntity<?>> getUsers(IMDBClient client) {
         // todo fake here
-        Logger.error("getUsers()");
+        Logger.info("getUsers()");
         Future<List<User>> getFuture = ((ClientSimulator)client).getUsers();
 
         Future<Result> resultFuture = getFuture
@@ -76,7 +76,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     public List<Role> getRoles (IMDBClient client, List<String> roleNameList) {
-        //Logger.error("getRoles({})", username);
+        //Logger.info("getRoles({})", username);
         List<Role> roleList = new ArrayList<Role>();
         for (String roleName : roleNameList){
             Future<Role> getRoleFuture = client.readRole(roleName);
@@ -96,7 +96,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
     @Override
     public DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username) {
-        Logger.error("getUser({})", username);
+        Logger.info("getUser({})", username);
         Future<User> getUserFuture = client.readUser(username);
         Future<Result> resultFuture = getUserFuture
                 .map(user -> new Result(HttpStatus.OK, user))
@@ -125,7 +125,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> addUser(IMDBClient client, AddUserRequest addUserRequest) {
-        Logger.error("addUser({})", addUserRequest);
+        Logger.info("addUser({})", addUserRequest);
         Future<Void> addFuture = client.createUser(addUserRequest.getUserName(), addUserRequest.getPassword().getBytes(), addUserRequest.getRoles());
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
@@ -135,7 +135,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> editUser(IMDBClient client, EditUserRequest editUserRequest) {
-        Logger.error("editUser({})", editUserRequest);
+        Logger.info("editUser({})", editUserRequest);
         Future<Void> updateFuture = client.updateUser(editUserRequest.getUserName(), editUserRequest.getRoles()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
@@ -145,7 +145,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> deleteUser(IMDBClient client, String username) {
-        Logger.error("deleteUser({})", username);
+        Logger.info("deleteUser({})", username);
         Future<Void> deleteFuture = client.deleteUser(username);
         Future<Result> resultFuture = deleteFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
@@ -156,7 +156,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<ResponseEntity<?>> getRoles(IMDBClient client) {
         // todo fake here
-        Logger.error("getRoles()");
+        Logger.info("getRoles()");
 
         Future<List<Role>> getFuture = ((ClientSimulator)client).getRoles();
         Future<Result> resultFuture = getFuture
@@ -167,7 +167,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> getRole(IMDBClient client, String roleName) {
-        Logger.error("getRole({})", roleName);
+        Logger.info("getRole({})", roleName);
         Future<Role> getRoleFuture = client.readRole(roleName);
         Future<Result> resultFuture = getRoleFuture
                 .map(user -> new Result(HttpStatus.OK, user))
@@ -177,7 +177,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, AddRoleRequest addRoleRequest) {
-        Logger.error("addRoleRequest({})", addRoleRequest);
+        Logger.info("addRoleRequest({})", addRoleRequest);
         Future<Void> addFuture = client.createRole(addRoleRequest.getRoleName(), addRoleRequest.getPrivileges());
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
@@ -187,7 +187,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client, EditRoleRequest editRoleRequest) {
-        Logger.error("editRole({})", editRoleRequest);
+        Logger.info("editRole({})", editRoleRequest);
         Future<Void> updateFuture = client.updateRole(editRoleRequest.getRoleName(), editRoleRequest.getPrivileges()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
@@ -197,7 +197,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> deleteRole(IMDBClient client, String roleName) {
-        Logger.error("deleteRole({})", roleName);
+        Logger.info("deleteRole({})", roleName);
         Future<Void> deleteFuture = client.deleteRole(roleName);
         Future<Result> resultFuture = deleteFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
@@ -208,7 +208,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<ResponseEntity<?>> getAuditLogs(IMDBClient client) {
         // todo fake here
-        Logger.error("getAuditLogs()");
+        Logger.info("getAuditLogs()");
 
         Future<List<String>> getFuture = ((ClientSimulator)client).getAuditLogs();
         Future<Result> resultFuture = getFuture

@@ -19,7 +19,7 @@ public class UDFServiceImpl implements UDFService{
 
     @Override
     public DeferredResult<ResponseEntity<?>> getUDFs() {
-        Logger.error("getUDFs(     )");
+        Logger.info("getUDFs(     )");
 //        for (int i = 0; i < 10; i++){
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);

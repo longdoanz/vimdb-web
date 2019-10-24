@@ -58,16 +58,16 @@ public class TokenManager {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
-            Logger.error("Invalid JWT token");
+            Logger.info("Invalid JWT token");
             SecurityContextHolder.clearContext();
         } catch (ExpiredJwtException ex) {
-            Logger.error("Expired JWT token");
+            Logger.info("Expired JWT token");
             SecurityContextHolder.clearContext();
         } catch (UnsupportedJwtException ex) {
-            Logger.error("Unsupported JWT token");
+            Logger.info("Unsupported JWT token");
             SecurityContextHolder.clearContext();
         } catch (IllegalArgumentException ex) {
-            Logger.error("JWT claims string is empty.");
+            Logger.info("JWT claims string is empty.");
             SecurityContextHolder.clearContext();
         }
         return false;

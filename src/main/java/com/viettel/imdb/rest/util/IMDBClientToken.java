@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.util;
 
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Pair;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -64,7 +65,14 @@ public class IMDBClientToken {
     }
 
     public static IMDBClient getClient(String token) {
-        return tokenToClientMap.get(token);
+        if(token.startsWith("Bearer")) {
+            token = token.substring(7).trim();
+        }
+        IMDBClient client = tokenToClientMap.get(token);
+        if(client == null) {
+            throw new ExceptionType.VIMDBRestClientError("Something when wrong");
+        }
+        return client;
     }
     public static void putClient(String token, IMDBClient client) {
         tokenToClientMap.put(token, client);

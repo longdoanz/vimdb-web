@@ -46,7 +46,7 @@ public class BackupRestoreController {
             @ApiParam(required = true, value = BACKUP_DATA_REQUEST_NOTES) @RequestBody BackupRequest request
     ) {
         //BackupRequest request = new BackupRequest();
-        Logger.error("backuRequest({})", request);
+        Logger.info("backuRequest({})", request);
         return service.backup(request);
     }
 

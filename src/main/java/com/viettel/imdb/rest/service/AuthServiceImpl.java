@@ -76,9 +76,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> login(String username, String password) {
-        Logger.error("login({}, {})", username, password);
+        Logger.info("login({}, {})", username, password);
         UserDetails user = loadUserByUsername("admin");
-        Logger.error("user ({} {})", user.getUsername(), user.getPassword());
+        Logger.info("user ({} {})", user.getUsername(), user.getPassword());
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         Pair<IMDBClient, String> existedClientAndToken = getClient(username, password);
@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             AuthenRespone authenRespone = new AuthenRespone(existedClientAndToken.getSecond());
             //body.put("token", existedClientAndToken.getSecond());
             returnValue.setResult(new ResponseEntity<>(authenRespone, HttpStatus.OK));
-            Logger.error("existedClientAndToken, return token");
+            Logger.info("existedClientAndToken, return token");
             return returnValue;
         }
 
@@ -117,7 +117,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
             return returnValue;
         }
-        Logger.error("create token({}, {})", username, password);
+        Logger.info("create token({}, {})", username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //Tra token cho user
@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         //Pair<String, byte[]> pairUserPass = new Pair<>(username, password.getBytes());
         Pair<String, String> pairUserPass = new Pair<>(username, password);
         String token2 = IMDBClientToken.getToken(pairUserPass);
-        Logger.error("get token client {} {}",password.getBytes(), password.getBytes());
+        Logger.info("get token client {} {}",password.getBytes(), password.getBytes());
         byte[] a = password.getBytes();
         System.out.println(a);
         for (byte b : a){
@@ -206,13 +206,13 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     private boolean isToCreateNewClient() {
-        Logger.error("isToCreateNewClient: userPassToTokenMapSize: {}", IMDBClientToken.getUserPassToTokenMapSize());
+        Logger.info("isToCreateNewClient: userPassToTokenMapSize: {}", IMDBClientToken.getUserPassToTokenMapSize());
         return IMDBClientToken.getUserPassToTokenMapSize() < MAX_ACTIVE_CLIENTS;
     }
 
     private Pair<IMDBClient, String> createNewClientWithToken(String username, String password, String newToken) {
         try {
-            Logger.error("Create client with token");
+            Logger.info("Create client with token");
             IMDBClient client = new ClientSimulator(new ClusterSimulator());
 
 //            IMDBClient client = new JavaClient(host, new ClientConfig(securityEnabled, username,password));
