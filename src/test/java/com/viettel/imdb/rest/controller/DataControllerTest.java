@@ -3,9 +3,11 @@ package com.viettel.imdb.rest.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.rest.model.TableModel;
+import org.apache.catalina.AsyncDispatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,12 +15,20 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
 import static com.viettel.imdb.rest.common.Common.DATA_PATH;
 import static com.viettel.imdb.rest.common.Common.LOGIN_PATH;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -29,6 +39,8 @@ public class DataControllerTest {
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), StandardCharsets.UTF_8);
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -39,7 +51,9 @@ public class DataControllerTest {
 
     @Before
     public void setup() throws Exception {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         if(token == null) {
+            Logger.error("--------- Start LOGIN ------------");
             getToken();
         }
     }
@@ -52,15 +66,22 @@ public class DataControllerTest {
                 "  \"password\": \"admin\"\n" +
                 "}");
 
-        MockHttpServletResponse res = mockMvc.perform(post(LOGIN_PATH)
+        MvcResult mvcResult = mockMvc.perform(post(LOGIN_PATH)
                 .contentType(APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsString(body))
-            ).andExpect(status().isOk())
-            .andReturn()
-            .getResponse();
+                .content(objectMapper.writeValueAsString(body)))
+                .andExpect(request().asyncStarted())
+                .andDo(MockMvcResultHandlers.log())
+            .andReturn();
+
+        mvcResult.getAsyncResult();
+
+        MockHttpServletResponse res = mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
 
         System.err.println("-------------------------------------------------- GET TOKEN --------------------------");
         System.err.println(res.getContentAsString());
+
         token = objectMapper.readTree(res.getContentAsString()).get("token").toString();
     }
 
@@ -71,10 +92,10 @@ public class DataControllerTest {
 
         mockMvc.perform(post(DATA_PATH)
                 .contentType("application/json")
-                .param("test", "01")
+//                .param("test", "01")
                 .header("Authorization", token)
                 .content(objectMapper.writeValueAsString(tableModel))
-        ).andExpect(status().isOk());
+        ).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -82,11 +103,13 @@ public class DataControllerTest {
         TableModel tableModel = new TableModel("TABLE01");
         System.out.println(objectMapper.writeValueAsString(tableModel));
 
-        mockMvc.perform(post(DATA_PATH)
+        mockMvc.perform(post(DATA_PATH + "/namespace")
                 .contentType("application/json")
-                .param("test", "01")
+                .header("Authorization", token)
                 .content(objectMapper.writeValueAsString(tableModel))
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk())
+        .andDo(print())
+        ;
     }
 
     /*@Test

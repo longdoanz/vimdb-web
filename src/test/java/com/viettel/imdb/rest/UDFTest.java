@@ -21,7 +21,7 @@ public class UDFTest {
     }
     @Test
     public void httpCookie() {
-        System.out.println(http.getCookie());
+        System.out.println(http.getToken());
     }
 
     @Test

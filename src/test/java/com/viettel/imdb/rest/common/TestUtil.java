@@ -140,7 +140,7 @@ public class TestUtil {
                     "  \"password\": \""+password+"\"\n" +
                     "}";
             //Map res = http.sendGet(AUTH_PATH + "/login", "username=" + username + "&password=" + password);
-            Map res = http.sendPost(AUTH_PATH + "/login", body);
+            Map res = http.sendPost(LOGIN_PATH, body);
 
             System.out.println(res);
             //Assert.assertEquals(res.get("code"), expectedReturnCode.value());
@@ -149,10 +149,11 @@ public class TestUtil {
                 String actualErrorMessage = response.get("error").asText();
                 //Assert.assertEquals(actualErrorMessage, expectedErrorMessageResponse);
             } else {
-                token = response.get("jwttoken").asText();
+                token = response.get("token").asText();
             }
         }catch (Exception ex) {
-            Assert.fail("login failed!!!", ex);
+            ex.printStackTrace();
+            Assert.fail("login failed!!!");
         }
         return token;
     }

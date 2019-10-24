@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author quannh22
  * @since 08/08/2019
@@ -37,6 +39,15 @@ public class SecurityController {
     private static final String EDIT_ROLE_NOTES = "";
     private static final String EDIT_ROLE_REQUEST_NOTES = "";
     private static final String DELETE_ROLE_NOTES = "";
+
+
+    @Autowired
+    HttpServletRequest request;
+
+    private String getToken() {
+        return request.getHeader("Authorization");
+    }
+    
     /**"
      * Security Service to mainly serve request from this controller
      */
@@ -61,10 +72,8 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getUsers(
-            @RequestHeader("Authorization") String token
-    ) {
-        return service.getUsers(IMDBClientToken.getClient(token));
+    public DeferredResult<ResponseEntity<?>> getUsers() {
+        return service.getUsers(IMDBClientToken.getClient(getToken()));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/user/{username}")
@@ -86,10 +95,9 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getUser(
-            @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username
     ) {
-        return service.getUser(IMDBClientToken.getClient(token), username);
+        return service.getUser(IMDBClientToken.getClient(getToken()), username);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/user/{username}") // todo /user or /user/{username}
@@ -105,12 +113,11 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> addUser(
-            @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = ADD_USER_REQUEST_NOTES) @RequestBody AddUserRequest addUserRequest
     ) {
         addUserRequest.setUserName(username);
-        return service.addUser(IMDBClientToken.getClient(token), addUserRequest);
+        return service.addUser(IMDBClientToken.getClient(getToken()), addUserRequest);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/user/{username}") // todo /user or /user/{username}
@@ -126,12 +133,11 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> editUser(
-            @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
-            @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest
-    ) {
+            @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest) {
+
         editUserRequest.setUserName(username);
-        return service.editUser(IMDBClientToken.getClient(token), editUserRequest);
+        return service.editUser(IMDBClientToken.getClient(getToken()), editUserRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{username}") // todo /user or /user/{username}
@@ -147,16 +153,10 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> deleteUser(
-            @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username
-    ) {
-        return service.deleteUser(IMDBClientToken.getClient(token), username);
+            @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username) {
+
+        return service.deleteUser(IMDBClientToken.getClient(getToken()), username);
     }
-
-
-
-
-
 
 
 
@@ -179,10 +179,9 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getRoles(
-            @RequestHeader("Authorization") String token
-    ) {
-        return service.getRoles(IMDBClientToken.getClient(token));
+    public DeferredResult<ResponseEntity<?>> getRoles() {
+
+        return service.getRoles(IMDBClientToken.getClient(getToken()));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/role/{rolename}")
@@ -198,10 +197,9 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getRole(
-            @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename
-    ) {
-        return service.getRole(IMDBClientToken.getClient(token), rolename);
+            @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename) {
+
+        return service.getRole(IMDBClientToken.getClient(getToken()), rolename);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/role") // todo /role or /role/{rolename}
@@ -217,10 +215,9 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> addRole(
-            @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = ADD_ROLE_REQUEST_NOTES) @RequestBody AddRoleRequest addRoleRequest
-    ) {
-        return service.addRole(IMDBClientToken.getClient(token), addRoleRequest);
+            @ApiParam(required = true, value = ADD_ROLE_REQUEST_NOTES) @RequestBody AddRoleRequest addRoleRequest) {
+
+        return service.addRole(IMDBClientToken.getClient(getToken()), addRoleRequest);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/role/{rolename}") // todo /role or /role/{rolename}
@@ -236,12 +233,11 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> editRole(
-            @RequestHeader("Authorization") String token,
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
-            @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody EditRoleRequest editRoleRequest
-    ) {
+            @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody EditRoleRequest editRoleRequest) {
+
         editRoleRequest.setRoleName(rolename);
-        return service.editRole(IMDBClientToken.getClient(token), editRoleRequest);
+        return service.editRole(IMDBClientToken.getClient(getToken()), editRoleRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/role/{rolename}") // todo /role or /role/{rolename}
@@ -257,10 +253,9 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> deleteRole(
-            @RequestHeader("Authorization") String token,
-            @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename
-    ) {
-        return service.deleteRole(IMDBClientToken.getClient(token), rolename);
+            @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename) {
+
+        return service.deleteRole(IMDBClientToken.getClient(getToken()), rolename);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/audit-log")
@@ -282,9 +277,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getAuditLogs(
-            @RequestHeader("Authorization") String token
-    ) {
-        return service.getAuditLogs(IMDBClientToken.getClient(token));
+    public DeferredResult<ResponseEntity<?>> getAuditLogs() {
+        return service.getAuditLogs(IMDBClientToken.getClient(getToken()));
     }
 }

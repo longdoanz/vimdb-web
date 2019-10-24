@@ -16,12 +16,12 @@ import java.util.Map;
 
 public class HTTPRequest {
     private String host;
-    private String cookie;
+    private String token;
     private ObjectMapper mapper;
 
     private void applyHost(String host) {
         mapper = new ObjectMapper();
-        cookie = "";
+        token = "";
 
         this.host = host.startsWith("http") ? host : "http://" + host;
         if (!this.host.endsWith("/")) {
@@ -58,13 +58,13 @@ public class HTTPRequest {
             throw new Exception("LOGIN FAIL");
         }*/
 
-        this.cookie = http.getHeaderField("Set-Cookie");
+        this.token = http.getHeaderField("Set-Cookie");
         http.disconnect();
         System.out.println("2. "+username+" "+password);
     }
 
-    public String getCookie() {
-        return this.cookie;
+    public String getToken() {
+        return this.token;
     }
 
 
@@ -87,9 +87,9 @@ public class HTTPRequest {
         URL obj = new URL(buildUri(path, filter));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
         http.setRequestMethod(method);
-//        http.setRequestProperty("Content-Type", "application/json");
+        http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
-        http.setRequestProperty("Cookie", cookie);
+//        http.setRequestProperty("Cookie", cookie);
         http.setRequestProperty("Authorization", token);
 
         int code = http.getResponseCode();
@@ -195,7 +195,7 @@ public class HTTPRequest {
             {
                 put("Content-Type", "application/json");
                 put("Accept", "application/json");
-                put("Cookie", cookie);
+                put("Cookie", token);
                 put("Authorization", "admin-admin");
             }
         }, body);
@@ -208,7 +208,7 @@ public class HTTPRequest {
         return sendWithData("POST", path, new HashMap<String, String>() {{
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+//            put("Cookie", cookie);
             //put("Authorization", "admin-admin");
         }}, body);
     }
@@ -218,7 +218,7 @@ public class HTTPRequest {
         return sendWithData("POST", path, new HashMap<String, String>() {{
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+//            put("Cookie", cookie);
             put("Authorization", token);
         }}, body);
     }
@@ -229,7 +229,7 @@ public class HTTPRequest {
         return sendWithData("PUT", path, new HashMap<String, String>() {{
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+//            put("Cookie", cookie);
         }}, body);
     }
     // HTTP PUT request
@@ -238,25 +238,27 @@ public class HTTPRequest {
         return sendWithData("PUT", path, new HashMap<String, String>() {{
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+            put("Cookie", HTTPRequest.this.token);
             put("Authorization", token);
         }}, body);
     }
     // HTTP PUT request
     public Map<String, Object> sendPatch(String path, String body) throws Exception {
 
-        return sendWithData("PATCH", path, new HashMap<String, String>() {{
+        return sendWithData("POST", path, new HashMap<String, String>() {{
+            put("X-HTTP-Method-Override", "PATCH");
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+//            put("Cookie", cookie);
         }}, body);
     }
     public Map<String, Object> sendPatch(String path, String body, String token) throws Exception {
 
-        return sendWithData("PATCH", path, new HashMap<String, String>() {{
+        return sendWithData("POST", path, new HashMap<String, String>() {{
+            put("X-HTTP-Method-Override", "PATCH");
             put("Content-Type", "application/json");
             put("Accept", "application/json");
-            put("Cookie", cookie);
+//            put("Cookie", cookie);
             put("Authorization", token);
         }}, body);
     }
@@ -265,7 +267,7 @@ public class HTTPRequest {
     public Map<String, Object> sendDelete(String path) throws Exception {
         return sendWithoutData("DELETE", path, "",null);
     }
-    public Map<String, Object> sendDeleteWithToen(String path, String token) throws Exception {
+    public Map<String, Object> sendDeleteWithToken(String path, String token) throws Exception {
         return sendWithoutData("DELETE", path, "",token);
     }
     public Map<String, Object> sendDelete(String path, String filter) throws Exception {

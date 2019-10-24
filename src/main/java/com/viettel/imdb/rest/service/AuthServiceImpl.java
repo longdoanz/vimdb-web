@@ -191,7 +191,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         //Pair<String, byte[]> pairUserPass = new Pair<>(username, password.getBytes());
         Pair<String, String> pairUserPass = new Pair<>(username, password);
         String token2 = IMDBClientToken.getToken(pairUserPass);
-        Logger.info("get token client {} {}",password.getBytes(), password.getBytes());
+//        Logger.info("get token client {} {}",password.getBytes(), password.getBytes());
         byte[] a = password.getBytes();
         System.out.println(a);
         for (byte b : a){

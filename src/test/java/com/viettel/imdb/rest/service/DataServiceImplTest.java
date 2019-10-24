@@ -92,7 +92,7 @@ public class DataServiceImplTest extends TestUtil {
         for(int i = 0; i < 255; i++) {
             tableName.append("a");
         }
-        Map res = http.sendGet(DATA_PATH + "/namespace" + "/TABLE_1" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4");
+        Map res = http.sendGetWithToken(DATA_PATH + "/namespace" + "/TABLE_1" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4", token);
         System.out.println(res);
     }
 
@@ -115,7 +115,7 @@ public class DataServiceImplTest extends TestUtil {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        Map res = http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, "key-03"), body2);
+        Map res = http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, "key-03"), body2, token);
         System.out.println(res);
         assertEquals(res.get("code"), HttpStatus.CREATED.value());
 

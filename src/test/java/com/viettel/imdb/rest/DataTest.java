@@ -16,7 +16,7 @@ public class DataTest {
     }
     @Test
     public void httpCookie() {
-        System.out.println(http.getCookie());
+        System.out.println(http.getToken());
     }
 
     @Test void getDataInfitest() throws Exception {
