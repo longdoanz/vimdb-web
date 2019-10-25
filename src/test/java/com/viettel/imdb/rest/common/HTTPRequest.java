@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.javafx.binding.StringFormatter;
 import net.openhft.chronicle.core.annotation.NotNull;
 
 import java.io.*;
@@ -8,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.viettel.imdb.rest.common.Common.LOGIN_PATH;
 
 /**
  * @author longdt20
@@ -29,7 +32,7 @@ public class HTTPRequest {
         }
     }
 
-    public HTTPRequest(@NotNull String host){
+    public HTTPRequest(@NotNull String host) {
         applyHost(host);
     }
 
@@ -39,48 +42,46 @@ public class HTTPRequest {
     }
 
     public void authorize(String username, String password) throws Exception {
-        URL obj = new URL(buildUri("authenticate"));
-        HttpURLConnection http = (HttpURLConnection) obj.openConnection();
-        http.setRequestMethod("POST");
 
-        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        http.setRequestProperty("Accept", "*/*");
-
-        http.setDoOutput(true);
-        OutputStream dataOut = http.getOutputStream();
-        dataOut.write(("username="+username+"&password="+password).getBytes());
-        dataOut.flush();
-        dataOut.close();
-        System.out.println("1. "+username+" "+password);
-
-        int res = http.getResponseCode();
-        /*if (res != 200) {
-            throw new Exception("LOGIN FAIL");
-        }*/
-
-        this.token = http.getHeaderField("Set-Cookie");
-        http.disconnect();
-        System.out.println("2. "+username+" "+password);
     }
 
-    public String getToken() {
-        return this.token;
-    }
-
+//    public void authorize(String username, String password) throws Exception {
+//        URL obj = new URL(buildUri(LOGIN_PATH));
+//        HttpURLConnection http = (HttpURLConnection) obj.openConnection();
+//        http.setRequestMethod("POST");
+//
+//        http.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//        http.setRequestProperty("Accept", "application/json");
+//
+//        http.setDoOutput(true);
+//        OutputStream dataOut = http.getOutputStream();
+//        dataOut.write(("username="+username+"&password="+password).getBytes());
+//        dataOut.flush();
+//        dataOut.close();
+//        System.out.println("1. "+username+" "+password);
+//
+//        int res = http.getResponseCode();
+//
+//        this.token = http.getHeaderField("Set-Cookie");
+//        http.disconnect();
+//        System.out.println("2. "+username+" "+password);
+//    }
+//
+//    public String getToken() {
+//        return this.token;
+//    }
 
 
     private String buildUri(String path) {
         return this.host + (path.startsWith("/") ? path.substring(1) : path);
-
     }
 
-    private String buildUri(String path, String queryString)  {
+    private String buildUri(String path, String queryString) {
         String uri = this.host + (path.startsWith("/") ? path.substring(1) : path);
-        if(queryString.isEmpty()) {
+        if (queryString.isEmpty()) {
             return uri;
         }
         return uri + "?" + queryString;
-
     }
 
     private Map<String, Object> sendWithoutData(String method, String path, String filter, String token) throws Exception {
@@ -100,8 +101,8 @@ public class HTTPRequest {
             in = http.getInputStream();
         } catch (IOException ioex) {
             in = http.getErrorStream();
-            if(in == null) {
-                return new HashMap<String, Object>(){{
+            if (in == null) {
+                return new HashMap<String, Object>() {{
                     put("code", code);
                     put("response", ioex.getMessage());
                 }};
@@ -117,11 +118,15 @@ public class HTTPRequest {
 
         buffer.close();
         http.disconnect();
-        return new HashMap<String, Object>(){{
+        return new HashMap<String, Object>() {{
             put("code", code);
             put("response", mapper.readTree(response.toString()));
         }};
 
+    }
+
+    public Map<String, Object> sendWithData(String method, String path, String body) throws Exception {
+        return sendWithData(method, path, null, body);
     }
 
     // HTTP request
@@ -129,10 +134,13 @@ public class HTTPRequest {
         URL obj = new URL(buildUri(path));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
         http.setRequestMethod(method);
+        http.setRequestProperty("Content-Type", "application/json");
+        http.setRequestProperty("Accept", "application/json");
 
-        for(String key : header.keySet()) {
-            http.setRequestProperty(key, header.get(key));
-        }
+        if(header != null)
+            for (String key : header.keySet()) {
+                http.setRequestProperty(key, header.get(key));
+            }
 
         http.setDoOutput(true);
         OutputStream dataOut = http.getOutputStream();
@@ -150,8 +158,8 @@ public class HTTPRequest {
             in = http.getInputStream();
         } catch (IOException ioex) {
             in = http.getErrorStream();
-            if(in == null) {
-                return new HashMap<String, Object>(){{
+            if (in == null) {
+                return new HashMap<String, Object>() {{
                     put("code", resCode);
                     put("response", ioex.getMessage());
                 }};
@@ -162,13 +170,13 @@ public class HTTPRequest {
 
         String inLine;
         StringBuilder response = new StringBuilder();
-        while((inLine = buffer.readLine()) != null) {
+        while ((inLine = buffer.readLine()) != null) {
             response.append(inLine);
         }
 
         buffer.close();
         http.disconnect();
-        return new HashMap<String, Object>(){{
+        return new HashMap<String, Object>() {{
             put("code", resCode);
             put("response", mapper.readTree(response.toString()));
         }};
@@ -179,6 +187,7 @@ public class HTTPRequest {
     public Map<String, Object> sendGet(String path) throws Exception {
         return sendWithoutData("GET", path, "", null);
     }
+
     public Map<String, Object> sendGetWithToken(String path, String token) throws Exception {
         return sendWithoutData("GET", path, "", token);
     }
@@ -186,15 +195,14 @@ public class HTTPRequest {
     public Map<String, Object> sendGet(String path, String filter) throws Exception {
         return sendWithoutData("GET", path, filter, null);
     }
+
     public Map<String, Object> sendGetWithToken(String path, String filter, String token) throws Exception {
         return sendWithoutData("GET", path, filter, token);
     }
 
     public Map<String, Object> sendGetwithBody(String path, String body) throws Exception {
-        return sendWithData("GET", path, new HashMap<String, String>(){
+        return sendWithData("GET", path, new HashMap<String, String>() {
             {
-                put("Content-Type", "application/json");
-                put("Accept", "application/json");
                 put("Cookie", token);
                 put("Authorization", "admin-admin");
             }
@@ -212,6 +220,7 @@ public class HTTPRequest {
             //put("Authorization", "admin-admin");
         }}, body);
     }
+
     // HTTP POST request
     public Map<String, Object> sendPost(String path, String body, String token) throws Exception {
 
@@ -232,6 +241,7 @@ public class HTTPRequest {
 //            put("Cookie", cookie);
         }}, body);
     }
+
     // HTTP PUT request
     public Map<String, Object> sendPut(String path, String body, String token) throws Exception {
 
@@ -242,6 +252,7 @@ public class HTTPRequest {
             put("Authorization", token);
         }}, body);
     }
+
     // HTTP PUT request
     public Map<String, Object> sendPatch(String path, String body) throws Exception {
 
@@ -252,6 +263,7 @@ public class HTTPRequest {
 //            put("Cookie", cookie);
         }}, body);
     }
+
     public Map<String, Object> sendPatch(String path, String body, String token) throws Exception {
 
         return sendWithData("POST", path, new HashMap<String, String>() {{
@@ -265,14 +277,17 @@ public class HTTPRequest {
 
     // HTTP DELETE request
     public Map<String, Object> sendDelete(String path) throws Exception {
-        return sendWithoutData("DELETE", path, "",null);
+        return sendWithoutData("DELETE", path, "", null);
     }
+
     public Map<String, Object> sendDeleteWithToken(String path, String token) throws Exception {
-        return sendWithoutData("DELETE", path, "",token);
+        return sendWithoutData("DELETE", path, "", token);
     }
+
     public Map<String, Object> sendDelete(String path, String filter) throws Exception {
         return sendWithoutData("DELETE", path, filter, null);
     }
+
     public Map<String, Object> sendDeleteWithToken(String path, String filter, String token) throws Exception {
         return sendWithoutData("DELETE", path, filter, token);
     }
