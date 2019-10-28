@@ -60,6 +60,8 @@ public class Utils {
     }
 
     public static String convertToIndexField(String fieldName) {
+        if(fieldName == null)
+            return "";
         return fieldName.startsWith("$.") ? fieldName : "$." + fieldName;
     }
 

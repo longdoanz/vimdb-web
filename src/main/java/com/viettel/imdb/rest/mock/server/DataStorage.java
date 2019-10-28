@@ -2,12 +2,18 @@ package com.viettel.imdb.rest.mock.server;
 
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
+import com.viettel.imdb.common.Filter;
+import com.viettel.imdb.common.KeyRecord;
 import com.viettel.imdb.common.Record;
+import com.viettel.imdb.rest.exception.ExceptionType;
+import com.viettel.imdb.secondaryindex.ResultSet;
 import io.trane.future.Future;
 import io.trane.future.Promise;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 public class DataStorage implements Storage{
 
@@ -54,8 +60,26 @@ public class DataStorage implements Storage{
         if(data.get(tableName) == null) {
             future.setException(new ClientException(ErrorCode.TABLE_NOT_EXIST));
         } else {
+            Record record = data.get(tableName).data.get(key);
+            if(record == null)
+                future.setException(new ClientException(ErrorCode.KEY_NOT_EXIST));
             future.setValue(data.get(tableName).data.get(key));
         }
+        return future;
+    }
+
+    @Override
+    public Future<ResultSet<KeyRecord>> scan(Filter filter, List<String> fields, BiConsumer<String, Record> handler) {
+        Promise<ResultSet<KeyRecord>> future = Promise.apply();
+        TableData res = data.get(filter.getTableName());
+        if(res == null) {
+            throw new ExceptionType.BadRequestError(ErrorCode.TABLE_NOT_EXIST, "Table not found");
+        }
+        res.data.keySet().forEach((key) -> {
+            handler.accept(key, res.data.get(key));
+        });
+        future.setValue(null);
+
         return future;
     }
 
@@ -89,6 +113,7 @@ public class DataStorage implements Storage{
         if(data.get(tableName) == null) {
             future.setException(new ClientException(ErrorCode.TABLE_NOT_EXIST));
         } else {
+
             data.get(tableName).delete(key);
             future.setValue(null);
         }

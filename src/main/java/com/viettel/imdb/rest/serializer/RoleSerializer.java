@@ -18,14 +18,22 @@ import java.util.List;
 
 public class RoleSerializer extends JsonSerializer<Role> {
 
-    public static final IMDBEncodeDecoder encodeDecoder = IMDBEncodeDecoder.getInstance();
+    static final String ROLE_NAME_FIELD = "name";
+    static final String PRIVILEGES_FIELD = "privileges";
+    static final String PERMISSION_FIELD = "permission";
+    static final String RESOURCE_FIELD = "resource";
+    static final String RESOURCE_NAME_FIELD = "name";
+    private static final String NAMESPACE_FIELD = "namespace";
+    static final String TABLE_FIELD = "table";
+    static final String DATA_FIELD = "data";
+    static final String USER_FIELD = "user";
 
     @Override
     public void serialize(Role role, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeFieldName("roleName");
+        jsonGenerator.writeFieldName(ROLE_NAME_FIELD);
         jsonGenerator.writeString(role.getRolename());
-        jsonGenerator.writeFieldName("privileges");
+        jsonGenerator.writeFieldName(PRIVILEGES_FIELD);
         jsonGenerator.writeStartArray();
 
         for(String privilege : role.getPrivilegeList()) {
@@ -33,25 +41,24 @@ public class RoleSerializer extends JsonSerializer<Role> {
 
             if(lst.length > 0) {
                 jsonGenerator.writeStartObject();
-                jsonGenerator.writeFieldName("permission");
+                jsonGenerator.writeFieldName(PERMISSION_FIELD);
                 jsonGenerator.writeString(lst[0]);
             }
 
             if(lst.length > 1) {
-                jsonGenerator.writeFieldName("resource");
+                jsonGenerator.writeFieldName(RESOURCE_FIELD);
                 jsonGenerator.writeStartObject();
-                jsonGenerator.writeFieldName("name");
+                jsonGenerator.writeFieldName(RESOURCE_NAME_FIELD);
                 jsonGenerator.writeString(lst[1]);
                 if(lst.length == 3) {
-                    if(lst[1].equalsIgnoreCase("data")) {
-                        jsonGenerator.writeFieldName("namespace");
-                        jsonGenerator.writeString("namespace");
-                        jsonGenerator.writeFieldName("table");
-                        jsonGenerator.writeString(lst[2]);
+                    if(lst[1].equalsIgnoreCase(DATA_FIELD)) {
+                        jsonGenerator.writeFieldName(NAMESPACE_FIELD);
+                        jsonGenerator.writeString("NAMESPACE");
+                        jsonGenerator.writeFieldName(TABLE_FIELD);
                     } else {
-                        jsonGenerator.writeFieldName("user");
-                        jsonGenerator.writeString(lst[2]);
+                        jsonGenerator.writeFieldName(USER_FIELD);
                     }
+                    jsonGenerator.writeString(lst[2]);
                 }
                 jsonGenerator.writeEndObject();
             }
@@ -62,18 +69,6 @@ public class RoleSerializer extends JsonSerializer<Role> {
 
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
-        /*
-        role.getValue().forEach(field -> {
-            try {
-                JsonNode jsonNode = encodeDecoder.decodeJsonNode(field.getFieldValue());
-                jsonGenerator.writeFieldName(field.getFieldName().replace("$.", ""));
-                jsonGenerator.writeRawValue(jsonNode.toString());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        jsonGenerator.writeEndObject();*/
     }
 }
 

@@ -1,16 +1,20 @@
 package com.viettel.imdb.rest.mock.server;
 
 import com.viettel.imdb.cluster.Cluster;
+import com.viettel.imdb.common.Filter;
+import com.viettel.imdb.common.KeyRecord;
 import com.viettel.imdb.common.Record;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.NamespaceInformation;
 import com.viettel.imdb.rest.model.UserInfo;
+import com.viettel.imdb.secondaryindex.ResultSet;
 import io.trane.future.Future;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiConsumer;
 
 public class ClusterSimulator implements Storage, Security {
     private final String NS_DEFAULT = "namespace";
@@ -174,6 +178,11 @@ public class ClusterSimulator implements Storage, Security {
     @Override
     public Future<Record> select(String tableName, String key) {
         return storage.select(tableName, key);
+    }
+
+    @Override
+    public Future<ResultSet<KeyRecord>> scan(Filter filter, List<String> fields, BiConsumer<String, Record> handler) {
+        return storage.scan(filter, fields, handler);
     }
 
     @Override

@@ -22,6 +22,12 @@ public class ExceptionType {
             this.error = ErrorCode.INTERNAL_ERROR;
         }
 
+        public VIMDBRestClientError(Enum error, String format) {
+            super(format);
+            this.message = format;
+            this.error = error;
+        }
+
         public VIMDBRestClientError() {
             this("Rest Client error");
         }
@@ -118,6 +124,26 @@ public class ExceptionType {
         @Override
         public HttpStatus getStatusCode() {
             return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+
+
+    public static class BadRequestError extends VIMDBRestClientError {
+        public BadRequestError() {
+            this("Bad Request");
+        }
+
+        public BadRequestError(String message) {
+            super(message);
+        }
+
+        public BadRequestError(Enum error, String message) {
+            super(error, message);
+        }
+
+        @Override
+        public HttpStatus getStatusCode() {
+            return HttpStatus.BAD_REQUEST;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest.common;
 
 import com.viettel.imdb.rest.exception.ExceptionType;
+import com.viettel.imdb.rest.exception.RestErrorCode;
 
 /**
  * @author quannh22
@@ -9,6 +10,7 @@ import com.viettel.imdb.rest.exception.ExceptionType;
 public class RestValidator {
     public static void validateNamespace(String namespace) {
         if(!namespace.equals("namespace"))
-            throw new ExceptionType.VIMDBRestClientError("namespace must be \"namespace\" by now");
+            throw new ExceptionType.BadRequestError(RestErrorCode.NAMESPACE_NOT_EXIST,
+                    "namespace must be \"namespace\" by now");
     }
 }

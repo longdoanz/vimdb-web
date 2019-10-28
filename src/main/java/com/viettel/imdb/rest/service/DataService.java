@@ -52,7 +52,7 @@ public interface DataService {
 
     DeferredResult<ResponseEntity<?>> replace(IMDBClient client, String namespace, String tableName, String key, String json);
 
-    DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, RestScanModel restScanModel);
+    DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, String filter, List<String> fields);
 
     DeferredResult<ResponseEntity<?>> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList);
 

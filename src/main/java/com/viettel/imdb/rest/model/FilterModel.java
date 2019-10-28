@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.common.Filter;
 import com.viettel.imdb.rest.RestErrorCode;
 import com.viettel.imdb.rest.common.Utils;
+import com.viettel.imdb.rest.exception.ExceptionType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class FilterModel {
         try {
             jsonNode = new ObjectMapper().readTree(filter);
         } catch (IOException e1) {
-            return RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT;
+            throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT,
+                    "Filter Not in correct format");
         }
 
         AtomicInteger keyCount = new AtomicInteger();
@@ -44,7 +46,8 @@ public class FilterModel {
             keyCount.getAndIncrement();
         });
         if (keyCount.get() != 1) {
-            return RestErrorCode.ONLY_SUPPORT_ONE_FIELD;
+            throw new ExceptionType.BadRequestError(RestErrorCode.ONLY_SUPPORT_ONE_FIELD,
+                    "Currently only support one field");
         }
         JsonNode value = jsonNode.get(fieldName);
         if (value.isInt()) {
@@ -58,14 +61,16 @@ public class FilterModel {
             value.fieldNames().forEachRemaining(listKey::add);
 
             if (listKey.size() != 1) {
-                return RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT;
+                throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT,
+                        "Filter Not in correct format");
             }
 
             String subKey = listKey.get(0);
             return processContainerNode(value, subKey);
 
         } // if value not in [integer, json node] -> return error
-        return RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT;
+        throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT,
+                "Filter Not in correct format");
     }
 
     private RestErrorCode processContainerNode(JsonNode data, String key) {
@@ -74,7 +79,8 @@ public class FilterModel {
                 case $BT:
                     JsonNode value = data.get(key);
                     if (!value.isArray()) {
-                        return RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT;
+                        throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT,
+                                "Filter Not in correct format");
                     }
 
                     List<Integer> range = new ArrayList<>();
@@ -82,7 +88,8 @@ public class FilterModel {
                         range.add(node.intValue());
                     }
                     if (range.size() != 2) {
-                        return RestErrorCode.FILTER_RANGE_INVALID;
+                        throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_RANGE_INVALID,
+                                "Filter range invalid");
                     } else {
                         start = range.get(0);
                         end = range.get(1);
@@ -92,7 +99,8 @@ public class FilterModel {
         } catch (Exception ignored) {
             System.out.println(ignored.getMessage());
         }
-        return RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT;
+        throw new ExceptionType.BadRequestError(RestErrorCode.FILTER_NOT_IN_CORRECT_FORMAT,
+                "Filter not in correct format");
     }
 
 

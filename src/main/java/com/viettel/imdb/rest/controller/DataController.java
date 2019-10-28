@@ -5,6 +5,7 @@ import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.model.FilterModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
@@ -84,7 +85,7 @@ public class DataController {
     }
     
 
-    @RequestMapping(method = RequestMethod.GET, value = "/")
+    @RequestMapping(method = RequestMethod.GET, value = "")
     @ApiOperation(value = SCAN_NAMESPACE_NOTES, nickname = "scan")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public ResponseEntity<?> getDataInfo() {
@@ -158,6 +159,7 @@ public class DataController {
         return service.dropTable(IMDBClientToken.getClient(getToken()), namespace, tableName);
     }
 
+/*
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}")
     @ApiOperation(value = CREATE_INDEX_NOTES, nickname = "createIndex")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
@@ -173,7 +175,7 @@ public class DataController {
     }
 
     // TODO COMMENT OUT DROP INDEX NEED REVERSE
-/*
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}/{indexname}")
     @ApiOperation(value = DROP_INDEX_NOTES, nickname = "dropIndex")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -293,13 +295,13 @@ public class DataController {
     public DeferredResult<ResponseEntity<?>> scan(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
-            @ApiParam(required = true, value = SCAN_MODEL_NOTES) @RequestBody RestScanModel restScanModel,
-            @ApiIgnore @RequestParam Map<String, String> requestParams) {
+            @ApiParam(value = SCAN_MODEL_NOTES) @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "fields", defaultValue = "") List<String> fields) {
 
-        restScanModel.setNamespace(namespace);
-        restScanModel.setTable(tableName);
-        Logger.info("scan({}, {}, {}", namespace, tableName, restScanModel);
-        return service.scan(IMDBClientToken.getClient(getToken()), namespace, tableName, restScanModel);
+//        restScanModel.setNamespace(namespace);
+//        restScanModel.setTable(tableName);
+        Logger.error("scan({}, {}, {}", namespace, tableName, filter);
+        return service.scan(IMDBClientToken.getClient(getToken()), namespace, tableName, filter, fields);
     }
 
 

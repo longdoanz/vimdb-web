@@ -5,14 +5,13 @@ import com.viettel.imdb.rest.model.CallbackResponse;
 import com.viettel.imdb.rest.model.ProcessStatus;
 import com.viettel.imdb.rest.model.RestoreRequest;
 import org.pmw.tinylog.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
-import sun.rmi.runtime.Log;
 
-import javax.validation.OverridesAttribute;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 public class BackupRestoreServiceImpl implements BackupRestoreService {

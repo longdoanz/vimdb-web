@@ -76,7 +76,7 @@ public class ClientSimulator implements IMDBClient {
 
     @Override
     public Future<ResultSet<KeyRecord>> scan(Filter filter, List<String> fieldNameList, BiConsumer<String, Record> recordHandler, boolean accumulate) {
-        return null;
+        return cluster.scan(filter, fieldNameList, recordHandler);
     }
 
     @Override

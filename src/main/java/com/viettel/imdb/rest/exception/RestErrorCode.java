@@ -8,7 +8,7 @@ package com.viettel.imdb.rest.exception;
 public enum RestErrorCode {
     SOMETHING_WENT_WRONG,
     OK,
-    DATABASE_NOT_EXIST,
+    NAMESPACE_NOT_EXIST,
     ONLY_SUPPORT_ONE_FIELD,
     PARAMETER_RECORD_REQUIRED,
     PARAMETER_KEY_REQUIRED,

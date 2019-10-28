@@ -1,20 +1,22 @@
 package com.viettel.imdb.rest.service;
 
 
-//import com.facebook.presto.sql.parser.SqlParser;
+import com.facebook.presto.sql.parser.SqlParser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.IMDBClient;
-import com.viettel.imdb.common.Field;
-import com.viettel.imdb.common.Record;
-import com.viettel.imdb.common.ValueType;
+import com.viettel.imdb.common.*;
 import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
+import com.viettel.imdb.rest.model.FilterModel;
 import com.viettel.imdb.rest.util.StatisticClient;
+import com.viettel.imdb.secondaryindex.ResultSet;
+import io.trane.future.CheckedFutureException;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.viettel.imdb.rest.common.Utils.restResultToDeferredResult;
@@ -35,7 +39,7 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 class DataServiceImpl implements DataService {
-//    SqlParser sqlParser = new SqlParser();
+    SqlParser sqlParser = new SqlParser();
 
     private final IMDBClient client;
     // todo add StatisticClient here
@@ -272,8 +276,27 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, RestScanModel restScanModel) {
-        return null;
+    public DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, String filter, List<String> fields) {
+        RestValidator.validateNamespace(namespace);
+
+        FilterModel filterModel = new FilterModel();
+        if(filter != null)
+            filterModel.setData(filter);
+
+        List<KeyRecord> res = new ArrayList<>();
+
+        try {
+            client.scan(filterModel.getFilterRange(tableName), fields, (key, record) -> {
+                res.add(new KeyRecord(key, record));
+            }, false).get(Duration.ofMinutes(1));
+        } catch (CheckedFutureException e) {
+            e.printStackTrace();
+            throw new ExceptionType.VIMDBRestClientError(e.getMessage());
+        }
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        returnValue.setResult(new ResponseEntity<>(res, HttpStatus.OK));
+        return returnValue;
     }
 
     @Override
@@ -299,6 +322,13 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> cmd(IMDBClient client, JsonNode req) {
+        String cmd = req.get("cmd").asText();
+
+        if(cmd == null) {
+            throw new ExceptionType.BadRequestError();
+        }
+        sqlParser.createStatement(cmd);
+
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
         ObjectMapper mapper = new ObjectMapper();
 
