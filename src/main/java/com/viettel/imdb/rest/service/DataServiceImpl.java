@@ -350,7 +350,7 @@ class DataServiceImpl implements DataService {
                 "        {\n" +
                 "      " +
                 "    \"name\": \"Record 02\",\n" +
-                "          \"value\": \"tooooooooooooooooooooooooooo long value\"\n" +
+                "          \"value\": \"tooooooooooooooooooooooooooo long value 2\"\n" +
                 "        }\n" +
                 "      ]\n" +
                 "    }\n" +
