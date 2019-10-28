@@ -51,9 +51,10 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
     }
 
     @Override
-    public DeferredResult<?> backupProcessStatus(int processId) {
+    public DeferredResult<?> backupProcessStatus(String process) {
         //Timer timer = new Timer();
 
+        long processId = Long.parseLong(process);
         StateProcess state = processState.get(processId);
         DeferredResult returnValue = new DeferredResult<>();
 

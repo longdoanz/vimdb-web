@@ -7,7 +7,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 public interface BackupRestoreService {
     DeferredResult<ResponseEntity<?>> backup(BackupRequest request);
-    DeferredResult<?> backupProcessStatus(int process);
+    DeferredResult<?> backupProcessStatus(String process);
 
     DeferredResult<ResponseEntity<?>> restore(RestoreRequest request);
     DeferredResult<ResponseEntity<?>> restoreProcessStatus(String process);
