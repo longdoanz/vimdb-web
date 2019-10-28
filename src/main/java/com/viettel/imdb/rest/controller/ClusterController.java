@@ -73,7 +73,8 @@ public class ClusterController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> addNode(
-            @ApiParam(required = true, value = ADD_CLUSTER_NODE_REQUEST_NOTES) @RequestBody AddClusterNodeRequest request
+            @ApiParam(required = true, value = ADD_CLUSTER_NODE_REQUEST_NOTES,
+                    example = "{'inDoubt': false, 'message': 'A 12312312' }") @RequestBody AddClusterNodeRequest request
     ) {
         return service.addNode(request);
     }

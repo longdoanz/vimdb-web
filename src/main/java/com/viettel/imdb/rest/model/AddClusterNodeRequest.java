@@ -25,6 +25,7 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterNodeSSHInfo", description = "ssh info including ip, username and raw password")
+    private static
     class ClusterNodeSSHInfo {
         @ApiModelProperty(value = "Host ip", example = "172.16.28.123")
         private String ip;
@@ -40,7 +41,7 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "NewClusterNodeServerInfo", description = "vIMDB server configuration")
-    public
+    public static
     class NewClusterNodeServerInfo {
         @ApiModelProperty(value = "Server host", example = "172.16.28.123:12345")
         private String host;
@@ -67,6 +68,7 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterAuthenInfo", description = "Cluster authentication info")
+    static
     class ClusterAuthenInfo {
         @ApiModelProperty(value = "Need authen or not", example = "true")
         private boolean needAuthen;
@@ -82,6 +84,7 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterOverridedCOnfig", description = "Override the whole config")
+    static
     class ClusterNodeOverridedConfig {
         @ApiModelProperty(value = "Overrided or not", example = "true")
         private boolean overrided;

@@ -1,3 +1,4 @@
+/*
 package com.viettel.imdb.rest.model;
 
 import io.swagger.annotations.ApiModel;
@@ -20,3 +21,4 @@ public class AuditLog {
     @ApiModelProperty(value= "Time", example = "123124")
     private String Time;
 }
+*/

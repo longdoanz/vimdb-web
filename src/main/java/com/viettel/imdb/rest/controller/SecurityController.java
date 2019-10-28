@@ -269,7 +269,7 @@ public class SecurityController {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200,
-                    response = AuditLog.class,
+//                    response = AuditLog.class,
                     message = "OK",
                     responseContainer = "List"
                     //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
