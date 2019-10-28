@@ -5,6 +5,7 @@ import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
+import com.viettel.imdb.rest.model.UDFInfo;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
 import com.viettel.imdb.rest.util.SimulatorMonitorStatisticClient;
 import com.viettel.imdb.rest.util.StatisticClient;
@@ -107,8 +108,8 @@ public class Config extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()/// todo need to disable this to edit data (PUT/POST/DELETE)
                 .authorizeRequests()
-//                .antMatchers(AUTH_WHITELIST)
-//                .permitAll()
+                .antMatchers(AUTH_WHITELIST)
+                .permitAll()
 //                .anyRequest().authenticated()
 //                .and()
 //                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
@@ -163,6 +164,14 @@ public class Config extends WebSecurityConfigurerAdapter {
         cluster.setNodes(nodes);
 
         return cluster;
+    }
+
+    @Bean
+    public List<UDFInfo> udfInfoList() throws Exception {
+//        IMDBClient imdbClient = new JavaClient(host, new ClientConfig(securityEnabled, username, password));
+//        imdbClient.echo(1).get(Duration.ofDays(1)); // todo do i need to do it here??
+
+        return new ArrayList<UDFInfo>();
     }
 
     @Bean

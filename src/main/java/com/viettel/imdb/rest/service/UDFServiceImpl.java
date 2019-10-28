@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.rest.model.*;
 import org.pmw.tinylog.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,12 @@ import java.util.List;
 @Service
 public class UDFServiceImpl implements UDFService{
 
-    List<UDFInfo> UDFList = new ArrayList<UDFInfo>();
+    List<UDFInfo> UDFList;
     UDFRespone udfRespone = new UDFRespone(UDFList);
+    @Autowired
+    public UDFServiceImpl(List<UDFInfo> udfInfoList) {
+        this.UDFList = udfInfoList;
+    }
 
 
     @Override
@@ -31,14 +36,14 @@ public class UDFServiceImpl implements UDFService{
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> insertUDF(InsertUDFRequest request) {
+    public DeferredResult<ResponseEntity<?>> insertUDF(String udf_name, InsertUDFRequest request) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            if(request.getFileName().equals(UDFList.get(index).getFileName())) break;
+            if(udf_name.equals(UDFList.get(index).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if(index == UDFList.size()){
-            UDFInfo newUDF = new UDFInfo(request.getFileName(), request.getType(),request.isSyncedOnAllNodes(), System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
+            UDFInfo newUDF = new UDFInfo(udf_name, request.getType(),true, System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
             UDFList.add(newUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;
@@ -52,13 +57,18 @@ public class UDFServiceImpl implements UDFService{
     public DeferredResult<ResponseEntity<?>> updateUDF(String udf_name, EditUDFRequest request) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            if(udf_name.equals(UDFList.get(index).udf_name())) break;
+            if(udf_name.equals(UDFList.get(index).getName())) break;
+        }
+        int index_newName = 0;
+        for(index_newName = 0; index_newName < UDFList.size(); index_newName++){
+            if(request.getName().equals(UDFList.get(index_newName).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        if (index < UDFList.size()){
-            UDFInfo updateUDF = new UDFInfo(request.getFileName(), request.getType(),request.isSyncedOnAllNodes(), UDFList.get(index).getCreateon(),System.currentTimeMillis(), request.getContent());
+
+        if (index < UDFList.size() && index_newName == UDFList.size()){
+            UDFInfo updateUDF = new UDFInfo(request.getName(), request.getType(),true, UDFList.get(index).getCreatedOn(),System.currentTimeMillis(), request.getContent());
             UDFList.set(index, updateUDF);
-            returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
+            returnValue.setResult(new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
             return returnValue;
         }
 
@@ -67,18 +77,18 @@ public class UDFServiceImpl implements UDFService{
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> delete(String udfname) {
+    public DeferredResult<ResponseEntity<?>> delete(String udf_name) {
         int index = 0;
         for(index = 0; index < UDFList.size(); index++){
-            System.out.println("udf_name: "+ UDFList.get(index).udf_name());
-            if(udfname.equals(UDFList.get(index).udf_name())) break;
+            System.out.println("udf_name: "+ UDFList.get(index).getName());
+            if(udf_name.equals(UDFList.get(index).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         if (index < UDFList.size()){
-            UDFInfo updateUDF = new UDFInfo();
+            //UDFInfo updateUDF = new UDFInfo();
             UDFList.remove(index);
 
-            returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
+            returnValue.setResult(new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
             return returnValue;
         }
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));

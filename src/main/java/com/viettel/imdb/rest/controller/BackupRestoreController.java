@@ -63,8 +63,8 @@ public class BackupRestoreController {
             // other @ApiResponses
     })
     public DeferredResult<?> backupProcessStatus(
+            //@ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") int process
             @ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") String process
-            //@ApiParam(required = true, value = PROCESS_NOTES) @PathVariable(value = "process") String process
     ) {
         return service.backupProcessStatus(process);
     }

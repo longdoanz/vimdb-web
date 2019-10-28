@@ -16,7 +16,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ClientException.class})
-    public ResponseEntity<Object> handleVIMDBError(ClientException ex) {
+    public ResponseEntity<Object> handleClientException(ClientException ex) {
+        System.err.println("__________________--------------- AFHAF ----------------");
         return new ResponseEntity<>(new RestClientError(ex), getStatusCodeFromException(ex));
     }
 

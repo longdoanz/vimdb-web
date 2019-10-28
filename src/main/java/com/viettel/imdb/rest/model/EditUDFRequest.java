@@ -11,13 +11,11 @@ import lombok.*;
 @ToString
 @ApiModel(value="EditUDFRequest", description = "  ")
 public class EditUDFRequest {
-    @ApiModelProperty(value = "fileName", example = "")
-    private String fileName;
-    @ApiModelProperty(value = " type", example = "")
+    @ApiModelProperty(value = "name", example = "BalanceUpdateTrigger")
+    private String name;
+    @ApiModelProperty(value = "type", example = "LUA")
     private UDFType type;
-    @ApiModelProperty(value = " syncedOnAllNodes", example = "")
-    private boolean syncedOnAllNodes;
-    @ApiModelProperty(value = " content", example = "")
+    @ApiModelProperty(value = " content", example = "TOO LONG TO DISPLAY HERE")
     private String content;
 //    public void setName(String udf_name){
 //        this.fileName = udf_name +"."+type;

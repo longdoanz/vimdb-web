@@ -12,11 +12,9 @@ import java.util.List;
 @ToString
 @ApiModel(value="RestoreRequest", description = "Request to remove a node to the current managed cluster")
 public class RestoreRequest {
-    @ApiModelProperty(value = " clusterAuthInfo", example = "")
-    private ClusterAuthInfo clusterAuthInfo;
-    @ApiModelProperty(value = " clusterNodeSSHInfo", example = "")
-    private ClusterNodeSSHInfo clusterNodeSSHInfo;
-    @ApiModelProperty(value = " restoreConfig", example = "")
+    @ApiModelProperty(value = "clusterNodeSSHInfo", example = "")
+    private ClusterNodeSSHInfo restoreClient;
+    @ApiModelProperty(value = "restoreConfig", example = "")
     private RestoreConfig restoreConfig;
 
 
@@ -31,7 +29,7 @@ public class RestoreRequest {
         private boolean needAuthen;
         @ApiModelProperty(value = "username of cluster", example = "admin")
         private String username;
-        @ApiModelProperty(value = "password of tcluster", example = "admin")
+        @ApiModelProperty(value = "password of tcluster", example = "1")
         private String password;
     }
 
@@ -43,7 +41,7 @@ public class RestoreRequest {
     @ApiModel(value = "ClusterNodeSSHInfo", description = "ssh info including ip, username and raw password")
     class ClusterNodeSSHInfo {
         @ApiModelProperty(value = " Host ip", example = "172.16.28.123")
-        private String ip;
+        private String host;
         @ApiModelProperty(value = "username of the machine", example = "admin")
         private String username;
         @ApiModelProperty(value = "password of the machine", example = "admin")
@@ -55,17 +53,17 @@ public class RestoreRequest {
     @Getter
     @Setter
     @ToString
-    @ApiModel(value = "RestoreConfig", description = "BackupConfig")
+    @ApiModel(value = "RestoreConfig", description = "RestoreConfig")
     class RestoreConfig {
-        @ApiModelProperty(value = " isPartionRange", example = " ")
-        private boolean isPartionRange;
-        @ApiModelProperty(value = " partionRangeStart", example = " ")
+        @ApiModelProperty(value = "isPartionRange", example = "true")
+        private boolean isPartitionRange;
+        @ApiModelProperty(value = "partionRangeStart", example = "4095")
         private int partionRangeStart;
-        @ApiModelProperty(value = " backupPartionEnd", example = " ")
+        @ApiModelProperty(value = "backupPartionEnd", example = " ")
         private int backupPartionEnd;
-        @ApiModelProperty(value = " partionList", example = "1")
-        private List<Integer> partionList;
-        @ApiModelProperty(value = " restoreDirectory", example = " ")
+        @ApiModelProperty(value = "partionList", example = "[1, 10, 20, 12, 123, 2, 1, 2]")
+        private List<Integer> parittionList;
+        @ApiModelProperty(value = "restoreDirectory", example = "/home/imdb/backup/")
         private String restoreDirectory;
     }
 }

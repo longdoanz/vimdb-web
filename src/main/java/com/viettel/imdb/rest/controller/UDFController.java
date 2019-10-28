@@ -72,8 +72,7 @@ public class UDFController {
             @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udf_name,
             @ApiParam(required = true, value = ADD_UDF_NOTES) @RequestBody InsertUDFRequest request
     ) {
-        request.setFileName(udf_name+"."+request.getType());
-        return service.insertUDF(request);
+        return service.insertUDF(udf_name, request);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{udf_name}")

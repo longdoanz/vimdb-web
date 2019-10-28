@@ -29,6 +29,8 @@ public interface Security {
      * Change user password
      *
      * @param username input username
+
+
      * @param newPassword new password
      * @return result wrapped by {@link Future}
      */

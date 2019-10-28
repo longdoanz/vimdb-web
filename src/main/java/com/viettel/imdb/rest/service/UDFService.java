@@ -7,7 +7,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 public interface UDFService {
     DeferredResult<ResponseEntity<?>> getUDFs();
-    DeferredResult<ResponseEntity<?>> insertUDF(InsertUDFRequest request);
+    DeferredResult<ResponseEntity<?>> insertUDF(String udf_name, InsertUDFRequest request);
     DeferredResult<ResponseEntity<?>> updateUDF(String udf_name, EditUDFRequest request);
-    DeferredResult<ResponseEntity<?>> delete(String udfname);
+    DeferredResult<ResponseEntity<?>> delete(String udf_name);
 }

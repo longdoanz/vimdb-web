@@ -4,18 +4,20 @@ import com.viettel.imdb.rest.model.BackupRequest;
 import com.viettel.imdb.rest.model.CallbackResponse;
 import com.viettel.imdb.rest.model.ProcessStatus;
 import com.viettel.imdb.rest.model.RestoreRequest;
+import org.pmw.tinylog.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
+import sun.rmi.runtime.Log;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import javax.validation.OverridesAttribute;
+import java.util.*;
 
 @Service
 public class BackupRestoreServiceImpl implements BackupRestoreService {
     private final String COMPLETED = "completed";
-    private final String FAIL = "failed";
+    private final String FAIL = "fail";
     private final String PROCESSING = "processing";
     class StateProcess{
         String stateStatus;
@@ -30,7 +32,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
             this.timeProcess = timeProcess;
         }
     }
-    Map<Long, StateProcess> processState = new HashMap<>();
+    Map<Long, StateProcess> processState = new HashMap<Long, StateProcess>();
     @Override
     public DeferredResult<ResponseEntity<?>> backup(BackupRequest request) {
         System.out.println("akejfbkajwebfk");
@@ -38,31 +40,26 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
         long backupProcessid = random.nextLong();
         if (backupProcessid < 0) backupProcessid = -backupProcessid;
 
-        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(50000)+20000);
+        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(60000)+10000);
         processState.put(backupProcessid, stateProcess);
         //String callback = "/v1/tool/backup?process="+backupProcessid;
         String callback = String.valueOf(backupProcessid);
         System.out.println("callback: "+ callback);
         System.out.println("State: timeProcess"+ stateProcess.timeProcess +" timeout" + stateProcess.timeout);
-        CallbackResponse callbackResponse = new CallbackResponse("/v1/tool/backup?process="+callback);
+        CallbackResponse callbackResponse = new CallbackResponse("backup?process="+callback);
         DeferredResult returnValue = new DeferredResult<>();
         returnValue.setResult(callbackResponse);
         return returnValue;
     }
 
     @Override
-    public DeferredResult<?> backupProcessStatus(String process) {
+    public DeferredResult<ResponseEntity<?>> backupProcessStatus(String process) {
         //Timer timer = new Timer();
 
         long processId = Long.parseLong(process);
+        Logger.info(process);
         StateProcess state = processState.get(processId);
         DeferredResult returnValue = new DeferredResult<>();
-
-        if(state == null) {
-            returnValue.setResult(new ProcessStatus(COMPLETED));
-            return returnValue;
-        }
-
         String status = state.stateStatus;
         if(state.stateStatus.equals("failed")){
             //returnValue.setResult("failed");
@@ -94,13 +91,13 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
         Random random = new Random();
         long restoreProcessid = random.nextLong();
         if(restoreProcessid < 0) restoreProcessid = -restoreProcessid;
-        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(50000)+20000);
+        StateProcess stateProcess = new StateProcess("processing", System.currentTimeMillis(), random.nextInt(60000)+20000, random.nextInt(60000)+10000);
         processState.put(restoreProcessid, stateProcess);
         //String callback = "/v1/tool/restore?process="+restoreProcessid;
         String callback = String.valueOf(restoreProcessid);
         System.out.println("callback: "+ callback);
         System.out.println("State: timeProcess"+ stateProcess.timeProcess +" timeout" + stateProcess.timeout);
-        CallbackResponse callbackResponse = new CallbackResponse("/v1/tool/restore?process="+callback);
+        CallbackResponse callbackResponse = new CallbackResponse("restore?process="+callback);
         DeferredResult returnValue = new DeferredResult<>();
         returnValue.setResult(callbackResponse);
         return returnValue;

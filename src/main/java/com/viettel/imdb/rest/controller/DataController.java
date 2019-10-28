@@ -87,15 +87,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/")
     @ApiOperation(value = SCAN_NAMESPACE_NOTES, nickname = "scan")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public ResponseEntity<?> getDataInfo() {
 
 //        Logger.info("Get data info token {}", token);
@@ -106,15 +97,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "")
     @ApiOperation(value = CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 444,
-                    response = RestClientError.class,
-                    message = "Table exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> createNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
@@ -125,14 +107,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}")
     @ApiOperation(value = GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
     @ResponseStatus(value = HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 666,
-                    response = RestClientError.class,
-                    message = "Failed",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-    })
     public DeferredResult<ResponseEntity<?>> getTableList(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
@@ -142,14 +116,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
     @ApiOperation(value = DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 666,
-                    response = RestClientError.class,
-                    message = "Drop not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-    })
     public DeferredResult<ResponseEntity<?>> dropNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
@@ -160,14 +126,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}")
     @ApiOperation(value = UPDATE_NAMESPACE_NOTES, nickname = "updateNamespace")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-    })
     public DeferredResult<ResponseEntity<?>> updateNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
@@ -181,15 +139,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}")
     @ApiOperation(value = CREATE_TABLE_NOTES, nickname = "createTable")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 444,
-                    response = RestClientError.class,
-                    message = "Table exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> createTable(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @RequestBody TableModel tableName) {
@@ -201,15 +150,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}")
     @ApiOperation(value = DROP_TABLE_NOTES, nickname = "dropTable")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 666,
-                    response = RestClientError.class,
-                    message = "Table not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> dropTable(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName) {
@@ -221,15 +161,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}")
     @ApiOperation(value = CREATE_INDEX_NOTES, nickname = "createIndex")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 555,
-                    response = RestClientError.class,
-                    message = "Index exists",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> createIndex(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
@@ -268,15 +199,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = SELECT_NOTES, nickname = "select")
     @ResponseStatus(HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> select(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable(value = "tablename") String tableName,
@@ -291,15 +213,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = INSERT_FIELD_LIST_NOTES, nickname = "insertFieldList")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key exists",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> insert(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
@@ -338,15 +251,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = UPDATE_FIELD_LIST_NOTES, nickname = "updateFieldList")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> update(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
@@ -362,15 +266,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = DELETE_NOTES, nickname = "delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     @ApiIgnore
     public DeferredResult<ResponseEntity<?>> delete(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
@@ -408,7 +303,7 @@ public class DataController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json", "application/xml"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
     public DeferredResult<ResponseEntity<?>> runCmd(

@@ -66,6 +66,7 @@ public class ClusterController {
     @ApiOperation(value = ADD_NODE_TO_CLUSTER, nickname = "addNode")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
+
             @ApiResponse(
                     code = 401,
                     message = "Unauthorized"

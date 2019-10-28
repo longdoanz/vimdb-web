@@ -122,7 +122,6 @@ public class Utils {
                     returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
                 });
 
-
         return returnValue;
     }
     public static DeferredResult<ResponseEntity<?>> restResultToDeferredResult2(Future<Result> restFuture) {

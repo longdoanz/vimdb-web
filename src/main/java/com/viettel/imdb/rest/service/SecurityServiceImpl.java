@@ -7,6 +7,7 @@ import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.model.*;
+import io.trane.future.CheckedFutureException;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.io.EOFException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,6 +107,11 @@ public class SecurityServiceImpl implements SecurityService {
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         resultFuture
                 .onSuccess(result ->{
+                    if(result.getData()==null) {
+                        Map<String, Object> body = new HashMap<>();
+                        body.put("error", "User name not found");
+                        returnValue.setResult(new ResponseEntity<>(body, HttpStatus.BAD_REQUEST));
+                    }
                     User user = (User) result.getData();
                     UserInfo userInfo = new UserInfo();
                     userInfo.setUsername(user.getUsername());
@@ -126,17 +134,113 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<ResponseEntity<?>> addUser(IMDBClient client, AddUserRequest addUserRequest) {
         Logger.info("addUser({})", addUserRequest);
-        Future<Void> addFuture = client.createUser(addUserRequest.getUserName(), addUserRequest.getPassword().getBytes(), addUserRequest.getRoles());
+        //add new role
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        int roleCount = 0;
+        int newRoleListLen = -1;
+        if (addUserRequest.getNewRoles()!= null) newRoleListLen = addUserRequest.getNewRoles().size();
+        List<String> roleList = addUserRequest.getRoles();
+
+        //add new role
+        for(int i = 0; i < newRoleListLen; i++){
+            Role role = addUserRequest.getNewRoles().get(i);
+
+            Logger.info(role.getRolename());
+            Future<Void> addFuture = client.createRole(role.getRolename(), role.getPrivilegeList());
+            Future<Result> resultFuture = addFuture
+                    .map(aVoid -> new Result(HttpStatus.CREATED))
+                    .rescue(throwable -> throwableToHttpStatus(throwable));
+            Result result;
+            try {
+                result = resultFuture.get(Duration.ofMinutes(1));
+            } catch (CheckedFutureException e) {
+                e.printStackTrace();
+                Map<String, Object> body = new HashMap<>();
+                body.put("error", e.getMessage());
+                returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                break;
+            }
+            if(result.getHttpStatus() == HttpStatus.CREATED){
+                roleCount++;
+                roleList.add(role.getRolename());
+            }else {
+                Map<String, Object> body = new HashMap<>();
+                body.put("error",result.getMessage());
+                returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                break;
+            }
+        }
+        //that bai, xoa role
+        if (roleCount < newRoleListLen){
+            Logger.error("add role fail {}",roleCount);
+            for(int i = 0; i < addUserRequest.getNewRoles().size(); i++){
+                Future<Void> addFuture = client.deleteRole(addUserRequest.getNewRoles().get(i).getRolename());
+            }
+            return returnValue;
+        }
+        //add user
+
+        Future<Void> addFuture = client.createUser(addUserRequest.getUserName(), addUserRequest.getPassword().getBytes(), roleList);
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
+
         return restResultToDeferredResult2(resultFuture);
     }
 
     @Override
     public DeferredResult<ResponseEntity<?>> editUser(IMDBClient client, EditUserRequest editUserRequest) {
         Logger.info("editUser({})", editUserRequest);
-        Future<Void> updateFuture = client.updateUser(editUserRequest.getUserName(), editUserRequest.getRoles()); // todo how about newRoles
+
+        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+        //change password
+        Future<Void> changePasswordFuture = client.changePassword(editUserRequest.getUserName(), editUserRequest.getPassword().getBytes());
+
+        int roleCount = 0;
+        int newRoleListLen = -1;
+        if (editUserRequest.getNewRoles()!= null) newRoleListLen = editUserRequest.getNewRoles().size();
+
+        //add new role
+        List<String> roleList = editUserRequest.getRoles();
+        for(int i = 0; i < newRoleListLen; i++){
+            Role role = editUserRequest.getNewRoles().get(i);
+
+            Logger.info(role.getRolename());
+            Future<Void> addFuture = client.createRole(role.getRolename(), role.getPrivilegeList());
+            Future<Result> resultFuture = addFuture
+                    .map(aVoid -> new Result(HttpStatus.CREATED))
+                    .rescue(throwable -> throwableToHttpStatus(throwable));
+            Result result;
+            try {
+                result = resultFuture.get(Duration.ofMinutes(1));
+            } catch (CheckedFutureException e) {
+                e.printStackTrace();
+                Map<String, Object> body = new HashMap<>();
+                body.put("error", e.getMessage());
+                returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                break;
+            }
+            if(result.getHttpStatus() == HttpStatus.CREATED){
+                roleCount++;
+                roleList.add(role.getRolename());
+            }else {
+                Map<String, Object> body = new HashMap<>();
+                body.put("error",result.getMessage());
+                returnValue.setResult(new ResponseEntity<>(body, result.getHttpStatus()));
+                break;
+            }
+        }
+        //that bai, xoa role
+        if (roleCount < newRoleListLen){
+            Logger.error("add role fail {}",roleCount);
+            for(int i = 0; i < editUserRequest.getNewRoles().size(); i++){
+                Future<Void> addFuture = client.deleteRole(editUserRequest.getNewRoles().get(i).getRolename());
+            }
+            return returnValue;
+        }
+        //edit role
+        Future<Void> updateFuture = client.updateUser(editUserRequest.getUserName(), roleList); // todo how about newRoles
+
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
@@ -148,8 +252,7 @@ public class SecurityServiceImpl implements SecurityService {
         Logger.info("deleteUser({})", username);
         Future<Void> deleteFuture = client.deleteUser(username);
         Future<Result> resultFuture = deleteFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
-                .onFailure(throwable -> throwableToHttpStatus(throwable));
+                .map(aVoid -> new Result(HttpStatus.NO_CONTENT));
         return restResultToDeferredResult2(resultFuture);
     }
 

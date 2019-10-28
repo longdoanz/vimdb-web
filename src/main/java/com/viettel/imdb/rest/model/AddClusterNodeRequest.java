@@ -14,9 +14,9 @@ import lombok.*;
 @ToString
 @ApiModel(value="AddClusterNodeRequest", description = "Request to add a node to the current managed cluster")
 public class AddClusterNodeRequest {
-    @ApiModelProperty(value= "SSHInfo of the server. Should change to SSH key in future", example = "ClusterNodeSSHInfo")
+    @ApiModelProperty(value= "ClusterNodeSSHInfo", example = "ClusterNodeSSHInfo")
     private ClusterNodeSSHInfo sshInfo;
-    @ApiModelProperty(value = "vIMDB server cluster config", example = "TOO LONG TO DESCRIBE HERE")
+    @ApiModelProperty(value = "NewClusterNodeServerInfo", example = "TOO LONG TO DESCRIBE HERE")
     private NewClusterNodeServerInfo vimdbServerInfo;
 
     @NoArgsConstructor
@@ -25,13 +25,12 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterNodeSSHInfo", description = "ssh info including ip, username and raw password")
-    private static
-    class ClusterNodeSSHInfo {
+    public static class ClusterNodeSSHInfo {
         @ApiModelProperty(value = "Host ip", example = "172.16.28.123")
         private String ip;
-        @ApiModelProperty(value = "username of the machine", example = "admin")
+        @ApiModelProperty(value = "username of the machine", example = "imdb")
         private String username;
-        @ApiModelProperty(value = "password of the machine", example = "admin")
+        @ApiModelProperty(value = "password of the machine", example = "imdb")
         private String password;
     }
 
@@ -84,7 +83,7 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterOverridedCOnfig", description = "Override the whole config")
-    static
+    public static
     class ClusterNodeOverridedConfig {
         @ApiModelProperty(value = "Overrided or not", example = "true")
         private boolean overrided;

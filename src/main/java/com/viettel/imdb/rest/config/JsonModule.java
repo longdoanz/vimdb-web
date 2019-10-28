@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.config;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.viettel.imdb.common.Record;
+import com.viettel.imdb.rest.serializer.RecordSerializer;
 import org.springframework.stereotype.Service;
 
 /**

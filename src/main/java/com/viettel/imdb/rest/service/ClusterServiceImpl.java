@@ -8,6 +8,7 @@ import com.viettel.imdb.rest.model.AddClusterNodeRequest;
 import com.viettel.imdb.rest.model.ClusterInfo;
 import com.viettel.imdb.rest.model.RemoveClusterNodeRequest;
 import com.viettel.imdb.rest.model.RestClientError;
+import com.viettel.imdb.rest.sshconect.RemoteNode;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,8 @@ public class ClusterServiceImpl implements ClusterService {
         Logger.info("addNode: {}", request);
 
         boolean status = cluster.addNode(new NodeSimulatorImpl(request.getVimdbServerInfo().getHost(), request.getVimdbServerInfo().getPort()));
-
+        RemoteNode remoteNode = new RemoteNode(request);
+        remoteNode.startNodeDefaultConfig();
 
         RestClientError clientError = null;
         if(!status) {

@@ -55,6 +55,16 @@ public class SecurityImpl implements Security {
             add("write.user.SessionData");
 
         }}));
+        roleMap.put("read-write.data.CustInfo", new Role("read-write.data.CustInfo", new ArrayList<String>() {{
+            add("read.data.CustInfo");
+            add("write.data.CustInfo");
+
+        }}));
+        roleMap.put("read-write.data.MappingSubCust", new Role("read-write.data.MappingSubCust", new ArrayList<String>() {{
+            add("read.data.MappingSubCust");
+            add("write.data.MappingSubCust");
+
+        }}));
 
         userInfoMap.put("admin", new UserInfo("admin", "RBAC", new ArrayList<Role>(){{
             add(roleMap.get("admin"));
