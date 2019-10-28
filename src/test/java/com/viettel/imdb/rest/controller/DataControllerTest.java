@@ -3,7 +3,6 @@ package com.viettel.imdb.rest.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.rest.model.TableModel;
-import org.apache.catalina.AsyncDispatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 
 import static com.viettel.imdb.rest.common.Common.DATA_PATH;
 import static com.viettel.imdb.rest.common.Common.LOGIN_PATH;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

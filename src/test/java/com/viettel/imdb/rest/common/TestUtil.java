@@ -11,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.viettel.imdb.rest.common.Common.*;
 import static org.testng.Assert.assertEquals;
