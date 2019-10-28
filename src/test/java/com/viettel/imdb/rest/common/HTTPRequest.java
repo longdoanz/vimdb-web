@@ -1,7 +1,6 @@
 package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.javafx.binding.StringFormatter;
 import net.openhft.chronicle.core.annotation.NotNull;
 
 import java.io.*;
