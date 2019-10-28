@@ -44,7 +44,7 @@ public class Config extends WebSecurityConfigurerAdapter {
     @Value("${password}")
     private String password;
 
-    private ClusterSimulator cluster = new ClusterSimulator();
+    public static ClusterSimulator cluster = new ClusterSimulator();
 
 
 
@@ -107,18 +107,18 @@ public class Config extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()/// todo need to disable this to edit data (PUT/POST/DELETE)
                 .authorizeRequests()
-                .antMatchers(AUTH_WHITELIST)
-                .permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//                .anyRequest()
-//                .permitAll();
+//                .antMatchers(AUTH_WHITELIST)
+//                .permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .anyRequest()
+                .permitAll();
 
 
         //http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
-        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 //        http.csrf().disable()
 //                .exceptionHandling()
 //                .authenticationEntryPoint(authenticationEntryPoint)

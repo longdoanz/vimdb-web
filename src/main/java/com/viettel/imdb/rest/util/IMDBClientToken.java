@@ -2,10 +2,13 @@ package com.viettel.imdb.rest.util;
 
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Pair;
+import com.viettel.imdb.rest.config.Config;
 import com.viettel.imdb.rest.exception.ExceptionType;
+import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.Timer;
@@ -28,6 +31,8 @@ public class IMDBClientToken {
     private static Map<Pair<String, String>, String> userPassToTokenMap;
     private static IMDBClientToken clientToken;
     private static Timer timer;
+
+    public static IMDBClient imdbClient = new ClientSimulator(Config.cluster);
 
     //@Autowired
     TokenManager tokenManager = new TokenManager();
@@ -65,14 +70,15 @@ public class IMDBClientToken {
     }
 
     public static IMDBClient getClient(String token) {
-        if(token.startsWith("Bearer")) {
+        return imdbClient;
+        /*if(token.startsWith("Bearer")) {
             token = token.substring(7).trim();
         }
         IMDBClient client = tokenToClientMap.get(token);
         if(client == null) {
             throw new ExceptionType.VIMDBRestClientError("Something when wrong");
         }
-        return client;
+        return client;*/
     }
     public static void putClient(String token, IMDBClient client) {
         tokenToClientMap.put(token, client);
