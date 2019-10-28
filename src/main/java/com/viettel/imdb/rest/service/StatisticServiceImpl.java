@@ -3,7 +3,6 @@ package com.viettel.imdb.rest.service;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.rest.common.Result;
-import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.util.StatisticClient;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -13,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class StatisticServiceImpl implements StatisticService{

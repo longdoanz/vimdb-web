@@ -5,8 +5,6 @@ import com.viettel.imdb.rest.common.HttpResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Map;
-
 import static com.viettel.imdb.rest.common.Common.*;
 
 public class DataTest {

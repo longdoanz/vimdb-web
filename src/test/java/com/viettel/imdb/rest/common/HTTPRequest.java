@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.viettel.imdb.rest.common.Common.LOGIN_PATH;
-
 /**
  * @author longdt20
  * @since 09:18 15/02/2019
