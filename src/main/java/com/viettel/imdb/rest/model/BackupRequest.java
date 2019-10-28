@@ -63,22 +63,22 @@ public class BackupRequest {
     @ApiModel(value = "BackupConfig", description = "BackupConfig")
     class BackupConfig {
 
-        @ApiModelProperty(value = " isPartionRange", example = " ")
-        private boolean isPartionRange;
-        @ApiModelProperty(value = " partionRangeStart", example = " ")
-        private int partionRangeStart;
-        @ApiModelProperty(value = " backupPartionEnd", example = " ")
-        private int backupPartionEnd;
-        @ApiModelProperty(value = " partionList", example = "1")
-        private List<Integer> partionList;
-        @ApiModelProperty(value = " backupDirectory", example = " ")
+        @ApiModelProperty(value = "isPartitionRange", example = " ")
+        private boolean isPartitionRange;
+        @ApiModelProperty(value = "partitionRangeStart", example = " ")
+        private int partitionRangeStart;
+        @ApiModelProperty(value = "backupPartitionEnd", example = " ")
+        private int backupPartitionEnd;
+        @ApiModelProperty(value = "partitionList", example = "[]")
+        private List<Integer> partitionList;
+        @ApiModelProperty(value = "backupDirectory", example = " ")
         private String backupDirectory;
 
 //        public BackupConfig() {
-//            this.isPartionRange = true;
-//            this.partionRangeStart = 0;
-//            this.backupPartionEnd = 4096;
-//            this.partionList = new ArrayList<>(
+//            this.isPartitionRange = true;
+//            this.partitionRangeStart = 0;
+//            this.backupPartitionEnd = 4096;
+//            this.partitionList = new ArrayList<>(
 //                    Arrays.asList(1, 2, 3, 5, 10)
 //            );
 //            this.backupDirectory = "backupDirectory";

@@ -118,7 +118,7 @@ public class Config extends WebSecurityConfigurerAdapter {
 
 
         //http.authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll();
-        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 //        http.csrf().disable()
 //                .exceptionHandling()
 //                .authenticationEntryPoint(authenticationEntryPoint)
