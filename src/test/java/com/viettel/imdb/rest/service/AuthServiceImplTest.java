@@ -102,7 +102,7 @@ public class AuthServiceImplTest extends TestUtil {
     }*/
     @Test(priority = 2)
     public void testConnectAdminUser() {
-        String username = "admdein";
+        String username = "admdin";
         String password = "admin";
         String token = createAuthenticationToken(username, password, HttpStatus.OK, null);
         System.out.println("Token: " + token);

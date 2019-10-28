@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,7 +42,7 @@ public class UDFTest {
                     "  \"syncedOnAllNodes\": true,\n" +
                     "  \"content\": \"abzxyz\"\n" +
                     "}";
-            Map res = http.sendPost(buildFromPath("/v1/udf/thurv"+i), body);
+            HttpResponse res = http.sendPost(buildFromPath("/v1/udf/thurv"+i), body);
             System.out.println(res);
         }
 
@@ -55,7 +56,7 @@ public class UDFTest {
                     "  \"syncedOnAllNodes\": true,\n" +
                     "  \"content\": \"abzxyz\"\n" +
                     "}";
-            Map res = http.sendPost(buildFromPath("/v1/udf/thurv"+i), body, "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTU3MTcyNzc5OCwiZXhwIjoxNTcxNzI4Njk4fQ.C1Dkl4CIMsK3DF59c7-E9Oa-p4P9JZFk9bAxZCmKJRBvl9GGgYu1Dw1ct5e8-v_D7jE4LVGK0cuP8Z_vJo93tg");
+            HttpResponse res = http.sendPost(buildFromPath("/v1/udf/thurv"+i), body, "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTU3MTcyNzc5OCwiZXhwIjoxNTcxNzI4Njk4fQ.C1Dkl4CIMsK3DF59c7-E9Oa-p4P9JZFk9bAxZCmKJRBvl9GGgYu1Dw1ct5e8-v_D7jE4LVGK0cuP8Z_vJo93tg");
             System.out.println(res);
         }
 
@@ -68,7 +69,7 @@ public class UDFTest {
                 "  \"syncedOnAllNodes\": true,\n" +
                 "  \"content\": \"ABCXYZ\"\n" +
                 "}";
-        Map res = http.sendPut(buildFromPath("/v1/udf/thurv4"), body);
+        HttpResponse res = http.sendPut(buildFromPath("/v1/udf/thurv4"), body);
         System.out.println(res);
     }
     @Test

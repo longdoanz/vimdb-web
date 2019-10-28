@@ -2,6 +2,7 @@ package com.viettel.imdb.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,20 +51,20 @@ public class BackupRestoreTest {
 //                "  \"backupConfig\": null\n" +
 //                "}";
         String body = "{\"clusterAuthInfo\":{\"needAuthen\":false,\"username\":\"admin\",\"password\":\"admin\"},\"clusterNodeSSHInfo\":{\"ip\":null,\"username\":null,\"password\":null},\"backupConfig\":{\"partionRangeStart\":0,\"backupPartionEnd\":4096,\"partionList\":[1,2,3,5,10],\"backupDirectory\":\"backupDirectory\",\"partionRange\":true}}";
-        Map res = http.sendPost(buildFromPath("/v1/tool/backup"),body);
+        HttpResponse res = http.sendPost(buildFromPath("/v1/tool/backup"),body);
 //        JSONValue jsonValue = new JSONValue();
-//        JSONObject object = (JSONObject) jsonValue.parse(res.get("response").toString());
+//        JSONObject object = (JSONObject) jsonValue.parse(res.getResponse().toString());
         System.out.println(res);
-        JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())).get("callback");
+        JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())).get("callback");
         System.out.println(actualResult);
         String callback =  actualResult.toString();
         callback = callback.substring(1, callback.length()-1);
         //get process status
-        Map res2;
+        HttpResponse res2;
         String status;
         do{
             res2 = http.sendGet(buildFromPath(callback));
-            status = res2.get("response").toString();
+            status = res2.getResponse().toString();
             System.out.println(res2);
         }while(status.equals("{\"status\":\"processing\"}"));
     }
@@ -73,9 +74,9 @@ public class BackupRestoreTest {
 //        Map res = http.sendGet(buildFromPath("/v1/tool/backup"), "process=7970404196631695392");
 //        JSONParser parser = new JSONParser();
 //
-//        JSONObject obj = (JSONObject)new JSONParser().parse(res.get("response").toString());
+//        JSONObject obj = (JSONObject)new JSONParser().parse(res.getResponse().toString());
 //
-//        System.out.println(res.get("response"));
+//        System.out.println(res.getResponse());
     }
     @Test
     public void restoreTest() throws Exception {
@@ -85,18 +86,18 @@ public class BackupRestoreTest {
 //                "  \"restoreConfig\": null\n" +
 //                "}";
         String body = "{\"clusterAuthInfo\":{\"needAuthen\":false,\"username\":\"admin\",\"password\":\"admin\"},\"clusterNodeSSHInfo\":{\"ip\":null,\"username\":null,\"password\":null},\"restoreConfig\":{\"partionRange\":true, \"partionRangeStart\":0,\"backupPartionEnd\":4096,\"partionList\":[1,2,3,5,10],\"restoreDirectory\":\"restoreDirectory\"}}";
-        Map res = http.sendPost(buildFromPath("/v1/tool/restore"),body);
+        HttpResponse res = http.sendPost(buildFromPath("/v1/tool/restore"),body);
 
-        JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())).get("callback");
+        JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())).get("callback");
         System.out.println(actualResult);
         String callback =  actualResult.toString();
         callback = callback.substring(1, callback.length()-1);
         //get process status
-        Map res2;
+        HttpResponse res2;
         String status;
         do{
             res2 = http.sendGet(buildFromPath(callback));
-            status = res2.get("response").toString();
+            status = res2.getResponse().toString();
             System.out.println(res2);
         }while(status.equals("{\"status\":\"processing\"}"));
     }

@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -31,19 +32,19 @@ public class TableAPITest {
             tableName += "a";
         }
         String body = "{ \"name\": \""+tableName+"\" }";
-        Map res = http.sendPost(DB_PATH, body);
+        HttpResponse res = http.sendPost(DB_PATH, body);
         System.out.println(res);
         http.sendDelete(buildFromPath(DB_PATH, tableName));
-        assertEquals(res.get("code"), HttpStatus.CREATED.value());
+        assertEquals(res.getStatus(), HttpStatus.CREATED);
     }
 
     @Test
     public void testCreateTable_2() throws Exception {
 
         String body = "{ \"name\": \"table01\" }";
-        Map res = http.sendPost(DB_PATH, body);
+        HttpResponse res = http.sendPost(DB_PATH, body);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.CREATED.value());
+        assertEquals(res.getStatus(), HttpStatus.CREATED);
     }
 
     @Test
@@ -55,18 +56,18 @@ public class TableAPITest {
             put("Cookie", http.getToken());
         }};
         String body = "{ \"name\": \"table01\" }";
-        Map res = http.sendWithData("POST", DB_PATH, header, body);
+        HttpResponse res = http.sendWithData("POST", DB_PATH, header, body);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NOT_ACCEPTABLE.value());
+        assertEquals(res.getStatus(), HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Test
     public void testDeleteTable() throws Exception {
 
         String tableName = "table01";
-        Map res = http.sendDelete(buildFromPath(DB_PATH, tableName));
+        HttpResponse res = http.sendDelete(buildFromPath(DB_PATH, tableName));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
     }
 
 }

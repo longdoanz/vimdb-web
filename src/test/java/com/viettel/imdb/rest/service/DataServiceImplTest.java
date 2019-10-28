@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import com.viettel.imdb.rest.common.TestUtil;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
@@ -92,7 +93,7 @@ public class DataServiceImplTest extends TestUtil {
         for(int i = 0; i < 255; i++) {
             tableName.append("a");
         }
-        Map res = http.sendGetWithToken(DATA_PATH + "/namespace" + "/TABLE_1" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4", token);
+        HttpResponse res = http.sendGetWithToken(DATA_PATH + "/namespace" + "/TABLE_1" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4", token);
         System.out.println(res);
     }
 
@@ -115,9 +116,9 @@ public class DataServiceImplTest extends TestUtil {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        Map res = http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, "key-03"), body2, token);
+        HttpResponse res = http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, "key-03"), body2, token);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.CREATED.value());
+        assertEquals(res.getStatus(), HttpStatus.CREATED);
 
     }
 
@@ -127,10 +128,10 @@ public class DataServiceImplTest extends TestUtil {
         String key = "key-03";
 
         String expectData = "{\"sub1\":145,\"sub2\":[1,3,5],\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
+        HttpResponse res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+        assertEquals(res.getStatus(), HttpStatus.OK);
+        assertEquals(res.getResponse().toString(), expectData);
     }
 
     @Test(priority = 5)
@@ -143,13 +144,13 @@ public class DataServiceImplTest extends TestUtil {
                 "  \"sub2\": \"Testing 1111\"\n" +
                 "}";
         String expectData = "{\"sub1\":\"TESTING 1\",\"sub2\":\"Testing 1111\",\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendPut(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key), body);
+        HttpResponse res = http.sendPut(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key), body);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
         res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+        assertEquals(res.getStatus(), HttpStatus.OK);
+        assertEquals(res.getResponse().toString(), expectData);
     }
 
     @Test(priority = 6)
@@ -157,9 +158,9 @@ public class DataServiceImplTest extends TestUtil {
         String TABLE_NAME = "TABLE_0";
         String key = "key-03";
 
-        Map res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
+        HttpResponse res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -189,7 +190,7 @@ public class DataServiceImplTest extends TestUtil {
     @Test
     public void testCreateTable() throws Exception {
         testCreateTable("TABLE_NAME02", HttpStatus.CREATED, null);
-        Map res = http.sendGet(DATA_PATH);
+        HttpResponse res = http.sendGet(DATA_PATH);
         System.out.println(res);
     }
 }

@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,7 +21,7 @@ public class DataTest {
     }
 
     @Test void getDataInfitest() throws Exception {
-        Map res = http.sendGet(buildFromPath("/v1/data/a"));
+        HttpResponse res = http.sendGet(buildFromPath("/v1/data/a"));
     }
 
 }

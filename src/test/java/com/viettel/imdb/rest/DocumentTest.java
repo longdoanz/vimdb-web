@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import com.viettel.imdb.rest.common.QueryParam;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
@@ -54,9 +55,9 @@ public class DocumentTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        Map res = http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, "key-03"), body2);
+        HttpResponse res = http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, "key-03"), body2);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.CREATED.value());
+        assertEquals(res.getStatus(), HttpStatus.CREATED);
 
     }
 
@@ -67,10 +68,10 @@ public class DocumentTest {
         http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
 
         String expectData = "{\"sub1\":145,\"sub2\":[1,3,5],\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
+        HttpResponse res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+        assertEquals(res.getStatus(), HttpStatus.OK);
+        assertEquals(res.getResponse().toString(), expectData);
     }
 
 
@@ -78,9 +79,9 @@ public class DocumentTest {
     public void testDeleteKey() throws Exception {
         http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
 
-        Map res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
+        HttpResponse res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
     }
 
 
@@ -90,7 +91,7 @@ public class DocumentTest {
 
         //        Create index
         String bodyRequest = "{\"name\":  \"sub1\"}";
-        Map res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
+        HttpResponse res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
         System.out.println(res);
 
         QueryParam queryParam = new QueryParam("{\"sub1\":{\"$bt\": [10,150]}}");
@@ -98,8 +99,8 @@ public class DocumentTest {
         String expectData = "{\"results\":[{\"key\":\"key-03\",\"record\":{\"sub1\":145,\"sub2\":[1,3,5],\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}}]}";
         res = http.sendGet(buildFromPath(DB_PATH, tableName), queryParam.getQuery());
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+        assertEquals(res.getStatus(), HttpStatus.OK);
+        assertEquals(res.getResponse().toString(), expectData);
     }
 
     @Test(priority = 3, description = "Using scan API get list Field Name")
@@ -107,7 +108,7 @@ public class DocumentTest {
 
         //        Create index
         String bodyRequest = "{\"name\":  \"sub1\"}";
-        Map res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
+        HttpResponse res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
         System.out.println(res);
 
 //        String filter = "{\"sub1\":145}&fields=$.sub1,$.sub2,$.sub3";
@@ -116,8 +117,9 @@ public class DocumentTest {
         String expectData = "{\"results\":[{\"key\":\"key-03\",\"record\":{\"sub1\":145,\"sub2\":[1,3,5]}}]}";
         res = http.sendGet(buildFromPath(DB_PATH, tableName), queryParam.getQuery());
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+
+        res.andExpect(HttpStatus.OK)
+                .andExpectResponse(expectData);
     }
 
 
@@ -130,32 +132,34 @@ public class DocumentTest {
                 "  \"sub2\": \"Testing 1111\"\n" +
                 "}";
         String expectData = "{\"sub1\":\"TESTING 1\",\"sub2\":\"Testing 1111\",\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendPut(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey), body);
+        HttpResponse res = http.sendPut(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey), body);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
         res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, recordKey));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+
+        res.andExpect(HttpStatus.OK)
+                .andExpectResponse(expectData);
     }
 
     @Test(priority = 4)
     public void testUpdate_3() throws Exception {
         String body = "{\"a\": \"b\"}";
         String expectData = "{\"a\":\"b\",\"sub1\":\"TESTING 1\",\"sub2\":\"Testing 1111\",\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        Map res = http.sendPut(buildFromPath(DB_PATH, tableName, recordKey), body);
+        HttpResponse res = http.sendPut(buildFromPath(DB_PATH, tableName, recordKey), body);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        res.andExpect(HttpStatus.NO_CONTENT);
+
         res = http.sendGet(buildFromPath(DB_PATH, tableName, recordKey));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.OK.value());
-        assertEquals(res.get("response").toString(), expectData);
+        res.andExpect(HttpStatus.OK)
+                .andExpectResponse(expectData);
     }
 
     @Test(priority = 5)
     public void testDelete() throws Exception {
-        Map res = http.sendDelete(buildFromPath(DB_PATH, tableName, recordKey));
+        HttpResponse res = http.sendDelete(buildFromPath(DB_PATH, tableName, recordKey));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        res.andExpect( HttpStatus.NO_CONTENT);
     }
 }

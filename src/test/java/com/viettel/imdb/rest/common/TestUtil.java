@@ -31,13 +31,13 @@ public class TestUtil {
 
     public void testCreateTable(String tableName, HttpStatus expectedReturnCode, String expectedResponse) {
         try {
-            Map res = http.sendPost(DATA_PATH_WITH_NAMESPACE, "{\"tableName\":  \"" + tableName + "\"}");
+            HttpResponse res = http.sendPost(DATA_PATH_WITH_NAMESPACE, "{\"tableName\":  \"" + tableName + "\"}");
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.get("response").toString()), encoder.encodeJsonString(expectedResponse));
+                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         }catch (Exception ex) {
             Assert.fail("Test create table failed!!!", ex);
         }
@@ -45,13 +45,13 @@ public class TestUtil {
 
     public void testDropTable(String tableName, HttpStatus expectedReturnCode, String expectedResponse) {
         try {
-            Map res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName));
+            HttpResponse res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName));
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.get("response").toString()), encoder.encodeJsonString(expectedResponse));
+                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         }catch (Exception ex) {
             Assert.fail("Test drop table failed!!!", ex);
         }
@@ -62,13 +62,13 @@ public class TestUtil {
             final String INDEX_TYPE = "numeric";
             RestIndexModel restIndexModel = new RestIndexModel(DEFAULT_NAMESPACE, tableName, INDEX_TYPE, indexName);
             String path = buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName);
-            Map res = http.sendPost(path, restIndexModel.toJsonString());
+            HttpResponse res = http.sendPost(path, restIndexModel.toJsonString());
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.get("response").toString()), encoder.encodeJsonString(expectedResponse));
+                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         } catch (Exception ex) {
             Assert.fail("Test create index failed!!!", ex);
         }
@@ -79,13 +79,13 @@ public class TestUtil {
             final String INDEX_TYPE = "string";
             RestIndexModel restIndexModel = new RestIndexModel(DEFAULT_NAMESPACE, tableName, INDEX_TYPE, indexName);
             String path = buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName);
-            Map res = http.sendPost(path, restIndexModel.toJsonString());
+            HttpResponse res = http.sendPost(path, restIndexModel.toJsonString());
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.get("response").toString()), encoder.encodeJsonString(expectedResponse));
+                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         } catch (Exception ex) {
             Assert.fail("Test create index failed!!!", ex);
         }
@@ -96,13 +96,13 @@ public class TestUtil {
         try {
             RestIndexModel restIndexModel = new RestIndexModel(DEFAULT_NAMESPACE, tableName, type, indexName);
             String path = buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName);
-            Map res = http.sendPost(path, restIndexModel.toJsonString());
+            HttpResponse res = http.sendPost(path, restIndexModel.toJsonString());
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.get("response").toString()), encoder.encodeJsonString(expectedResponse));
+                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         } catch (Exception ex) {
             Assert.fail("Test create index failed!!!", ex);
         }
@@ -116,11 +116,11 @@ public class TestUtil {
                 "  \"password\": \""+password+"\"\n" +
                 "}";
             //Map res = http.sendGet(AUTH_PATH + "/login", "username=" + username + "&password=" + password);
-            Map res = http.sendPost(AUTH_PATH + "/login", body);
+            HttpResponse res = http.sendPost(AUTH_PATH + "/login", body);
 
             System.out.println(res);
-            Assert.assertEquals(res.get("code"), expectedReturnCode.value());
-            com.fasterxml.jackson.databind.node.ObjectNode response = (com.fasterxml.jackson.databind.node.ObjectNode) res.get("response");
+            Assert.assertEquals(res.getStatus(), expectedReturnCode);
+            com.fasterxml.jackson.databind.node.ObjectNode response = (com.fasterxml.jackson.databind.node.ObjectNode) res.getResponse();
             if(expectedErrorMessageResponse != null) {
                 String actualErrorMessage = response.get("error").asText();
                 Assert.assertEquals(actualErrorMessage, expectedErrorMessageResponse);
@@ -139,17 +139,15 @@ public class TestUtil {
                     "  \"username\": \""+username+"\",\n" +
                     "  \"password\": \""+password+"\"\n" +
                     "}";
-            //Map res = http.sendGet(AUTH_PATH + "/login", "username=" + username + "&password=" + password);
-            Map res = http.sendPost(LOGIN_PATH, body);
+            HttpResponse res = http.sendPost(LOGIN_PATH, body);
 
             System.out.println(res);
-            //Assert.assertEquals(res.get("code"), expectedReturnCode.value());
-            com.fasterxml.jackson.databind.node.ObjectNode response = (com.fasterxml.jackson.databind.node.ObjectNode) res.get("response");
+            //Assert.assertEquals(res.getStatus(), expectedReturnCode.value());
             if(expectedErrorMessageResponse != null) {
-                String actualErrorMessage = response.get("error").asText();
+                String actualErrorMessage = res.getResponse().get("error").asText();
                 //Assert.assertEquals(actualErrorMessage, expectedErrorMessageResponse);
             } else {
-                token = response.get("token").asText();
+                token = res.getResponse().get("token").asText();
             }
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -167,14 +165,14 @@ public class TestUtil {
     public void testAddUser(AddUserRequest request, HttpStatus expectedReturnCode, String expectedResponse) {
         // todo expectedResponse can be error or value
         try {
-            Map res = http.sendPost(buildFromPath(SECURITY_PATH, "user", request.getUserName()), new ObjectMapper().writeValueAsString(request));
+            HttpResponse res = http.sendPost(buildFromPath(SECURITY_PATH, "user", request.getUserName()), new ObjectMapper().writeValueAsString(request));
             System.out.println(res);
-            assertEquals(res.get("code"), expectedReturnCode.value());
+            assertEquals(res.getStatus(), expectedReturnCode.value());
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
                 Assert.assertEquals(
-                        encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())),
+                        encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())),
                         encoder.decodeJsonNode(encoder.encodeJsonString(expectedResponse))
                 );
         } catch (Exception ex) {
@@ -186,11 +184,11 @@ public class TestUtil {
     public void testGetUsers(HttpStatus expectedReturnCode, List<User> userList) {
         // todo expectedResponse can be error or value
         try {
-            Map res = http.sendGet(SECURITY_PATH + "/user");
+            HttpResponse res = http.sendGet(SECURITY_PATH + "/user");
             System.out.println(res);
-            assertEquals(res.get("code"), expectedReturnCode.value());
-            //JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())).get("results");
-            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString()));
+            assertEquals(res.getStatus(), expectedReturnCode);
+            //JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())).get("results");
+            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString()));
             JsonNode expectedResult = encoder.decodeJsonNode(encoder.encodeJsonString(new ObjectMapper().writeValueAsString(userList)));
             //Assert.assertEquals(actualResult, expectedResult);
         } catch (Exception ex) {
@@ -201,10 +199,10 @@ public class TestUtil {
     public void tesAuditLog() {
         // todo expectedResponse can be error or value
         try {
-            Map res = http.sendGet(SECURITY_PATH + "/audit-log");
+            HttpResponse res = http.sendGet(SECURITY_PATH + "/audit-log");
             System.out.println(res);
-//            assertEquals(res.get("code"), expectedReturnCode.value());
-//            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())).get("results");
+//            assertEquals(res.getStatus(), expectedReturnCode.value());
+//            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())).get("results");
 //            JsonNode expectedResult = encoder.decodeJsonNode(encoder.encodeJsonString(new ObjectMapper().writeValueAsString(userList)));
 //            Assert.assertEquals(actualResult, expectedResult);
         } catch (Exception ex) {
@@ -215,10 +213,10 @@ public class TestUtil {
     public void testRole() {
         // todo expectedResponse can be error or value
         try {
-            Map res = http.sendGet(SECURITY_PATH + "/role");
+            HttpResponse res = http.sendGet(SECURITY_PATH + "/role");
             System.out.println(res);
-//            assertEquals(res.get("code"), expectedReturnCode.value());
-//            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())).get("results");
+//            assertEquals(res.getStatus(), expectedReturnCode.value());
+//            JsonNode actualResult = encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())).get("results");
 //            JsonNode expectedResult = encoder.decodeJsonNode(encoder.encodeJsonString(new ObjectMapper().writeValueAsString(userList)));
 //            Assert.assertEquals(actualResult, expectedResult);
         } catch (Exception ex) {
@@ -237,7 +235,7 @@ public class TestUtil {
     public void testGetMetrics(List<String> serverList, HttpStatus expectedReturnCode, String expectedResponse) {
         // todo expectedResponse can be error or value
         try {
-            Map res;
+            HttpResponse res;
             String filterStr = "";
             if(serverList!= null && !serverList.isEmpty()) {
                 filterStr = "servers=";
@@ -251,12 +249,13 @@ public class TestUtil {
             else
                 res = http.sendGet(buildFromPath(STATISTIC_PATH, "metrics"),filterStr);
             System.out.println(res);
-            assertEquals(res.get("code"), expectedReturnCode.value());
+            assertEquals(res.getStatus(), expectedReturnCode.value());
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
+//                res.andExpect();
                 Assert.assertEquals(
-                        encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())),
+                        encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())),
                         encoder.decodeJsonNode(encoder.encodeJsonString(expectedResponse))
                 );
         } catch (Exception ex) {
@@ -268,7 +267,7 @@ public class TestUtil {
     public void testGetStatistic(List<String> serverList, List<String> metricList, HttpStatus expectedReturnCode, String expectedResponse) {
         // todo expectedResponse can be error or value
         try {
-            Map res;
+            HttpResponse res;
             String serverFilterStr = "";
             if(serverList!= null && !serverList.isEmpty()) {
                 serverFilterStr = "servers=";
@@ -298,12 +297,12 @@ public class TestUtil {
                 res = http.sendGet(buildFromPath(STATISTIC_PATH), serverFilterStr + "&" + metricFilterStr);
             }
             System.out.println(res);
-            assertEquals(res.get("code"), expectedReturnCode.value());
+            assertEquals(res.getStatus(), expectedReturnCode);
             if(expectedResponse == null)
-                Assert.assertNull(res.get("response"));
+                Assert.assertNull(res.getResponse());
             else
                 Assert.assertEquals(
-                        encoder.decodeJsonNode(encoder.encodeJsonString(res.get("response").toString())),
+                        encoder.decodeJsonNode(encoder.encodeJsonString(res.getResponse().toString())),
                         encoder.decodeJsonNode(encoder.encodeJsonString(expectedResponse))
                 );
         } catch (Exception ex) {

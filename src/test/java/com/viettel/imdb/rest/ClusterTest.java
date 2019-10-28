@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -33,13 +34,13 @@ public class ClusterTest {
 //                        " ]";
 
         System.out.println(body);
-        Map res = http.sendGet(buildFromPath("/v1/cluster/info"), "nodes=172.16.28.69:10000,172.16.28.70:10000");
+        HttpResponse res = http.sendGet(buildFromPath("/v1/cluster/info"), "nodes=172.16.28.69:10000,172.16.28.70:10000");
         System.out.println(res);
     }
 
     @Test
     public void test_Add_New_Node() throws Exception {
-        Map res = http.sendPost(CLUSTER_PATH + "/add_node", "{\n" +
+        HttpResponse res = http.sendPost(CLUSTER_PATH + "/add_node", "{\n" +
                 "  \"sshInfo\": {\n" +
                 "    \"ip\": \"172.16.28.123\",\n" +
                 "    \"password\": \"admin\",\n" +
@@ -55,7 +56,7 @@ public class ClusterTest {
 
     @Test
     public void test_Remove_Node() throws Exception {
-        Map res = http.sendDelete(CLUSTER_PATH + "/remove_node", "{\n" +
+        HttpResponse res = http.sendDelete(CLUSTER_PATH + "/remove_node", "{\n" +
                 "  " +
                 "\"sshInfo\": {\"ip\": \"172.16.28.129\"},\n" +
                 "  \"vimdbServerInfo\": {\n" +
@@ -80,7 +81,7 @@ public class ClusterTest {
 //                        " ]";
 
         System.out.println(body);
-        Map res = http.sendGetwithBody(buildFromPath("/v1/cluster/info"), body);
+        HttpResponse res = http.sendGetwithBody(buildFromPath("/v1/cluster/info"), body);
         System.out.println(res);
     }
 

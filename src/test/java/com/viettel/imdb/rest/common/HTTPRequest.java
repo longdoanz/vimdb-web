@@ -84,7 +84,7 @@ public class HTTPRequest {
         return uri + "?" + queryString;
     }
 
-    private Map<String, Object> sendWithoutData(String method, String path, String filter, String token) throws Exception {
+    private HttpResponse sendWithoutData(String method, String path, String filter, String token) throws Exception {
         URL obj = new URL(buildUri(path, filter));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
         http.setRequestMethod(method);
@@ -102,10 +102,8 @@ public class HTTPRequest {
         } catch (IOException ioex) {
             in = http.getErrorStream();
             if (in == null) {
-                return new HashMap<String, Object>() {{
-                    put("code", code);
-                    put("response", ioex.getMessage());
-                }};
+                ioex.printStackTrace();
+                return new HttpResponse(code);
             }
         }
 
@@ -118,19 +116,19 @@ public class HTTPRequest {
 
         buffer.close();
         http.disconnect();
-        return new HashMap<String, Object>() {{
-            put("code", code);
-            put("response", mapper.readTree(response.toString()));
-        }};
-
+        return new HttpResponse(code, response.toString());
     }
 
-    public Map<String, Object> sendWithData(String method, String path, String body) throws Exception {
-        return sendWithData(method, path, null, body);
+    public HttpResponse sendWithData(String method, String path, String body) throws Exception {
+        return sendWithData(method, path, (Map<String, String>) null, body);
+    }
+
+    public HttpResponse sendWithData(String method, String path, String body, String token) throws Exception {
+        return null;
     }
 
     // HTTP request
-    public Map<String, Object> sendWithData(String method, String path, Map<String, String> header, String body) throws Exception {
+    public HttpResponse sendWithData(String method, String path, Map<String, String> header, String body) throws Exception {
         URL obj = new URL(buildUri(path));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
         http.setRequestMethod(method);
@@ -158,12 +156,8 @@ public class HTTPRequest {
             in = http.getInputStream();
         } catch (IOException ioex) {
             in = http.getErrorStream();
-            if (in == null) {
-                return new HashMap<String, Object>() {{
-                    put("code", resCode);
-                    put("response", ioex.getMessage());
-                }};
-            }
+            if (in == null)
+                return new HttpResponse(resCode);
         }
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(in));
@@ -176,31 +170,27 @@ public class HTTPRequest {
 
         buffer.close();
         http.disconnect();
-        return new HashMap<String, Object>() {{
-            put("code", resCode);
-            put("response", mapper.readTree(response.toString()));
-        }};
-
+        return new HttpResponse(resCode, response.toString());
     }
 
     // HTTP GET request
-    public Map<String, Object> sendGet(String path) throws Exception {
+    public HttpResponse sendGet(String path) throws Exception {
         return sendWithoutData("GET", path, "", null);
     }
 
-    public Map<String, Object> sendGetWithToken(String path, String token) throws Exception {
+    public HttpResponse sendGetWithToken(String path, String token) throws Exception {
         return sendWithoutData("GET", path, "", token);
     }
 
-    public Map<String, Object> sendGet(String path, String filter) throws Exception {
+    public HttpResponse sendGet(String path, String filter) throws Exception {
         return sendWithoutData("GET", path, filter, null);
     }
 
-    public Map<String, Object> sendGetWithToken(String path, String filter, String token) throws Exception {
+    public HttpResponse sendGetWithToken(String path, String filter, String token) throws Exception {
         return sendWithoutData("GET", path, filter, token);
     }
 
-    public Map<String, Object> sendGetwithBody(String path, String body) throws Exception {
+    public HttpResponse sendGetwithBody(String path, String body) throws Exception {
         return sendWithData("GET", path, new HashMap<String, String>() {
             {
                 put("Cookie", token);
@@ -211,84 +201,65 @@ public class HTTPRequest {
 
 
     // HTTP POST request
-    public Map<String, Object> sendPost(String path, String body) throws Exception {
+    public HttpResponse sendPost(String path, String body) throws Exception {
 
-        return sendWithData("POST", path, new HashMap<String, String>() {{
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-//            put("Cookie", cookie);
-            //put("Authorization", "admin-admin");
-        }}, body);
+        return sendWithData("POST", path, body);
     }
 
     // HTTP POST request
-    public Map<String, Object> sendPost(String path, String body, String token) throws Exception {
-
+    public HttpResponse sendPost(String path, String body, String token) throws Exception {
         return sendWithData("POST", path, new HashMap<String, String>() {{
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-//            put("Cookie", cookie);
             put("Authorization", token);
         }}, body);
     }
 
     // HTTP PUT request
-    public Map<String, Object> sendPut(String path, String body) throws Exception {
-
-        return sendWithData("PUT", path, new HashMap<String, String>() {{
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-//            put("Cookie", cookie);
-        }}, body);
+    public HttpResponse sendPut(String path, String body) throws Exception {
+        return sendWithData("PUT", path, body);
     }
 
     // HTTP PUT request
-    public Map<String, Object> sendPut(String path, String body, String token) throws Exception {
+    public HttpResponse sendPut(String path, String body, String token) throws Exception {
 
         return sendWithData("PUT", path, new HashMap<String, String>() {{
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-            put("Cookie", HTTPRequest.this.token);
             put("Authorization", token);
         }}, body);
     }
 
     // HTTP PUT request
-    public Map<String, Object> sendPatch(String path, String body) throws Exception {
+    public HttpResponse sendPatch(String path, String body) throws Exception {
 
         return sendWithData("POST", path, new HashMap<String, String>() {{
             put("X-HTTP-Method-Override", "PATCH");
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-//            put("Cookie", cookie);
         }}, body);
     }
 
-    public Map<String, Object> sendPatch(String path, String body, String token) throws Exception {
+    public HttpResponse sendPatch(String path, String body, String token) throws Exception {
 
         return sendWithData("POST", path, new HashMap<String, String>() {{
             put("X-HTTP-Method-Override", "PATCH");
-            put("Content-Type", "application/json");
-            put("Accept", "application/json");
-//            put("Cookie", cookie);
             put("Authorization", token);
         }}, body);
     }
 
     // HTTP DELETE request
-    public Map<String, Object> sendDelete(String path) throws Exception {
+    public HttpResponse sendDelete(String path) throws Exception {
         return sendWithoutData("DELETE", path, "", null);
     }
 
-    public Map<String, Object> sendDeleteWithToken(String path, String token) throws Exception {
+    public HttpResponse sendDeleteWithToken(String path, String token) throws Exception {
         return sendWithoutData("DELETE", path, "", token);
     }
 
-    public Map<String, Object> sendDelete(String path, String filter) throws Exception {
-        return sendWithoutData("DELETE", path, filter, null);
+    public HttpResponse sendDelete(String path, String param) throws Exception {
+        return sendWithoutData("DELETE", path, param, null);
     }
 
-    public Map<String, Object> sendDeleteWithToken(String path, String filter, String token) throws Exception {
-        return sendWithoutData("DELETE", path, filter, token);
+    public HttpResponse sendDeleteWithToken(String path, String param, String token) throws Exception {
+        return sendWithoutData("DELETE", path, param, token);
+    }
+
+    public String getToken() {
+        return token;
     }
 }

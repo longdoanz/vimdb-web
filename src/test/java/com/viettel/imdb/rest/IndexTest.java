@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest;
 
 import com.viettel.imdb.rest.common.HTTPRequest;
+import com.viettel.imdb.rest.common.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,9 +35,9 @@ public class IndexTest {
 
 //        Create index
         String bodyRequest = "{\"name\":  \"" + fieldName + "\"}";
-        Map res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
+        HttpResponse res = http.sendPost(buildFromPath(DB_PATH, tableName, INDEX_PATH), bodyRequest);
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.CREATED.value());
+        assertEquals(res.getStatus(), HttpStatus.CREATED);
     }
 
 
@@ -45,8 +46,8 @@ public class IndexTest {
 
         String tableName = "table01";
         String fieldName = "sub";
-        Map res = http.sendDelete(buildFromPath(DB_PATH, tableName, INDEX_PATH, fieldName));
+        HttpResponse res = http.sendDelete(buildFromPath(DB_PATH, tableName, INDEX_PATH, fieldName));
         System.out.println(res);
-        assertEquals(res.get("code"), HttpStatus.NO_CONTENT.value());
+        assertEquals(res.getStatus(), HttpStatus.NO_CONTENT);
     }
 }

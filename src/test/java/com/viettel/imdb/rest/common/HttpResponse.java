@@ -2,31 +2,55 @@ package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 
 import java.io.IOException;
 
 public class HttpResponse {
-    public HttpStatus status;
-    public JsonNode response;
+    private HttpStatus status;
+    private JsonNode response;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public HttpResponse(int statusCode, String response) throws IOException {
-        status = HttpStatus.valueOf(statusCode);
-        this.response = objectMapper.readTree(response);
+    public HttpResponse(int statusCode) {
+        setStatus(HttpStatus.valueOf(statusCode));
     }
 
-    public HttpResponse andExpect(int statusCode) {
-        Assert.assertEquals(this.status, HttpStatus.valueOf(statusCode), "Status code UNEXPECTED");
+    public HttpResponse(int statusCode, String response) throws IOException {
+        setStatus(HttpStatus.valueOf(statusCode));
+        this.setResponse(objectMapper.readTree(response));
+    }
+
+    public HttpResponse andExpect(int expectedCode) {
+        Assert.assertEquals(this.getStatus(), HttpStatus.valueOf(expectedCode), "Status code UNEXPECTED");
         return this;
     }
 
-    public HttpResponse andExpect(String response) {
+    public HttpResponse andExpect(HttpStatus expectedHttpCode) {
+        Assert.assertEquals(this.getStatus(), expectedHttpCode, "Status code UNEXPECTED");
+        return this;
+    }
+
+    public HttpResponse andExpectResponse(String response) {
         Assert.assertEquals(response, response, "response UNEXPECTED");
         return this;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+
+    public JsonNode getResponse() {
+        return response;
+    }
+
+    public void setResponse(JsonNode response) {
+        this.response = response;
     }
 
     /*public HttpResponse andExpect(String jsonPath, String value) {
