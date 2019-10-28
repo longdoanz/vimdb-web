@@ -3,6 +3,7 @@ package com.viettel.imdb.rest.service;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.rest.common.Result;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.util.StatisticClient;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -23,18 +24,18 @@ public class StatisticServiceImpl implements StatisticService{
         this.client = client;
     }
 
-    public DeferredResult<ResponseEntity<?>> getMetrics(String servers){
+    public DeferredResult<ResponseEntity<?>> getMetrics(){
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
 
         try {
-            Logger.info("Get metric {}", servers);
-            if(servers == null)
-                servers = "";
-            String[] serverArr = servers.trim().split(",");
-            List<String> serverList = Arrays.asList(serverArr);
-            Logger.info("Get metric {}", serverList);
+            Logger.info("Get metric {}");
+//            if(servers == null)
+//                servers = "";
+//            String[] serverArr = servers.trim().split(",");
+//            List<String> serverList = Arrays.asList(serverArr);
+//            Logger.info("Get metric {}", serverList);
 
-            client.getMetrics(serverList)
+            client.getMetrics()
                     .onSuccess(metricList -> {
                         res.setResult(new ResponseEntity<>(metricList, HttpStatus.OK));
                     })
@@ -46,31 +47,31 @@ public class StatisticServiceImpl implements StatisticService{
         }
         return res;
     }
-    public DeferredResult<ResponseEntity<?>> getStatistics(String servers, String metrics){
+    public DeferredResult<ResponseEntity<?>> getStatistics(List<String> serverList,List<String> metricList){
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
 
-        Logger.info("Get statistics servers {} --- metrics {}", servers, metrics);
-        List<String> serverList;
-        List<String> metricList;
-        if(servers == null || servers.isEmpty()) {
-            serverList = new ArrayList<>();
-        } else {
-            String[] serverArr = servers.trim().split(",");
-            serverList = Arrays.asList(serverArr);
-        }
-        if(metrics == null || metrics.isEmpty()) {
-            metricList = new ArrayList<>();
-        } else {
-            String[] metricArr = metrics.trim().split(",");
-            metricList = Arrays.asList(metricArr);
-        }
+        Logger.info("Get statistics servers {} --- metrics {}", serverList, metricList);
+//        List<String> serverList;
+//        List<String> metricList;
+//        if(servers == null || servers.isEmpty()) {
+//            serverList = new ArrayList<>();
+//        } else {
+//            String[] serverArr = servers.trim().split(",");
+//            serverList = Arrays.asList(serverArr);
+//        }
+//        if(metrics == null || metrics.isEmpty()) {
+//            metricList = new ArrayList<>();
+//        } else {
+//            String[] metricArr = metrics.trim().split(",");
+//            metricList = Arrays.asList(metricArr);
+//        }
 
         client.getStatistics(serverList, metricList)
                 .onSuccess(metricResponseList -> {
                     res.setResult(new ResponseEntity<>(metricResponseList, HttpStatus.OK));
                 })
                 .onFailure(throwable -> {
-                    res.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+                    res.setResult(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
                 });
         return res;
     }

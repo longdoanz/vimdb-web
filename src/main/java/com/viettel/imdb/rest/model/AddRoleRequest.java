@@ -1,6 +1,8 @@
 package com.viettel.imdb.rest.model;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import java.util.List;
 
@@ -8,18 +10,19 @@ import java.util.List;
  * @author quannh22
  * @since 18/09/2019
  */
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Getter
-//@Setter
-//@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 //@ApiModel(value="AddRoleRequest", description = "  ")
 public class AddRoleRequest {
-    @ApiModelProperty(value= "rolename", example = " ")
+    @ApiModelProperty(value= "roleName", example = " ")
     private String roleName;
     @ApiModelProperty(value= "privileges", example = " ")
     private List<String> privileges;
 
+/*
     public AddRoleRequest() {
     }
 
@@ -44,11 +47,25 @@ public class AddRoleRequest {
         this.privileges = privileges;
     }
 
+
     @Override
     public String toString() {
         return "AddRoleRequest{" +
                 "roleName='" + roleName + '\'' +
                 ", privileges=" + privileges +
                 '}';
+    }
+*/
+    @Getter
+    @Setter
+    @ToString
+    public static class Privilege {
+        String permission;
+        static class Resource {
+            String name;
+            String user;
+            String namespace;
+            String table;
+        }
     }
 }

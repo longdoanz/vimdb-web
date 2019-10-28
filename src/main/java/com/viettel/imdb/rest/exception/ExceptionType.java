@@ -73,12 +73,12 @@ public class ExceptionType {
         }
     }
 
-    public static class RecordNotFoundError extends VIMDBRestClientError {
-        public RecordNotFoundError() {
+    public static class NotFoundError extends VIMDBRestClientError {
+        public NotFoundError() {
             this("Record Not Found");
         }
 
-        public RecordNotFoundError(String reason) {
+        public NotFoundError(String reason) {
             super(reason);
             this.message = reason;
         }
@@ -133,6 +133,22 @@ public class ExceptionType {
         @Override
         public HttpStatus getStatusCode() {
             return HttpStatus.NOT_IMPLEMENTED;
+        }
+    }
+
+    public static class ParseError extends VIMDBRestClientError {
+        public ParseError() {
+            this("Data format not correct");
+        }
+
+        public ParseError(String message) {
+            super(message);
+            this.error = RestErrorCode.MISSING_INFORMATION;
+        }
+
+        @Override
+        public HttpStatus getStatusCode() {
+            return HttpStatus.BAD_REQUEST;
         }
     }
 }

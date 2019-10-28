@@ -16,9 +16,6 @@ import java.util.List;
 //@ToString
 //@ApiModel(value="EditUserRequest", description = "  ")
 public class EditUserRequest {
-
-    @ApiModelProperty(value= "username", example = "admin13")
-    private String userName;
     @ApiModelProperty(value= "password", example = "admin13")
     private String password;
     @ApiModelProperty(value= "roles", example = "[\n" +
@@ -32,20 +29,12 @@ public class EditUserRequest {
     public EditUserRequest() {
     }
 
-    public EditUserRequest(String userName, String password, List<String> roles, List<Role> newRoles) {
-        this.userName = userName;
+    public EditUserRequest(String password, List<String> roles, List<Role> newRoles) {
         this.password = password;
         this.roles = roles;
         this.newRoles = newRoles;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getPassword() {
         return password;
@@ -74,7 +63,6 @@ public class EditUserRequest {
     @Override
     public String toString() {
         return "EditUserRequest{" +
-                "userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 ", newRoles=" + newRoles +

@@ -1,7 +1,7 @@
 package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.IMDBClient;
-import com.viettel.imdb.rest.model.AddRoleRequest;
+import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.rest.model.AddUserRequest;
 import com.viettel.imdb.rest.model.EditRoleRequest;
 import com.viettel.imdb.rest.model.EditUserRequest;
@@ -17,9 +17,9 @@ public interface SecurityService {
 
     DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username);
 
-    DeferredResult<ResponseEntity<?>> addUser(IMDBClient client, AddUserRequest addUserRequest);
+    DeferredResult<ResponseEntity<?>> addUser(IMDBClient client,AddUserRequest addUserRequest);
 
-    DeferredResult<ResponseEntity<?>> editUser(IMDBClient client, EditUserRequest editUserRequest);
+    DeferredResult<ResponseEntity<?>> editUser(IMDBClient client,String username, EditUserRequest editUserRequest);
 
     DeferredResult<ResponseEntity<?>> deleteUser(IMDBClient client, String username);
 
@@ -27,9 +27,9 @@ public interface SecurityService {
 
     DeferredResult<ResponseEntity<?>> getRole(IMDBClient client, String username);
 
-    DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, AddRoleRequest addRoleRequest);
+    DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, Role role);
 
-    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client, EditRoleRequest editRoleRequest);
+    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, EditRoleRequest editRoleRequest);
 
     DeferredResult<ResponseEntity<?>> deleteRole(IMDBClient client, String username);
 

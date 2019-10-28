@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.List;
+
 /**
  * @author quannh22
  * @since 08/08/2019
@@ -35,9 +37,8 @@ public class StatisticController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getMetrics(
-            @ApiParam(required = false, value = SERVER_NOTES) @PathVariable(value = "servers", required = false) String servers
             ) {
-        return service.getMetrics(servers);
+        return service.getMetrics();
     }
 
 
@@ -54,8 +55,8 @@ public class StatisticController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getStatistic(
-            @ApiParam(required = false, value = SERVER_NOTES) @PathVariable(value = "servers", required = false) String servers,
-            @ApiParam(required = false, value = GET_METRICS_NOTES) @PathVariable(value = "metrics", required = false) String metrics
+            @ApiParam(required = false, value = SERVER_NOTES) @RequestParam(value = "servers", required=false) List<String> servers,
+            @ApiParam(required = false, value = GET_METRICS_NOTES) @RequestParam(value = "metrics",required=false) List<String> metrics
     ) {
         return service.getStatistics(servers, metrics);
     }

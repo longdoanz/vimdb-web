@@ -176,7 +176,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
     }
 
     @Override
-    public Future<List<MetricResponse>> getMetrics(List<String> serverList) {
+    public Future<List<MetricResponse>> getMetrics() {
         List<MetricResponse> metricResponseList = new ArrayList<>(metricNameMap.values());
         return Future.value(metricResponseList);
     }
@@ -196,7 +196,7 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
 
             NodeStatistic nodeStatistic = nodeToMetricMap.get(server);
             if(nodeStatistic == null) {
-                Logger.info("Node statistic is null with nodeToMetricMap {} and server {} --- serverList {}", nodeToMetricMap, server, serverList);
+//                Logger.info("Node statistic is null with nodeToMetricMap {} and server {} --- serverList {}", nodeToMetricMap, server, serverList);
                 return Future.exception(new ClientException(ErrorCode.KEY_LENGTH_INVALID));
             }
             List<StatisticResponse.MetricValue> allMetrics = nodeStatistic.getNodeStatistic().getMetrics();

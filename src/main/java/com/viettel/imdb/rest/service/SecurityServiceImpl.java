@@ -189,12 +189,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> editUser(IMDBClient client, EditUserRequest editUserRequest) {
+    public DeferredResult<ResponseEntity<?>> editUser(IMDBClient client,String username ,EditUserRequest editUserRequest) {
         Logger.info("editUser({})", editUserRequest);
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         //change password
-        Future<Void> changePasswordFuture = client.changePassword(editUserRequest.getUserName(), editUserRequest.getPassword().getBytes());
+        Future<Void> changePasswordFuture = client.changePassword(username, editUserRequest.getPassword().getBytes());
 
         int roleCount = 0;
         int newRoleListLen = -1;
@@ -239,7 +239,7 @@ public class SecurityServiceImpl implements SecurityService {
             return returnValue;
         }
         //edit role
-        Future<Void> updateFuture = client.updateUser(editUserRequest.getUserName(), roleList); // todo how about newRoles
+        Future<Void> updateFuture = client.updateUser(username, roleList); // todo how about newRoles
 
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
@@ -279,9 +279,9 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, AddRoleRequest addRoleRequest) {
-        Logger.info("addRoleRequest({})", addRoleRequest);
-        Future<Void> addFuture = client.createRole(addRoleRequest.getRoleName(), addRoleRequest.getPrivileges());
+    public DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, Role role) {
+        Logger.info("addRoleRequest({})", role);
+        Future<Void> addFuture = client.createRole(role.getRolename(), role.getPrivilegeList());
         Future<Result> resultFuture = addFuture
                 .map(aVoid -> new Result(HttpStatus.CREATED))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
@@ -289,9 +289,9 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client, EditRoleRequest editRoleRequest) {
+    public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, EditRoleRequest editRoleRequest) {
         Logger.info("editRole({})", editRoleRequest);
-        Future<Void> updateFuture = client.updateRole(editRoleRequest.getRoleName(), editRoleRequest.getPrivileges()); // todo how about newRoles
+        Future<Void> updateFuture = client.updateRole(roleName, editRoleRequest.getPrivileges()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .rescue(throwable -> throwableToHttpStatus(throwable));

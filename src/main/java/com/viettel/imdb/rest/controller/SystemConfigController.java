@@ -41,8 +41,7 @@ public class SystemConfigController {
             @ApiParam(required = true, value = CONFIG_USER_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest
     ) {
-        editUserRequest.setUserName(username);
-        return service.currentUser(editUserRequest);
+        return service.currentUser(username, editUserRequest);
     }
 
 

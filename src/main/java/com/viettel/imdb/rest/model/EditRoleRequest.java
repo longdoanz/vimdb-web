@@ -15,26 +15,16 @@ import java.util.List;
 //@ToString
 //@ApiModel(value="EditRoleRequest", description = "  ")
 public class EditRoleRequest {
-    @ApiModelProperty(value = " rolename", example = "")
-    private String roleName;
     @ApiModelProperty(value = " privileges", example = "")
     private List<String> privileges;
 
     public EditRoleRequest() {
     }
 
-    public EditRoleRequest(String roleName, List<String> privileges) {
-        this.roleName = roleName;
+    public EditRoleRequest(List<String> privileges) {
         this.privileges = privileges;
     }
 
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
 
     public List<String> getPrivileges() {
         return privileges;
@@ -47,7 +37,6 @@ public class EditRoleRequest {
     @Override
     public String toString() {
         return "EditRoleRequest{" +
-                "roleName='" + roleName + '\'' +
                 ", privileges=" + privileges +
                 '}';
     }

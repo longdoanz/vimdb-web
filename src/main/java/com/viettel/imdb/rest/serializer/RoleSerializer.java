@@ -9,6 +9,7 @@ import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author longdt20
@@ -23,8 +24,43 @@ public class RoleSerializer extends JsonSerializer<Role> {
     public void serialize(Role role, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeFieldName("roleName");
-        jsonGenerator.writeRawValue(role.getRolename());
+        jsonGenerator.writeString(role.getRolename());
         jsonGenerator.writeFieldName("privileges");
+        jsonGenerator.writeStartArray();
+
+        for(String privilege : role.getPrivilegeList()) {
+            String[] lst = privilege.split("\\.");
+
+            if(lst.length > 0) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeFieldName("permission");
+                jsonGenerator.writeString(lst[0]);
+            }
+
+            if(lst.length > 1) {
+                jsonGenerator.writeFieldName("resource");
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeFieldName("name");
+                jsonGenerator.writeString(lst[1]);
+                if(lst.length == 3) {
+                    if(lst[1].equalsIgnoreCase("data")) {
+                        jsonGenerator.writeFieldName("namespace");
+                        jsonGenerator.writeString("namespace");
+                        jsonGenerator.writeFieldName("table");
+                        jsonGenerator.writeString(lst[2]);
+                    } else {
+                        jsonGenerator.writeFieldName("user");
+                        jsonGenerator.writeString(lst[2]);
+                    }
+                }
+                jsonGenerator.writeEndObject();
+            }
+            if(lst.length > 0)
+                jsonGenerator.writeEndObject();
+
+        }
+
+        jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
         /*
         role.getValue().forEach(field -> {

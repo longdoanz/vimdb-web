@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.controller;
 
+import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.*;
 import com.viettel.imdb.rest.service.SecurityService;
@@ -113,10 +114,8 @@ public class SecurityController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> addUser(
-            @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = ADD_USER_REQUEST_NOTES) @RequestBody AddUserRequest addUserRequest
     ) {
-        addUserRequest.setUserName(username);
         return service.addUser(IMDBClientToken.getClient(getToken()), addUserRequest);
     }
 
@@ -136,8 +135,7 @@ public class SecurityController {
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest) {
 
-        editUserRequest.setUserName(username);
-        return service.editUser(IMDBClientToken.getClient(getToken()), editUserRequest);
+        return service.editUser(IMDBClientToken.getClient(getToken()),username, editUserRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/user/{username}") // todo /user or /user/{username}
@@ -203,21 +201,21 @@ public class SecurityController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/role") // todo /role or /role/{rolename}
-    @ApiOperation(value = ADD_ROLE_NOTES, nickname = "addRole")
+    @ApiOperation(value = ADD_ROLE_NOTES)
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
+/*    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "role",
+                    dataType = "AddRoleRequest",
+                    examples = @io.swagger.annotations.Example(
+                            value = {
+                                    @ExampleProperty(value = "{'property': 'test'}", mediaType = "application/json")
+                            }))
+    })*/
     public DeferredResult<ResponseEntity<?>> addRole(
-            @ApiParam(required = true, value = ADD_ROLE_REQUEST_NOTES) @RequestBody AddRoleRequest addRoleRequest) {
+            @ApiParam(required = true) @RequestBody Role role) {
 
-        return service.addRole(IMDBClientToken.getClient(getToken()), addRoleRequest);
+        return service.addRole(IMDBClientToken.getClient(getToken()), role);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/role/{rolename}") // todo /role or /role/{rolename}
@@ -236,8 +234,7 @@ public class SecurityController {
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
             @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody EditRoleRequest editRoleRequest) {
 
-        editRoleRequest.setRoleName(rolename);
-        return service.editRole(IMDBClientToken.getClient(getToken()), editRoleRequest);
+        return service.editRole(IMDBClientToken.getClient(getToken()),rolename,  editRoleRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/role/{rolename}") // todo /role or /role/{rolename}

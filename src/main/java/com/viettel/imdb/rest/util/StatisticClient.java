@@ -13,7 +13,7 @@ import java.util.List;
 public interface StatisticClient {
     // todo this is somehow equal to IMDBClient - to get statistics from vIMDB modules
 
-    Future<List<MetricResponse>> getMetrics(List<String> serverList);
+    Future<List<MetricResponse>> getMetrics();
 
     Future<List<StatisticResponse>> getStatistics(List<String> serverList, List<String> metricList);
 
