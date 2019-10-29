@@ -26,11 +26,10 @@ public class RoleDeserializer extends JsonDeserializer<Role> {
     @Override
     public Role deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
 
-
         try {
             ObjectCodec objectCodec = jsonParser.getCodec();
             JsonNode jsonNode = objectCodec.readTree(jsonParser);
-
+            System.out.println(jsonNode);
             String name = jsonNode.get(ROLE_NAME_FIELD) == null ? "" : jsonNode.get(ROLE_NAME_FIELD).asText();
 
             JsonNode privileges = jsonNode.get(PRIVILEGES_FIELD);

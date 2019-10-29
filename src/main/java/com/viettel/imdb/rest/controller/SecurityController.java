@@ -2,7 +2,10 @@ package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.rest.domain.RestClientError;
-import com.viettel.imdb.rest.model.*;
+import com.viettel.imdb.rest.model.AddUserRequest;
+import com.viettel.imdb.rest.model.EditUserRequest;
+import com.viettel.imdb.rest.model.RoleInfo;
+import com.viettel.imdb.rest.model.UserInfo;
 import com.viettel.imdb.rest.service.SecurityService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
 import io.swagger.annotations.*;
@@ -203,15 +206,20 @@ public class SecurityController {
     @RequestMapping(method = RequestMethod.POST, value = "/role") // todo /role or /role/{rolename}
     @ApiOperation(value = ADD_ROLE_NOTES)
     @ResponseStatus(HttpStatus.CREATED)
-/*    @ApiImplicitParams({
+    @ApiImplicitParams({
             @ApiImplicitParam(
                     name = "role",
-                    dataType = "AddRoleRequest",
-                    examples = @io.swagger.annotations.Example(
-                            value = {
-                                    @ExampleProperty(value = "{'property': 'test'}", mediaType = "application/json")
-                            }))
-    })*/
+                    value = "{\n" +
+                            "  \"name\": \"ROLE01\",\n" +
+                            "  \"privileges\": [{\n" +
+                            "    \"permission\": \"read\",\n" +
+                            "    \"resource\": {\n" +
+                            "      \"name\": \"user\",\n" +
+                            "      \"user\": \"*\"\n" +
+                            "    }\n" +
+                            "  }]\n" +
+                            "}")
+    })
     public DeferredResult<ResponseEntity<?>> addRole(
             @ApiParam(required = true) @RequestBody Role role) {
 
@@ -234,7 +242,7 @@ public class SecurityController {
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
             @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody Role editRoleRequest) {
 
-        return service.editRole(IMDBClientToken.getClient(getToken()), rolename,  editRoleRequest);
+        return service.editRole(IMDBClientToken.getClient(getToken()),rolename,  editRoleRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/role/{rolename}") // todo /role or /role/{rolename}

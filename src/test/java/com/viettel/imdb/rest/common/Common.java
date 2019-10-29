@@ -18,9 +18,9 @@ public class Common {
     public static final String INDEX_PATH = "indexes";
     public static final String HOST_URL = "http://127.0.0.1:8080";
 
-    public static String USERNAME = "superadmin";
+    public static String USERNAME = "admin";
 
-    public static String PASSWORD = "superadminpass";
+    public static String PASSWORD = "admin";
 
     public static String buildFromPath(String... args) {
         String res = "";

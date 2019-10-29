@@ -1,21 +1,22 @@
 package com.viettel.imdb.rest.service;
 
 
-import com.facebook.presto.sql.parser.SqlParser;
+//import com.facebook.presto.sql.parser.SqlParser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viettel.imdb.IMDBClient;
-import com.viettel.imdb.common.*;
+import com.viettel.imdb.common.Field;
+import com.viettel.imdb.common.KeyRecord;
+import com.viettel.imdb.common.Record;
+import com.viettel.imdb.common.ValueType;
 import com.viettel.imdb.rest.common.RestValidator;
 import com.viettel.imdb.rest.common.Result;
 import com.viettel.imdb.rest.domain.RestIndexModel;
-import com.viettel.imdb.rest.domain.RestScanModel;
 import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.model.FilterModel;
 import com.viettel.imdb.rest.util.StatisticClient;
-import com.viettel.imdb.secondaryindex.ResultSet;
 import io.trane.future.CheckedFutureException;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
@@ -63,7 +64,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> createNamespace(IMDBClient client, String namespace) {
+    public DeferredResult<?> createNamespace(IMDBClient client, String namespace) {
         Logger.info("Create Namespace");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
@@ -72,7 +73,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getTableListInNamespace(IMDBClient client, String namespace) {
+    public DeferredResult<?> getTableListInNamespace(IMDBClient client, String namespace) {
         RestValidator.validateNamespace(namespace);
 
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
@@ -81,63 +82,66 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> updateNamespace(IMDBClient client, String namespace, String newname) {
-        Logger.info("Delete Namespace");
-
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+    public DeferredResult<?> updateNamespace(IMDBClient client, String namespace, String newname) {
+        throw new ExceptionType.NotImplementError();
+        /*DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
-        return returnValue;
+        return returnValue;*/
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> dropNamespace(IMDBClient client, String namespace) {
-        Logger.info("Delete Namespace");
-
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.FORBIDDEN));
-        return returnValue;
+    public DeferredResult<?> dropNamespace(IMDBClient client, String namespace) {
+        throw new ExceptionType.NotImplementError();
+//        DeferredResult<?> returnValue = new DeferredResult<>();
+//        return returnValue;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> createTable(IMDBClient client, String namespace, String tableName) {
+    public DeferredResult<?> createTable(IMDBClient client, String namespace, String tableName) {
         Logger.info("Create table({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
 
+        DeferredResult<?> returnValue = new DeferredResult<>();
+
         Future<Void> createTableFuture = client.createTable(tableName);
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = createTableFuture
-                .map(aVoid -> {
+        createTableFuture
+                .onSuccess(aVoid -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", 1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.CREATED);
+                    returnValue.setResult(null);
                 })
-                .rescue(throwable -> {
+                .onFailure(throwable -> {
+                    returnValue.setErrorResult(throwable);
 //                    statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", 1);
 //                    statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return throwableToHttpStatus(throwable);
+//                    return throwableToHttpStatus(throwable);
                 });
-        return restResultToDeferredResult(resultFuture);
+        return returnValue;
+//        return restResultToDeferredResult(resultFuture);
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> dropTable(IMDBClient client, String namespace, String tableName) {
+    public DeferredResult<?> dropTable(IMDBClient client, String namespace, String tableName) {
         Logger.info("dropTable({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
 
-        Future<Void> dropTableFuture = client.dropTable(tableName);
+        DeferredResult<?> returnValue = new DeferredResult<>();
+
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = dropTableFuture
-                .map(aVoid -> {
+        Future<Void> res = client.dropTable(tableName)
+                .onSuccess(aVoid -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_data_table_count", -1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.NO_CONTENT);
+                    returnValue.setResult(null);
                 })
-                .rescue(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult(resultFuture);
+                .onFailure(returnValue::setErrorResult);
+
+        return returnValue;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> createIndex(IMDBClient client, RestIndexModel indexModel) {
+    public DeferredResult<?> createIndex(IMDBClient client, RestIndexModel indexModel) {
         Logger.info("createIndex({})", indexModel);
         String namespace = indexModel.getNamespace();
         String tableName = indexModel.getTable();
@@ -159,7 +163,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> dropIndex(IMDBClient client, String namespace, String tableName, String indexName) {
+    public DeferredResult<?> dropIndex(IMDBClient client, String namespace, String tableName, String indexName) {
         Logger.info("dropIndex({}, {}, {})", namespace, tableName, indexName);
         RestValidator.validateNamespace(namespace);
 
@@ -177,7 +181,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
+    public DeferredResult<?> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.info("select({}, {}, {}, {})\n", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
 
@@ -198,7 +202,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
+    public DeferredResult<?> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.info("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
 
@@ -219,13 +223,13 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> insert(IMDBClient client, String namespace, String tableName, String key, String json) {
+    public DeferredResult<?> insert(IMDBClient client, String namespace, String tableName, String key, String json) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
+    public DeferredResult<?> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.info("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
 
@@ -246,37 +250,37 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> update(IMDBClient client, String namespace, String tableName, String key, String json) {
+    public DeferredResult<?> update(IMDBClient client, String namespace, String tableName, String key, String json) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> upsert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
+    public DeferredResult<?> upsert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> upsert(IMDBClient client, String namespace, String tableName, String key, String json) {
+    public DeferredResult<?> upsert(IMDBClient client, String namespace, String tableName, String key, String json) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> replace(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
+    public DeferredResult<?> replace(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> replace(IMDBClient client, String namespace, String tableName, String key, String json) {
+    public DeferredResult<?> replace(IMDBClient client, String namespace, String tableName, String key, String json) {
         // todo no used here
         return null;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> scan(IMDBClient client, String namespace, String tableName, String filter, List<String> fields) {
+    public DeferredResult<?> scan(IMDBClient client, String namespace, String tableName, String filter, List<String> fields) {
         RestValidator.validateNamespace(namespace);
 
         FilterModel filterModel = new FilterModel();
@@ -300,7 +304,7 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
+    public DeferredResult<?> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.info("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
 
@@ -321,12 +325,12 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> cmd(IMDBClient client, JsonNode req) {
-//        String cmd = req.get("cmd").asText();
+    public DeferredResult<?> cmd(IMDBClient client, JsonNode req) {
+        String cmd = req.get("cmd").asText();
 
-//        if(cmd == null) {
-//            throw new ExceptionType.BadRequestError();
-//        }
+        if(cmd == null) {
+            throw new ExceptionType.BadRequestError();
+        }
 //        sqlParser.createStatement(cmd);
 
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();

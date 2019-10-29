@@ -34,6 +34,10 @@ public class DataStorage implements Storage{
 
     public Future<Void> createTable(String tableName) {
         Promise<Void> future = Promise.apply();
+        if(tableName == null) {
+            future.setException(new ClientException(ErrorCode.TABLENAME_INVALID));
+            return future;
+        }
         if(data == null || data.get(tableName) != null) {
             future.setException(new ClientException(ErrorCode.TABLE_EXIST));
         } else {

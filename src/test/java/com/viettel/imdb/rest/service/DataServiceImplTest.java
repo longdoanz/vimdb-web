@@ -3,6 +3,7 @@ package com.viettel.imdb.rest.service;
 import com.viettel.imdb.ErrorCode;
 import com.viettel.imdb.rest.common.HTTPRequest;
 import com.viettel.imdb.rest.common.HttpResponse;
+import com.viettel.imdb.rest.common.JsonGenerator;
 import com.viettel.imdb.rest.common.TestUtil;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
@@ -29,11 +30,10 @@ public class DataServiceImplTest extends TestUtil {
     }
     @Test(priority = 1)
     public void testGetDataInfo() throws Exception {
-        final String TABLE_PREFIX = "TABLE_";
-        http.sendGetWithToken("/v1/data/", token);
+        http.sendGetWithToken(DATA_PATH, token);
     }
 
-    @Test(priority = 1)
+    @Test(priority = 2)
     public void testCreateTableValid() throws Exception {
         final String TABLE_PREFIX = "TABLE_";
         for(int i = 0; i < 100; i++) {
@@ -49,8 +49,13 @@ public class DataServiceImplTest extends TestUtil {
             testCreateTable(TABLE_PREFIX + i, HttpStatus.CREATED, null);
         }
         for(int i = 0; i < 100; i++) {
-            String expectedResponse = "{\"error\":\"" + ErrorCode.TABLE_EXIST.name() + "\"}";
+            String expectedResponse = JsonGenerator.createObject()
+                    .write("error", ErrorCode.TABLE_EXIST.name())
+                    .writeEndObject()
+                    .toString();
+//            String expectedResponse = "{\"error\":\"" + ErrorCode.TABLE_EXIST.name() + "\"}";
             testCreateTable(TABLE_PREFIX + i, HttpStatus.BAD_REQUEST, expectedResponse);
+            testDropTable(TABLE_PREFIX + i, HttpStatus.NO_CONTENT, null);
         }
     }
 
@@ -63,12 +68,21 @@ public class DataServiceImplTest extends TestUtil {
 
     @Test(priority = 4)
     public void testDropTable() {
-        final String TABLE_PREFIX = "TABLE_";
+        final String TABLE_PREFIX = "TABLE_PREFIX_";
         for(int i = 0; i < 100; i++) {
             testCreateTable(TABLE_PREFIX + i, HttpStatus.CREATED, null);
         }
         for(int i = 0; i < 100; i++) {
-            testDropTable(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_PREFIX + i), HttpStatus.NO_CONTENT, null);
+            testDropTable(TABLE_PREFIX + i, HttpStatus.NO_CONTENT, null);
+        }
+    }
+
+    @Test(priority = 4)
+    public void testDropTable02() {
+        String TABLE_PREFIX = "TABLE_PREFIX_";
+        for (int i = 0; i < 100; i++) {
+            testDropTable(TABLE_PREFIX + i, HttpStatus.NOT_FOUND,
+                    "{\"error\":\"TABLE_NOT_EXIST\",\"message\":\"TABLE_NOT_EXIST\"}");
         }
     }
 
@@ -77,7 +91,7 @@ public class DataServiceImplTest extends TestUtil {
         final String TABLE_NAME = "TABLE_0";
         final String INDEX_NAME = "$.justAnIndexName";
         testCreateTable(TABLE_NAME, HttpStatus.CREATED, null);
-        testCreateIndex(TABLE_NAME, INDEX_NAME, HttpStatus.CREATED, null);
+        testCreateIndex(TABLE_NAME, INDEX_NAME, HttpStatus.METHOD_NOT_ALLOWED, null);
         testDropTable(TABLE_NAME, HttpStatus.NO_CONTENT, null);
     }
 
@@ -85,25 +99,26 @@ public class DataServiceImplTest extends TestUtil {
     public void testDropIndex() {
     }
 
-    @Test(priority = 7)
+/*  @Test(priority = 7)
     public void testSelect() throws Exception {
         StringBuilder tableName = new StringBuilder();
         for(int i = 0; i < 255; i++) {
             tableName.append("a");
         }
         HttpResponse res = http.sendGetWithToken(DATA_PATH + "/namespace" + "/TABLE_1" + "/key", "fieldnames=field1&fieldnames=field2&fieldnames=field3&fieldnames=field4", token);
-        System.out.println(res);
-    }
+        Logger.error(res.getResponse());
+    }*/
 
 
     @Test(priority = 3)
-    public void testInsert1() throws Exception {
-        String TABLE_NAME = "TABLE_0";
+    public void testInsertDeleteRecord() throws Exception {
+        String tableName = "TABLE_0";
+        String key = "key-013";
 //        http.sendDelete(buildFromPath(DB_PATH, tableName));
-        String body = "{ \"name\": \""+ TABLE_NAME + "\" }";
-        http.sendPost(DATA_PATH_WITH_NAMESPACE, body);
+        dropTable(tableName);
+        createTable(tableName).andExpect(HttpStatus.CREATED);
 
-        String body2 = "{\n" +
+        String body = "{\n" +
                 "  \"sub1\": 145,\n" +
                 "  \"sub4\": \"String\",\n" +
                 "  \"sub2\": [1, 3, 5],\n" +
@@ -114,23 +129,27 @@ public class DataServiceImplTest extends TestUtil {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        HttpResponse res = http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, "key-03"), body2, token);
-        System.out.println(res);
-        assertEquals(res.getStatus(), HttpStatus.CREATED);
+//        HttpResponse res = http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, "key-03"), body, token);
+        insert(tableName, key, body).andExpect(HttpStatus.CREATED);
 
+        select(tableName, key).andExpect(HttpStatus.OK)
+        .andExpectResponse(body);
+
+        String updateBody = "{\n" +
+                "  \"sub1\": 145,\n" +
+                "  \"sub3\": {\n" +
+                "    \"ssub1\": [1]\n" +
+                "  }\n" +
+                "}";
+
+        update(tableName, key, updateBody).andExpect(HttpStatus.NO_CONTENT);
+
+        select(tableName, key).andExpect(HttpStatus.OK)
+                .andExpectResponse(updateBody);
+
+        delete(tableName, key).andExpect(HttpStatus.NO_CONTENT);
     }
 
-    @Test(priority = 4)
-    public void testSelect2() throws Exception {
-        String TABLE_NAME = "TABLE_0";
-        String key = "key-03";
-
-        String expectData = "{\"sub1\":145,\"sub2\":[1,3,5],\"sub3\":{\"ssub1\":[1],\"SUB23\":{\"S42\":\"TESTING\"}},\"sub4\":\"String\"}";
-        HttpResponse res = http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, TABLE_NAME, key));
-        System.out.println(res);
-        assertEquals(res.getStatus(), HttpStatus.OK);
-        assertEquals(res.getResponse().toString(), expectData);
-    }
 
     @Test(priority = 5)
     public void testUpdate() throws Exception {

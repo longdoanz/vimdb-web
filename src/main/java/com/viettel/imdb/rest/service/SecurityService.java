@@ -3,7 +3,6 @@ package com.viettel.imdb.rest.service;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.rest.model.AddUserRequest;
-import com.viettel.imdb.rest.model.EditRoleRequest;
 import com.viettel.imdb.rest.model.EditUserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -29,7 +28,7 @@ public interface SecurityService {
 
     DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, Role role);
 
-    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, Role role);
+    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, Role editRoleRequest);
 
     DeferredResult<ResponseEntity<?>> deleteRole(IMDBClient client, String username);
 
