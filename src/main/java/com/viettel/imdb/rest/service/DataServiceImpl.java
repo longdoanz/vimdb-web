@@ -39,7 +39,7 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 class DataServiceImpl implements DataService {
-    SqlParser sqlParser = new SqlParser();
+//    SqlParser sqlParser = new SqlParser();
 
     private final IMDBClient client;
     // todo add StatisticClient here
@@ -327,7 +327,7 @@ class DataServiceImpl implements DataService {
         if(cmd == null) {
             throw new ExceptionType.BadRequestError();
         }
-        sqlParser.createStatement(cmd);
+//        sqlParser.createStatement(cmd);
 
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
         ObjectMapper mapper = new ObjectMapper();
