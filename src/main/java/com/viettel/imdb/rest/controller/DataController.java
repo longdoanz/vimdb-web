@@ -5,6 +5,7 @@ import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.domain.RestIndexModel;
 import com.viettel.imdb.rest.domain.RestScanModel;
+import com.viettel.imdb.rest.model.CmdRequest;
 import com.viettel.imdb.rest.model.FilterModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
@@ -309,9 +310,10 @@ public class DataController {
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
     public DeferredResult<ResponseEntity<?>> runCmd(
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body) {
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody CmdRequest request) {
 
 //        Logger.info("CMD ({})", body);
+        JsonNode body = null;
         return service.cmd(IMDBClientToken.getClient(getToken()), body);
     }
 

@@ -289,9 +289,9 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, EditRoleRequest editRoleRequest) {
-        Logger.info("editRole({})", editRoleRequest);
-        Future<Void> updateFuture = client.updateRole(roleName, editRoleRequest.getPrivileges()); // todo how about newRoles
+    public DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, Role role) {
+        Logger.info("editRole({})", role);
+        Future<Void> updateFuture = client.updateRole(roleName, role.getPrivilegeList()); // todo how about newRoles
         Future<Result> resultFuture = updateFuture
                 .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
                 .rescue(throwable -> throwableToHttpStatus(throwable));
