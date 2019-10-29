@@ -11,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.viettel.imdb.rest.common.Common.*;
 import static org.testng.Assert.assertEquals;
@@ -29,15 +28,42 @@ public class TestUtil {
         encoder = IMDBEncodeDecoder.getInstance();
     }
 
+    public HttpResponse createTable(String tableName) throws Exception {
+        return http.sendPost(DATA_PATH_WITH_NAMESPACE, "{\"tableName\":  \"" + tableName + "\"}");
+    }
+
+    public HttpResponse dropTable(String tableName) throws Exception {
+        return http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName));
+    }
+
+    public HttpResponse insert(String tableName, String key, String body) throws Exception {
+        return http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key), body);
+    }
+
+    public HttpResponse select(String tableName, String key) throws Exception {
+        return http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key));
+    }
+
+    public HttpResponse update(String tableName, String key, String body) throws Exception {
+        return http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key), body);
+    }
+
+    public HttpResponse delete(String tableName, String key) throws Exception {
+        return http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key));
+    }
+
     public void testCreateTable(String tableName, HttpStatus expectedReturnCode, String expectedResponse) {
         try {
-            HttpResponse res = http.sendPost(DATA_PATH_WITH_NAMESPACE, "{\"tableName\":  \"" + tableName + "\"}");
-            System.out.println(res);
-            Assert.assertEquals(res.getStatus(), expectedReturnCode);
+            HttpResponse res = createTable(tableName);
+//            System.out.println(res);
+//            Assert.assertEquals(res.getStatus(), expectedReturnCode);
+
+            res.andExpect(expectedReturnCode);
             if(expectedResponse == null)
                 Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
+                res.andExpectResponse(expectedResponse);
+//                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
         }catch (Exception ex) {
             Assert.fail("Test create table failed!!!", ex);
         }
@@ -46,12 +72,9 @@ public class TestUtil {
     public void testDropTable(String tableName, HttpStatus expectedReturnCode, String expectedResponse) {
         try {
             HttpResponse res = http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName));
-            System.out.println(res);
-            Assert.assertEquals(res.getStatus(), expectedReturnCode);
-            if(expectedResponse == null)
-                Assert.assertNull(res.getResponse());
-            else
-                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
+
+            res.andExpect(expectedReturnCode)
+                    .andExpectResponse(expectedResponse);
         }catch (Exception ex) {
             Assert.fail("Test drop table failed!!!", ex);
         }
@@ -63,12 +86,13 @@ public class TestUtil {
             RestIndexModel restIndexModel = new RestIndexModel(DEFAULT_NAMESPACE, tableName, INDEX_TYPE, indexName);
             String path = buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName);
             HttpResponse res = http.sendPost(path, restIndexModel.toJsonString());
-            System.out.println(res);
-            Assert.assertEquals(res.getStatus(), expectedReturnCode);
+
+            res.andExpect(expectedReturnCode);
+
             if(expectedResponse == null)
                 Assert.assertNull(res.getResponse());
             else
-                Assert.assertEquals(encoder.encodeJsonString(res.getResponse().toString()), encoder.encodeJsonString(expectedResponse));
+                res.andExpectResponse(expectedResponse);
         } catch (Exception ex) {
             Assert.fail("Test create index failed!!!", ex);
         }

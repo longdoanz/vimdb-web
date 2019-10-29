@@ -2,12 +2,14 @@ package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 
 import java.io.IOException;
 
 public class HttpResponse {
+    private static IMDBEncodeDecoder encoder = IMDBEncodeDecoder.getInstance();
     private HttpStatus status;
     private JsonNode response;
 
@@ -23,17 +25,26 @@ public class HttpResponse {
     }
 
     public HttpResponse andExpect(int expectedCode) {
-        Assert.assertEquals(this.getStatus(), HttpStatus.valueOf(expectedCode), "Status code UNEXPECTED");
+        Assert.assertEquals(this.getStatus(), HttpStatus.valueOf(expectedCode), "Status code UNEXPECTED, RESPONSE: " + this.getResponse());
         return this;
     }
 
     public HttpResponse andExpect(HttpStatus expectedHttpCode) {
-        Assert.assertEquals(this.getStatus(), expectedHttpCode, "Status code UNEXPECTED");
+        Assert.assertEquals(this.getStatus(), expectedHttpCode, "Status code UNEXPECTED, RESPONSE: " + this.getResponse());
         return this;
     }
 
-    public HttpResponse andExpectResponse(String response) {
-        Assert.assertEquals(response, response, "response UNEXPECTED");
+    public HttpResponse andExpectResponse(String expectedResponse) {
+        if(expectedResponse == null) {
+            Assert.assertNull(this.response);
+            return this;
+        }
+        if(this.response == null) {
+            Assert.assertNull(expectedResponse);
+        }
+        Assert.assertEquals(encoder.encodeJsonString(this.response.toString()), encoder.encodeJsonString(expectedResponse),
+                "response UNEXPECTED, Response:\n" + this.getResponse() + "\n Expected: \n" + expectedResponse);
+//        Assert.assertEquals(this.response.toString(), response, "response UNEXPECTED, RESPONSE: " + this.getResponse());
         return this;
     }
 

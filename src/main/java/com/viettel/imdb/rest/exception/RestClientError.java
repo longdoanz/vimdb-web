@@ -20,7 +20,7 @@ public class RestClientError {
     private String message;
 
     public RestClientError(ClientException ex) {
-        message = ex.getMessage();
+        message = ex.getErrorCode().name();
         error = ex.getErrorCode();
     }
 

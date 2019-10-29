@@ -1,15 +1,11 @@
 package com.viettel.imdb.rest.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.viettel.imdb.common.Record;
 import com.viettel.imdb.core.security.Role;
-import com.viettel.imdb.util.IMDBEncodeDecoder;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author longdt20

@@ -3,12 +3,10 @@ package com.viettel.imdb.rest.util;
 import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Pair;
 import com.viettel.imdb.rest.config.Config;
-import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.Timer;

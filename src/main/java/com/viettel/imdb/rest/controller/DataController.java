@@ -3,10 +3,6 @@ package com.viettel.imdb.rest.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.common.Utils;
 import com.viettel.imdb.rest.domain.RestClientError;
-import com.viettel.imdb.rest.domain.RestIndexModel;
-import com.viettel.imdb.rest.domain.RestScanModel;
-import com.viettel.imdb.rest.model.CmdRequest;
-import com.viettel.imdb.rest.model.FilterModel;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
@@ -99,7 +95,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "")
     @ApiOperation(value = CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public DeferredResult<ResponseEntity<?>> createNamespace(
+    public DeferredResult<?> createNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
         Logger.info("Create namespace({})", namespace);
@@ -109,7 +105,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}")
     @ApiOperation(value = GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
     @ResponseStatus(value = HttpStatus.OK)
-    public DeferredResult<ResponseEntity<?>> getTableList(
+    public DeferredResult<?> getTableList(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
         return service.getTableListInNamespace(IMDBClientToken.getClient(getToken()), namespace);
@@ -118,7 +114,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
     @ApiOperation(value = DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public DeferredResult<ResponseEntity<?>> dropNamespace(
+    public DeferredResult<?> dropNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
         Logger.info("Drop namespace({}, {})", namespace);
@@ -128,7 +124,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}")
     @ApiOperation(value = UPDATE_NAMESPACE_NOTES, nickname = "updateNamespace")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public DeferredResult<ResponseEntity<?>> updateNamespace(
+    public DeferredResult<?> updateNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
             @ApiIgnore @RequestParam Map<String, String> requestParams) {
@@ -141,7 +137,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}")
     @ApiOperation(value = CREATE_TABLE_NOTES, nickname = "createTable")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public DeferredResult<ResponseEntity<?>> createTable(
+    public DeferredResult<?> createTable(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @RequestBody TableModel tableName) {
 
@@ -151,12 +147,11 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}")
     @ApiOperation(value = DROP_TABLE_NOTES, nickname = "dropTable")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public DeferredResult<ResponseEntity<?>> dropTable(
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public DeferredResult<?> dropTable(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName) {
 
-        Logger.info("Drop table({}, {})", namespace, tableName);
         return service.dropTable(IMDBClientToken.getClient(getToken()), namespace, tableName);
     }
 
@@ -164,7 +159,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}")
     @ApiOperation(value = CREATE_INDEX_NOTES, nickname = "createIndex")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public DeferredResult<ResponseEntity<?>> createIndex(
+    public DeferredResult<?> createIndex(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = INDEX_MODEL_NOTES) @RequestBody RestIndexModel indexModel) {
@@ -189,7 +184,7 @@ public class DataController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> dropIndex(
+    public DeferredResult<?> dropIndex(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = INDEX_NAME_NOTES) @PathVariable(value = "indexname") String indexName
@@ -202,7 +197,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = SELECT_NOTES, nickname = "select")
     @ResponseStatus(HttpStatus.OK)
-    public DeferredResult<ResponseEntity<?>> select(
+    public DeferredResult<?> select(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable(value = "tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable(value = "key") String key,
@@ -216,7 +211,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = INSERT_FIELD_LIST_NOTES, nickname = "insertFieldList")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public DeferredResult<ResponseEntity<?>> insert(
+    public DeferredResult<?> insert(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
@@ -240,7 +235,7 @@ public class DataController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> insert(
+    public DeferredResult<?> insert(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
@@ -254,7 +249,7 @@ public class DataController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = UPDATE_FIELD_LIST_NOTES, nickname = "updateFieldList")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public DeferredResult<ResponseEntity<?>> update(
+    public DeferredResult<?> update(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
@@ -270,7 +265,7 @@ public class DataController {
     @ApiOperation(value = DELETE_NOTES, nickname = "delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ApiIgnore
-    public DeferredResult<ResponseEntity<?>> delete(
+    public DeferredResult<?> delete(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(required = true, value = KEY_NOTES) @PathVariable("key") String key,
@@ -293,7 +288,7 @@ public class DataController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> scan(
+    public DeferredResult<?> scan(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(value = SCAN_MODEL_NOTES) @RequestParam(value = "filter", required = false) String filter,
@@ -309,11 +304,10 @@ public class DataController {
     @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
-    public DeferredResult<ResponseEntity<?>> runCmd(
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody CmdRequest request) {
+    public DeferredResult<?> runCmd(
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body) {
 
 //        Logger.info("CMD ({})", body);
-        JsonNode body = null;
         return service.cmd(IMDBClientToken.getClient(getToken()), body);
     }
 

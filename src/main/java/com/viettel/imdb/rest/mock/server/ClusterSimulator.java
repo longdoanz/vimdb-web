@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.mock.server;
 
-import com.viettel.imdb.cluster.Cluster;
 import com.viettel.imdb.common.Filter;
 import com.viettel.imdb.common.KeyRecord;
 import com.viettel.imdb.common.Record;

@@ -2,12 +2,14 @@ package com.viettel.imdb.rest.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.openhft.chronicle.core.annotation.NotNull;
+import org.testng.Assert;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.viettel.imdb.rest.common.Common.LOGIN_PATH;
 
@@ -22,6 +24,8 @@ public class HTTPRequest {
     private ObjectMapper mapper;
 
     private void applyHost(String host) {
+        allowMethods("PATCH");
+
         mapper = new ObjectMapper();
         token = "";
 
@@ -41,7 +45,20 @@ public class HTTPRequest {
     }
 
     public void authorize(String username, String password) throws Exception {
-
+        String body = "{\n" +
+                "  \"username\": \""+username+"\",\n" +
+                "  \"password\": \""+password+"\"\n" +
+                "}";
+        HttpResponse res = this.sendPost(LOGIN_PATH, body);
+        try {
+            if(res.getResponse().get("token") == null) {
+                Assert.fail("UNAUTHORIZED");
+            }
+            token = res.getResponse().get("token").asText();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Assert.fail("UNAUTHORIZED");
+        }
     }
 
 //    public void authorize(String username, String password) throws Exception {
@@ -133,6 +150,9 @@ public class HTTPRequest {
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
+        if(token != null && !token.isEmpty()) {
+            http.setRequestProperty("Authorization", "Bearer " + token);
+        }
 
         if(header != null)
             for (String key : header.keySet()) {
@@ -228,7 +248,7 @@ public class HTTPRequest {
     // HTTP PUT request
     public HttpResponse sendPatch(String path, String body) throws Exception {
 
-        return sendWithData("POST", path, new HashMap<String, String>() {{
+        return sendWithData("PATCH", path, new HashMap<String, String>() {{
             put("X-HTTP-Method-Override", "PATCH");
         }}, body);
     }
@@ -260,5 +280,25 @@ public class HTTPRequest {
 
     public String getToken() {
         return token;
+    }
+
+    public void allowMethods(String methods) {
+        try {
+            Field methodsField =
+                    HttpURLConnection.class.getDeclaredField("methods");
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(methodsField,
+                    methodsField.getModifiers() & ~Modifier.FINAL);
+            methodsField.setAccessible(true);
+            String[] oldMethods = (String[])methodsField.get(null);
+            Set<String> methodsSet =
+                    new LinkedHashSet<>(Arrays.asList(oldMethods));
+            methodsSet.addAll(Arrays.asList(methods));
+            String[] newMethods = methodsSet.toArray(new String[0]);
+            methodsField.set(null, /*static field*/newMethods);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

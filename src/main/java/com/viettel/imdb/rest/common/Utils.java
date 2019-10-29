@@ -83,6 +83,7 @@ public class Utils {
     public static Future<Result> throwableToHttpStatus(Throwable throwable) {
         if(throwable instanceof ClientException) {
             ErrorCode errorCode = ((ClientException)throwable).getErrorCode();
+            System.err.println(errorCode);
             switch (errorCode) {
                 case TABLE_EXIST:
                 case TABLENAME_LENGTH_INVALID:
@@ -97,7 +98,7 @@ public class Utils {
                 case SEC_INDEX_EXIST:
                 case FIELDNAME_INVALID:
                 case FIELDNAME_LENGTH_INVALID:
-                    return Future.value(new Result(HttpStatus.BAD_REQUEST, errorCode.name()));
+                    return Future.value(new Result(HttpStatus.BAD_REQUEST, errorCode));
                 case TABLE_NOT_EXIST:
                 case KEY_NOT_EXIST:
                     return Future.value(new Result(HttpStatus.NOT_FOUND, errorCode.name()));
@@ -121,7 +122,7 @@ public class Utils {
                     throwable.printStackTrace();
                     Map<String, Object> body = new HashMap<>();
                     body.put("error", throwable.getMessage());
-                    returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
+                    returnValue.setErrorResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
                 });
 
         return returnValue;
