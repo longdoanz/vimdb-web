@@ -322,11 +322,11 @@ class DataServiceImpl implements DataService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> cmd(IMDBClient client, JsonNode req) {
-        String cmd = req.get("cmd").asText();
+//        String cmd = req.get("cmd").asText();
 
-        if(cmd == null) {
-            throw new ExceptionType.BadRequestError();
-        }
+//        if(cmd == null) {
+//            throw new ExceptionType.BadRequestError();
+//        }
 //        sqlParser.createStatement(cmd);
 
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();

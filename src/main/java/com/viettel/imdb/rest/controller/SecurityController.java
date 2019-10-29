@@ -232,9 +232,9 @@ public class SecurityController {
     })
     public DeferredResult<ResponseEntity<?>> editRole(
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
-            @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody EditRoleRequest editRoleRequest) {
+            @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody Role editRoleRequest) {
 
-        return service.editRole(IMDBClientToken.getClient(getToken()),rolename,  editRoleRequest);
+        return service.editRole(IMDBClientToken.getClient(getToken()), rolename,  editRoleRequest);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/role/{rolename}") // todo /role or /role/{rolename}

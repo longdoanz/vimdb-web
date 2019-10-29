@@ -29,7 +29,7 @@ public interface SecurityService {
 
     DeferredResult<ResponseEntity<?>> addRole(IMDBClient client, Role role);
 
-    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, EditRoleRequest editRoleRequest);
+    DeferredResult<ResponseEntity<?>> editRole(IMDBClient client,String roleName, Role role);
 
     DeferredResult<ResponseEntity<?>> deleteRole(IMDBClient client, String username);
 
