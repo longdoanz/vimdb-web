@@ -281,7 +281,6 @@ public class SecurityController {
                     message = "Key does not exist",
                     examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
-            // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> getAuditLogs() {
         return service.getAuditLogs(IMDBClientToken.getClient(getToken()));
