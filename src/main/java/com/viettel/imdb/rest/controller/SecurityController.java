@@ -215,10 +215,10 @@ public class SecurityController {
                             "  \"privileges\": [{\n" +
                             "    \"permission\": \"read\",\n" +
                             "    \"resource\": {\n" +
-                            "      \"name\": \"user\",\n" +
-                            "      \"user\": \"*\"\n" +
-                            "    }\n" +
-                            "  }]\n" +
+                            "\"name\":\"user\",\n" +
+                            "\"user\":\"USER02\"" +
+                            "}\n" +
+                            "}]\n" +
                             "}")
     })
     public DeferredResult<ResponseEntity<?>> addRole(
