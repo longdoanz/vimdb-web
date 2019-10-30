@@ -63,7 +63,6 @@ public class UDFServiceImpl implements UDFService{
         }
         returnValue.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
         return returnValue;
-        //return null;
     }
 
     @Override
