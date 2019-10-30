@@ -28,10 +28,18 @@ public class AddClusterNodeRequest {
     public static class ClusterNodeSSHInfo {
         @ApiModelProperty(value = "Host ip", example = "172.16.28.123")
         private String ip;
+        @ApiModelProperty(value = "Port", example = "22")
+        private int port;
+
+        @ApiModelProperty(value = "Authentication Option", example = "none/password/sshkey")
+        private String authenticationOption;
+
         @ApiModelProperty(value = "username of the machine", example = "imdb")
         private String username;
         @ApiModelProperty(value = "password of the machine", example = "imdb")
         private String password;
+        @ApiModelProperty(value = "SSHKey for login", example = "xxxxxMIIEpxxxxx")
+        private String sshkey;
     }
 
     @NoArgsConstructor
@@ -42,54 +50,22 @@ public class AddClusterNodeRequest {
     @ApiModel(value = "NewClusterNodeServerInfo", description = "vIMDB server configuration")
     public static
     class NewClusterNodeServerInfo {
-        @ApiModelProperty(value = "Server host", example = "172.16.28.123:12345")
+        @ApiModelProperty(value = "Server host", example = "172.16.28.123")
         private String host;
-        @ApiModelProperty(value = "Server Port", example = "10000")
+        @ApiModelProperty(value = "Server Port", example = "22")
         private int port;
 
+        @ApiModelProperty(value = "Binary file option", example = "false")
+        private boolean defaultBinary;
         @ApiModelProperty(value = "Path of vIMDB runnable binary", example = "/home/imdb/bin/vimdb")
-        private String binaryPath;
+        private String binary;
+
+        @ApiModelProperty(value = "Binary file option", example = "false")
+        private boolean defaultConfigFile;
         @ApiModelProperty(value = "Configuration file path", example = "/home/imdb/conf/conf.toml")
-        private String configFilePath;
-        @ApiModelProperty(value = "Override setting or not", example = "true")
-        private boolean overridedSetting;
-        @ApiModelProperty(value = "reload old data or not", example = "true")
-        private boolean reloadOldData;
-        @ApiModelProperty(value = "Cluster authentication info", example = "AuthenInfo")
-        private ClusterAuthenInfo authenInfo;
-        @ApiModelProperty(value = "ClusterNodeOverridedConfig info", example = "ClusterNodeOverrideConfig")
-        private ClusterNodeOverridedConfig overridedConfig;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    @ToString
-    @ApiModel(value = "ClusterAuthenInfo", description = "Cluster authentication info")
-    static
-    class ClusterAuthenInfo {
-        @ApiModelProperty(value = "Need authen or not", example = "true")
-        private boolean needAuthen;
-        @ApiModelProperty(value = "Cluster username", example = "admin")
-        private String username;
-        @ApiModelProperty(value = "Cluster password", example = "admin")
-        private String password;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    @ToString
-    @ApiModel(value = "ClusterOverridedCOnfig", description = "Override the whole config")
-    public static
-    class ClusterNodeOverridedConfig {
-        @ApiModelProperty(value = "Overrided or not", example = "true")
-        private boolean overrided;
-        @ApiModelProperty(value = "Config file name", example = "config.toml")
         private String configFile;
-        @ApiModelProperty(value = "New configuration content", example = "TOO LONG HERE")
-        private String newConfigContent;
+        /*@ApiModelProperty(value = "reload old data or not", example = "true")
+        private boolean reloadOldData;*/
     }
+
 }

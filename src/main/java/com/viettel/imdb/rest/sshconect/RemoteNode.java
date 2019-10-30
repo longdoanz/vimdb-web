@@ -21,7 +21,7 @@ public class RemoteNode {
 
 
     public RemoteNode(AddClusterNodeRequest request){
-        host = request.getVimdbServerInfo().getHost();
+        /*host = request.getVimdbServerInfo().getHost();
         port = request.getVimdbServerInfo().getPort();
         binaryPath = request.getVimdbServerInfo().getBinaryPath();
         configFile = request.getVimdbServerInfo().getOverridedConfig().getConfigFile();
@@ -32,7 +32,7 @@ public class RemoteNode {
         this.request = request;
         System.out.println();
         sshManager = new SSHManager(request.getSshInfo().getUsername()
-                ,request.getSshInfo().getIp());
+                ,request.getSshInfo().getIp());*/
     }
 
 

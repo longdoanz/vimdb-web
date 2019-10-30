@@ -126,11 +126,11 @@ public class DataController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public DeferredResult<?> updateNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody String newname,
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody Map<String, String> newname,
             @ApiIgnore @RequestParam Map<String, String> requestParams) {
 
         Logger.info("update(old name{}  new name )", namespace, newname);
-        return service.updateNamespace(IMDBClientToken.getClient(getToken()), namespace, newname);
+        return service.updateNamespace(IMDBClientToken.getClient(getToken()), namespace, "newname");
     }
 
 
