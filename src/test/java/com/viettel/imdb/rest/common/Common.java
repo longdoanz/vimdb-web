@@ -15,6 +15,7 @@ public class Common {
     public static final String AUTH_PATH = "/v1/auth";
     public static final String SECURITY_PATH = "/v1/security";
     public static final String STATISTIC_PATH = "/v1/statistic";
+    public static final String UDF_PATH = "/v1/udf";
     public static final String INDEX_PATH = "indexes";
     public static final String HOST_URL = "http://127.0.0.1:8080";
 

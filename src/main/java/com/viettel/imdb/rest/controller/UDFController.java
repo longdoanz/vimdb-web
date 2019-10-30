@@ -21,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/v1/udf")
 public class UDFController {
     private static final String GET_UDFs_NOTES = " ";
+    private static final String GET_UDF_BY_NAME_NOTES = "GET UDF BY NAME";
     private static final String ADD_UDF = "  ";
     private static final String ADD_UDF_NOTES = "  ";
     private static final String UPDATE_UDF_NOTES = "  ";
@@ -30,7 +31,7 @@ public class UDFController {
 
     @Autowired private UDFService service;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/")
+    @RequestMapping(method = RequestMethod.GET, value = "")
     @ApiOperation(value = GET_UDFs_NOTES, nickname = "getUDFs")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
@@ -55,7 +56,24 @@ public class UDFController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{udf_name}")
+    @GetMapping(value = "/{udfName}")
+    @ApiOperation(value = GET_UDF_BY_NAME_NOTES, nickname = "getUDFByName")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200,
+                    response = UDFInfo.class,
+                    message = "OK"
+            )
+    })
+    public DeferredResult<?> getUdfByName(@PathVariable String udfName) {
+        System.err.println("=-----------------------------------------");
+        Logger.error("Get UDF ({})", udfName);
+        return service.getUdfByName(udfName);
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, value = "/{udfName}")
     @ApiOperation(value = ADD_UDF, nickname = "addUDF")
     @ResponseStatus(HttpStatus.ACCEPTED)
 
@@ -69,13 +87,13 @@ public class UDFController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> insertUDF(
-            @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udf_name,
+            @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udfName,
             @ApiParam(required = true, value = ADD_UDF_NOTES) @RequestBody InsertUDFRequest request
     ) {
-        return service.insertUDF(udf_name, request);
+        return service.insertUDF(udfName, request);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{udf_name}")
+    @RequestMapping(method = RequestMethod.PATCH, value = "/{udfName}")
     @ApiOperation(value = UPDATE_UDF_NOTES, nickname = "updateFieldList")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
@@ -88,15 +106,15 @@ public class UDFController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> update(
-            @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udf_name") String udf_name,
+            @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName,
             @ApiParam(required = true, value = UPDATE_UDF_REQUEST_NOTES) @RequestBody EditUDFRequest request,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.info("update({})", udf_name);
-        return service.updateUDF(udf_name, request);
+        Logger.info("update({})", udfName);
+        return service.updateUDF(udfName, request);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{udf_name}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{udfName}")
     @ApiOperation(value=DROP_UDF_NOTES, nickname = "dropNamespace")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     @ApiResponses(value = {
@@ -109,9 +127,9 @@ public class UDFController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> dropUDF(
-            @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udf_name") String udf_name
+            @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName
     ) {
-        Logger.info("Drop udf({}, {})", udf_name);
-        return service.delete(udf_name);
+        Logger.info("Drop udf({}, {})", udfName);
+        return service.delete(udfName);
     }
 }

@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.service;
 
+import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.model.*;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,11 @@ import java.util.List;
 @Service
 public class UDFServiceImpl implements UDFService{
 
-    List<UDFInfo> UDFList;
-    UDFRespone udfRespone = new UDFRespone(UDFList);
+    List<UDFInfo> udfList;
+
     @Autowired
     public UDFServiceImpl(List<UDFInfo> udfInfoList) {
-        this.UDFList = udfInfoList;
+        this.udfList = udfInfoList;
     }
 
 
@@ -28,22 +29,35 @@ public class UDFServiceImpl implements UDFService{
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);
 //        }
-        BackupRequest backupRequest = new BackupRequest();
         DeferredResult res = new DeferredResult<>();
-        res.setResult(UDFList);
+        res.setResult(udfList);
         return res;
+    }
+
+    @Override
+    public DeferredResult<?> getUdfByName(String udfName) {
+        System.err.println("=-----------------------------------------");
+        DeferredResult<UDFInfo> future = new DeferredResult<>();
+        for(UDFInfo udf : udfList) {
+            if(udf.getName().equals(udfName)) {
+                future.setResult(udf);
+                return future;
+            }
+        }
+        future.setErrorResult(new ExceptionType.NotFoundError(String.format("UDF \"%s\" not found", udfName)));
+        return future;
     }
 
     @Override
     public DeferredResult<ResponseEntity<?>> insertUDF(String udf_name, InsertUDFRequest request) {
         int index = 0;
-        for(index = 0; index < UDFList.size(); index++){
-            if(udf_name.equals(UDFList.get(index).getName())) break;
+        for(index = 0; index < udfList.size(); index++){
+            if(udf_name.equals(udfList.get(index).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        if(index == UDFList.size()){
+        if(index == udfList.size()){
             UDFInfo newUDF = new UDFInfo(udf_name, request.getType(),true, System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
-            UDFList.add(newUDF);
+            udfList.add(newUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
             return returnValue;
         }
@@ -55,37 +69,38 @@ public class UDFServiceImpl implements UDFService{
     @Override
     public DeferredResult<ResponseEntity<?>> updateUDF(String udf_name, EditUDFRequest request) {
         int index = 0;
-        for(index = 0; index < UDFList.size(); index++){
-            if(udf_name.equals(UDFList.get(index).getName())) break;
+        for(index = 0; index < udfList.size(); index++){
+            if(udf_name.equals(udfList.get(index).getName())) break;
         }
         int index_newName = 0;
-        for(index_newName = 0; index_newName < UDFList.size(); index_newName++){
-            if(request.getName().equals(UDFList.get(index_newName).getName())) break;
+        for(index_newName = 0; index_newName < udfList.size(); index_newName++){
+            if(request.getName().equals(udfList.get(index_newName).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
 
-        if (index < UDFList.size() && index_newName == UDFList.size()){
-            UDFInfo updateUDF = new UDFInfo(request.getName(), request.getType(),true, UDFList.get(index).getCreatedOn(),System.currentTimeMillis(), request.getContent());
-            UDFList.set(index, updateUDF);
+        if (index < udfList.size() && index_newName == udfList.size()){
+            UDFInfo updateUDF = new UDFInfo(request.getName(), request.getType(),true, udfList.get(index).getCreatedOn(),System.currentTimeMillis(), request.getContent());
+            udfList.set(index, updateUDF);
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
             return returnValue;
         }
 
-        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+
+        returnValue.setErrorResult(new ExceptionType.BadRequestError(String.format("UDF name \"%s\" existed", request.getName())));
         return returnValue;
     }
 
     @Override
     public DeferredResult<ResponseEntity<?>> delete(String udf_name) {
         int index = 0;
-        for(index = 0; index < UDFList.size(); index++){
-            System.out.println("udf_name: "+ UDFList.get(index).getName());
-            if(udf_name.equals(UDFList.get(index).getName())) break;
+        for(index = 0; index < udfList.size(); index++){
+            System.out.println("udf_name: "+ udfList.get(index).getName());
+            if(udf_name.equals(udfList.get(index).getName())) break;
         }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        if (index < UDFList.size()){
+        if (index < udfList.size()){
             //UDFInfo updateUDF = new UDFInfo();
-            UDFList.remove(index);
+            udfList.remove(index);
 
             returnValue.setResult(new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
             return returnValue;

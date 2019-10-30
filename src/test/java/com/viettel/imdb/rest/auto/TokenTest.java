@@ -1,10 +1,11 @@
 package com.viettel.imdb.rest.auto;
 
+import com.viettel.imdb.rest.common.TestUtil;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class TokenTest extends TestHelper {
+public class TokenTest extends TestUtil {
     @Test
     public void test2Client() {
         String username = "admin";

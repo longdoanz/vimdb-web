@@ -7,6 +7,8 @@ import com.viettel.imdb.rest.model.EditUserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.List;
+
 /**
  * @author quannh22
  * @since 17/09/2019
@@ -14,15 +16,15 @@ import org.springframework.web.context.request.async.DeferredResult;
 public interface SecurityService {
     DeferredResult<ResponseEntity<?>> getUsers(IMDBClient client);
 
-    DeferredResult<ResponseEntity<?>> getUser(IMDBClient client, String username);
+    DeferredResult<?> getUser(IMDBClient client, String username);
 
     DeferredResult<ResponseEntity<?>> addUser(IMDBClient client,AddUserRequest addUserRequest);
 
     DeferredResult<ResponseEntity<?>> editUser(IMDBClient client,String username, EditUserRequest editUserRequest);
 
-    DeferredResult<ResponseEntity<?>> deleteUser(IMDBClient client, String username);
+    DeferredResult<?> deleteUser(IMDBClient client, String username);
 
-    DeferredResult<ResponseEntity<?>> getRoles(IMDBClient client);
+    DeferredResult<List<Role>> getRoles(IMDBClient client);
 
     DeferredResult<ResponseEntity<?>> getRole(IMDBClient client, String username);
 
