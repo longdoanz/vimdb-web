@@ -35,7 +35,9 @@ public class RoleDeserializer extends JsonDeserializer<Role> {
             JsonNode privileges = jsonNode.get(PRIVILEGES_FIELD);
 
             List<String> prvList = new ArrayList<>();
-
+            if (privileges == null) {
+                return new Role(name, prvList);
+            }
             for (JsonNode obj : privileges) {
                 String permission = obj.get(PERMISSION_FIELD).asText();
                 JsonNode resourceObj = obj.get(RESOURCE_FIELD);

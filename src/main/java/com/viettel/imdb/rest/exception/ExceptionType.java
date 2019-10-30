@@ -129,6 +129,7 @@ public class ExceptionType {
 
 
     public static class BadRequestError extends VIMDBRestClientError {
+
         public BadRequestError() {
             this("Bad Request");
         }

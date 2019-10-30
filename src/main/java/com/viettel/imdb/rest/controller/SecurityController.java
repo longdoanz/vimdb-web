@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author quannh22
@@ -98,13 +99,13 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getUser(
+    public DeferredResult<?> getUser(
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username
     ) {
         return service.getUser(IMDBClientToken.getClient(getToken()), username);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/user/{username}") // todo /user or /user/{username}
+    @RequestMapping(method = RequestMethod.POST, value = "/user") // todo /user or /user/{username}
     @ApiOperation(value = ADD_USER_NOTES, nickname = "addUser")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses(value = {
@@ -153,7 +154,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> deleteUser(
+    public DeferredResult<?> deleteUser(
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username) {
 
         return service.deleteUser(IMDBClientToken.getClient(getToken()), username);
@@ -180,7 +181,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getRoles() {
+    public DeferredResult<List<Role>> getRoles() {
 
         return service.getRoles(IMDBClientToken.getClient(getToken()));
     }
