@@ -1,36 +1,53 @@
 package com.viettel.imdb.rest.auto;
 
-import com.viettel.imdb.rest.common.TestUtil;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
+import org.springframework.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 
 import static com.viettel.imdb.rest.auto.Constant.ROOT_URI;
-import static com.viettel.imdb.rest.common.Common.SECURITY_PATH;
-import static com.viettel.imdb.rest.common.Common.UDF_PATH;
+import static com.viettel.imdb.rest.common.Common.*;
 import static io.restassured.RestAssured.given;
 
 public class TestHelper {
 
+    //    private String token = "";
     @BeforeClass
     public void beforeClass() {
-        RestAssured.requestSpecification = new RequestSpecBuilder()
+        boolean needAuthorize = true;
+
+        RequestSpecBuilder requestBuilder = new RequestSpecBuilder()
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json")
-                .build();
+                .addHeader("Accept", "application/json");
+
+        if(needAuthorize) {
+            requestBuilder.addHeader("Authorization", this.authorize(USERNAME, PASSWORD));
+        }
+        RestAssured.requestSpecification = requestBuilder.build();
 
         RestAssured.baseURI = ROOT_URI;
         RestAssured.port = 8080;
     }
 
+    public String authorize(String username, String password) {
+        //language=JSON
+        String body = "{\n" +
+                "  \"username\": \""+ username + "\",\n" +
+                "  \"password\": \""+ password+"\"\n" +
+                "}";
+        return "Bearer" + given()
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .body(body)
+                .when()
+                .post(LOGIN_PATH).then().statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().getLong("token");
+    }
+
     public Response getRole(String... roleName) {
         String path = "";
-        if(roleName != null && roleName.length != 0) {
+        if(roleName.length != 0) {
             path = "/" + roleName[0];
         }
         return given()
