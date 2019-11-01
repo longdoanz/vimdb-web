@@ -1,4 +1,3 @@
-/*
 package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.IMDBClient;
@@ -54,4 +53,3 @@ public class UnitTest {
         //String signatureJson = new String(decoder.decode(parts[2]));
     }
 }
-*/

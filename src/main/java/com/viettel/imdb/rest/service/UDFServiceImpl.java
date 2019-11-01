@@ -1,7 +1,9 @@
 package com.viettel.imdb.rest.service;
 
 import com.viettel.imdb.rest.exception.ExceptionType;
-import com.viettel.imdb.rest.model.*;
+import com.viettel.imdb.rest.model.EditUDFRequest;
+import com.viettel.imdb.rest.model.InsertUDFRequest;
+import com.viettel.imdb.rest.model.UDFInfo;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

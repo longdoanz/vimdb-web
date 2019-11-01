@@ -53,7 +53,6 @@ public class TableAPITest {
         Map<String, String> header = new HashMap<String, String> () {{
             put("Content-Type", "application/x-www-form-urlencoded");
             put("Accept", "application/x-www-form-urlencoded");
-            put("Cookie", http.getToken());
         }};
         String body = "{ \"name\": \"table01\" }";
         HttpResponse res = http.sendWithData("POST", DB_PATH, header, body);

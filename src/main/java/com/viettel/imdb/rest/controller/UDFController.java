@@ -67,25 +67,14 @@ public class UDFController {
             )
     })
     public DeferredResult<?> getUdfByName(@PathVariable String udfName) {
-        System.err.println("=-----------------------------------------");
-        Logger.error("Get UDF ({})", udfName);
+        Logger.info("Get UDF ({})", udfName);
         return service.getUdfByName(udfName);
     }
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/{udfName}")
     @ApiOperation(value = ADD_UDF, nickname = "addUDF")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
+    @ResponseStatus(HttpStatus.CREATED)
     public DeferredResult<ResponseEntity<?>> insertUDF(
             @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udfName,
             @ApiParam(required = true, value = ADD_UDF_NOTES) @RequestBody InsertUDFRequest request
@@ -96,40 +85,23 @@ public class UDFController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{udfName}")
     @ApiOperation(value = UPDATE_UDF_NOTES, nickname = "updateFieldList")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<ResponseEntity<?>> update(
             @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName,
             @ApiParam(required = true, value = UPDATE_UDF_REQUEST_NOTES) @RequestBody EditUDFRequest request,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
-        Logger.info("update({})", udfName);
+        Logger.info("update UDF({})", udfName);
         return service.updateUDF(udfName, request);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{udfName}")
     @ApiOperation(value=DROP_UDF_NOTES, nickname = "dropNamespace")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 666,
-                    response = RestClientError.class,
-                    message = "Drop not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+
     public DeferredResult<ResponseEntity<?>> dropUDF(
             @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName
     ) {
-        Logger.info("Drop udf({}, {})", udfName);
+        Logger.info("Drop UDF({}, {})", udfName);
         return service.delete(udfName);
     }
 }

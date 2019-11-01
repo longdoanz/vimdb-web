@@ -1,4 +1,3 @@
-/*
 package com.viettel.imdb.rest.controller;
 
 import org.junit.Before;
@@ -34,4 +33,3 @@ public class SomeTest {
                 .build();
     }
 }
-*/

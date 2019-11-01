@@ -54,7 +54,7 @@ public class HTTPRequest {
             if(res.getResponse().get("token") == null) {
                 Assert.fail("UNAUTHORIZED");
             }
-            token = res.getResponse().get("token").asText();
+            token = "Bearer " + res.getResponse().get("token").asText();
         } catch (Exception ex) {
             ex.printStackTrace();
             Assert.fail("UNAUTHORIZED");
@@ -100,6 +100,10 @@ public class HTTPRequest {
         return uri + "?" + queryString;
     }
 
+    private HttpResponse sendWithoutData(String method, String path, String filter) throws Exception {
+        return sendWithoutData(method, path, filter, this.token);
+    }
+
     private HttpResponse sendWithoutData(String method, String path, String filter, String token) throws Exception {
         URL obj = new URL(buildUri(path, filter));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
@@ -136,22 +140,22 @@ public class HTTPRequest {
     }
 
     public HttpResponse sendWithData(String method, String path, String body) throws Exception {
-        return sendWithData(method, path, (Map<String, String>) null, body);
+        return sendWithData(method, path, (Map<String, String>) null, body, this.token);
     }
 
-    public HttpResponse sendWithData(String method, String path, String body, String token) throws Exception {
-        return null;
+    public HttpResponse sendWithData(String method, String path, Map<String, String> header, String body) throws Exception {
+        return sendWithData(method, path, header, body, this.token);
     }
 
     // HTTP request
-    public HttpResponse sendWithData(String method, String path, Map<String, String> header, String body) throws Exception {
+    public HttpResponse sendWithData(String method, String path, Map<String, String> header, String body, String token) throws Exception {
         URL obj = new URL(buildUri(path));
         HttpURLConnection http = (HttpURLConnection) obj.openConnection();
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
         if(token != null && !token.isEmpty()) {
-            http.setRequestProperty("Authorization", "Bearer " + token);
+            http.setRequestProperty("Authorization", token);
         }
 
         if(header != null)
@@ -194,7 +198,7 @@ public class HTTPRequest {
 
     // HTTP GET request
     public HttpResponse sendGet(String path) throws Exception {
-        return sendWithoutData("GET", path, "", null);
+        return sendWithoutData("GET", path, "");
     }
 
     public HttpResponse sendGetWithToken(String path, String token) throws Exception {
@@ -209,14 +213,14 @@ public class HTTPRequest {
         return sendWithoutData("GET", path, filter, token);
     }
 
-    public HttpResponse sendGetwithBody(String path, String body) throws Exception {
+/*    public HttpResponse sendGetwithBody(String path, String body) throws Exception {
         return sendWithData("GET", path, new HashMap<String, String>() {
             {
                 put("Cookie", token);
                 put("Authorization", "admin-admin");
             }
         }, body);
-    }
+    }*/
 
 
     // HTTP POST request
@@ -263,7 +267,7 @@ public class HTTPRequest {
 
     // HTTP DELETE request
     public HttpResponse sendDelete(String path) throws Exception {
-        return sendWithoutData("DELETE", path, "", null);
+        return sendWithoutData("DELETE", path, "");
     }
 
     public HttpResponse sendDeleteWithToken(String path, String token) throws Exception {
@@ -271,7 +275,7 @@ public class HTTPRequest {
     }
 
     public HttpResponse sendDelete(String path, String param) throws Exception {
-        return sendWithoutData("DELETE", path, param, null);
+        return sendWithoutData("DELETE", path, param);
     }
 
     public HttpResponse sendDeleteWithToken(String path, String param, String token) throws Exception {

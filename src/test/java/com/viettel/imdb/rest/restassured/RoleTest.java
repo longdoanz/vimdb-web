@@ -1,18 +1,17 @@
-package com.viettel.imdb.rest.auto;
+package com.viettel.imdb.rest.restassured;
 
-import com.viettel.imdb.rest.common.HttpResponse;
+import io.restassured.response.Response;
+import org.hamcrest.Matchers;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
-
-import java.util.Collections;
 
 public class RoleTest extends TestHelper {
 
     @Test(priority = 2)
     public void getAllRole() {
-        HttpResponse res = getRole();
+        Response res = getRole();
         res.prettyPrint();
-        res.andExpect(HttpStatus.OK);
+        res.then().statusCode(HttpStatus.OK.value());
     }
 
     @Test(priority = 2)
@@ -32,9 +31,9 @@ public class RoleTest extends TestHelper {
                 "  \"name\": \"" + roleName + "\"\n" +
                 "}";
 
-        HttpResponse res = createRole(body);
+        Response res = createRole(body);
         res.prettyPrint();
-        res.andExpect(201);
+        res.then().statusCode(201);
         dropRole(roleName);
     }
 
@@ -46,11 +45,11 @@ public class RoleTest extends TestHelper {
                 "  \"name\": \""+ roleName +"\"\n" +
                 "}";
 
-        createRole(body).andExpect(HttpStatus.CREATED);
+        createRole(body).then().statusCode(HttpStatus.CREATED.value());
 
-        getRole(roleName).andExpect(HttpStatus.OK).andExpectResponse("privileges", Collections.emptyList());
+        getRole(roleName).then().statusCode(HttpStatus.OK.value()).body("privileges", Matchers.hasSize(0));
 
-        dropRole(roleName).andExpect(HttpStatus.NO_CONTENT);
+        dropRole(roleName).then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 
 
@@ -62,11 +61,11 @@ public class RoleTest extends TestHelper {
                 "  \"name\": \""+ roleName +"\"\n" +
                 "}";
 
-        createRole(body).andExpect(HttpStatus.CREATED);
+        createRole(body).then().statusCode(HttpStatus.CREATED.value());
 
-        getRole(roleName).andExpect(HttpStatus.OK).andExpectResponse("privileges", Collections.emptyList());
+        getRole(roleName).then().statusCode(HttpStatus.OK.value()).body("privileges", Matchers.hasSize(0));
 
-        dropRole(roleName).andExpect(HttpStatus.NO_CONTENT);
+        dropRole(roleName).then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 
 
@@ -93,16 +92,12 @@ public class RoleTest extends TestHelper {
                 "  \"name\": \""+ roleName +"\"\n" +
                 "}";
 
-        updateRole(roleName, updateRoleBody).andExpect(HttpStatus.NO_CONTENT);
+        updateRole(roleName, updateRoleBody).then().statusCode(HttpStatus.NO_CONTENT.value());
 
-        getRole(roleName).andExpect(HttpStatus.OK).andExpectResponse("privileges", Collections.emptyList());
+        getRole(roleName).then().statusCode(HttpStatus.OK.value()).body("privileges", Matchers.hasSize(0));
 
-        dropRole(roleName).andExpect(HttpStatus.NO_CONTENT);
+        dropRole(roleName).then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    @Test(priority = 4)
-    public void test_Read_Role_Do_Not_Exist() {
-        String roleName = "SOMETHING_DO_NOT_EXISTED";
-        getRole(roleName).andExpect(HttpStatus.NOT_FOUND);
-    }
+
 }

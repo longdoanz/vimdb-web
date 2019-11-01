@@ -2,7 +2,6 @@ package com.viettel.imdb.rest.common;
 
 import org.yaml.snakeyaml.util.UriEncoder;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
@@ -51,11 +50,7 @@ public class QueryParam {
     public String getQuery() {
         String res = "";
         if(filter != null && !filter.isEmpty()) {
-            try {
-                res += "filter=" + URLEncoder.encode(this.filter, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            res += "filter=" + URLEncoder.encode(this.filter);
         }
 
         if(fields != null && !fields.isEmpty()) {
