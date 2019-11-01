@@ -64,6 +64,7 @@ public class ClusterTest {
                 "}");
         System.out.println(res);
     }
+/*
 
     @Test
     public void delete() throws Exception {
@@ -82,5 +83,6 @@ public class ClusterTest {
         HttpResponse res = http.sendGetwithBody(buildFromPath("/v1/cluster/info"), body);
         System.out.println(res);
     }
+*/
 
 }

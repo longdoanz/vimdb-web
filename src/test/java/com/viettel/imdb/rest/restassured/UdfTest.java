@@ -1,5 +1,6 @@
-package com.viettel.imdb.rest.auto;
+package com.viettel.imdb.rest.restassured;
 
+import org.hamcrest.Matchers;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,7 @@ public class UdfTest extends TestHelper {
     @Test(priority = 2)
     public void testSelectUdfNotFound() {
         String udfName = "UDF_01";
-        getUdf(udfName).andExpect(HttpStatus.NOT_FOUND.value());
+        getUdf(udfName).then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test(priority = 2)
@@ -23,19 +24,19 @@ public class UdfTest extends TestHelper {
                 "  \"type\": \"LUA\"\n" +
                 "}";
 
-        createUdf(udfName, body).andExpect(HttpStatus.CREATED.value());
-        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+        createUdf(udfName, body).then().statusCode(HttpStatus.CREATED.value());
+        getUdf(udfName).then().statusCode(HttpStatus.OK.value()).body("type", Matchers.is("LUA"));
 
         String updateBody = "{\n" +
                 "  \"content\": \"TOO LONG TO DISPLAY HERE\",\n" +
                 "  \"name\": \"" + updateUdfName + "\",\n" +
                 "  \"type\": \"LUA\"\n" +
                 "}";
-        updateUdf(udfName, updateBody).andExpect(HttpStatus.NO_CONTENT.value());
+        updateUdf(udfName, updateBody).then().statusCode(HttpStatus.NO_CONTENT.value());
 
-        getUdf(udfName).andExpect(HttpStatus.NOT_FOUND.value());
+        getUdf(udfName).then().statusCode(HttpStatus.NOT_FOUND.value());
 
-        getUdf(updateUdfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
-        dropUdf(updateUdfName).andExpect(HttpStatus.NO_CONTENT.value());
+        getUdf(updateUdfName).then().statusCode(HttpStatus.OK.value()).body("type", Matchers.is("LUA"));
+        dropUdf(updateUdfName).then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -1,4 +1,4 @@
-package com.viettel.imdb.rest.auto;
+package com.viettel.imdb.rest.restassured;
 
 public class Constant {
     public static final String ROOT_URI = "http://localhost";

@@ -22,9 +22,18 @@ import static org.testng.Assert.assertEquals;
 public class TestUtil {
     public HTTPRequest http = new HTTPRequest(HOST_URL);;
     private IMDBEncodeDecoder encoder;
+
+    protected static boolean NEED_AUTHORIZE = false;
+
+
     @BeforeMethod
     public void setUp() throws Exception {
         http = new HTTPRequest(HOST_URL);
+
+        if(NEED_AUTHORIZE) {
+            http.authorize(USERNAME, PASSWORD);
+        }
+
         encoder = IMDBEncodeDecoder.getInstance();
     }
 

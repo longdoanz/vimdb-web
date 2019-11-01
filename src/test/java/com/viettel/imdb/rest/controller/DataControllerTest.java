@@ -1,4 +1,3 @@
-/*
 package com.viettel.imdb.rest.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -111,8 +110,7 @@ public class DataControllerTest {
         ;
     }
 
-    */
-/*@Test
+    /*@Test
     public void givenCountMethodMocked_WhenCountInvoked_ThenMockValueReturned() {
         DataService service = new DataServiceImpl();
         Mockito.when(count()).thenReturn(123);
@@ -124,7 +122,5 @@ public class DataControllerTest {
 
     int count() {
         return 234;
-    }*//*
-
+    }*/
 }
-*/

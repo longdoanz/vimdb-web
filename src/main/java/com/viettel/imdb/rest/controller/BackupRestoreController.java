@@ -40,13 +40,12 @@ public class BackupRestoreController {
                     message = "Key does not exist",
                     examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
-            // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> backup(
             @ApiParam(required = true, value = BACKUP_DATA_REQUEST_NOTES) @RequestBody BackupRequest request
     ) {
         //BackupRequest request = new BackupRequest();
-        Logger.info("backuRequest({})", request);
+        Logger.info("BackupRequest({})", request);
         return service.backup(request);
     }
 
@@ -89,7 +88,7 @@ public class BackupRestoreController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "restore")
-    @ApiOperation(value = RESTORE_DATA_NOTES, nickname = "prcessStatus")
+    @ApiOperation(value = RESTORE_DATA_NOTES, nickname = "processStatus")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(value = {
             @ApiResponse(
@@ -100,7 +99,7 @@ public class BackupRestoreController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> restorePrcessStatus(
+    public DeferredResult<ResponseEntity<?>> restoreprocessStatus(
             @ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") String process
             //@ApiParam(required = true, value = RESTORE_DATA_STATUS_NOTES) @PathVariable(value = "process") String process
     ) {

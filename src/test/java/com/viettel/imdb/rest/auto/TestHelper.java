@@ -1,137 +1,183 @@
 package com.viettel.imdb.rest.auto;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.response.Response;
-import org.springframework.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
+import com.viettel.imdb.rest.common.HttpResponse;
+import com.viettel.imdb.rest.common.TestUtil;
+import org.testng.Assert;
 
-import static com.viettel.imdb.rest.auto.Constant.ROOT_URI;
+import java.util.List;
+
 import static com.viettel.imdb.rest.common.Common.*;
-import static io.restassured.RestAssured.given;
 
-public class TestHelper {
 
-    //    private String token = "";
-    @BeforeClass
-    public void beforeClass() {
-        boolean needAuthorize = true;
-
-        RequestSpecBuilder requestBuilder = new RequestSpecBuilder()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Accept", "application/json");
-
-        if(needAuthorize) {
-            requestBuilder.addHeader("Authorization", this.authorize(USERNAME, PASSWORD));
-        }
-        RestAssured.requestSpecification = requestBuilder.build();
-
-        RestAssured.baseURI = ROOT_URI;
-        RestAssured.port = 8080;
+public class TestHelper extends TestUtil {
+    static {
+        NEED_AUTHORIZE = true;
     }
 
-    public String authorize(String username, String password) {
-        //language=JSON
-        String body = "{\n" +
-                "  \"username\": \""+ username + "\",\n" +
-                "  \"password\": \""+ password+"\"\n" +
-                "}";
-        return "Bearer" + given()
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .body(body)
-                .when()
-                .post(LOGIN_PATH).then().statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().getLong("token");
-    }
 
-    public Response getRole(String... roleName) {
+    public HttpResponse getRole(String... roleName) {
         String path = "";
         if(roleName.length != 0) {
             path = "/" + roleName[0];
         }
-        return given()
-                .when()
-                .get(ROOT_URI + SECURITY_PATH + "/role" + path);
+        try {
+            return http.sendGet(SECURITY_PATH + "/role" + path);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response createRole(String body) {
-        return given()
-                .body(body)
-                .when()
-                .post(SECURITY_PATH + "/role");
+    public HttpResponse createRole(String body) {
+        try {
+            return http.sendPost(SECURITY_PATH + "/role", body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response updateRole(String roleName, String body) {
-        return given()
-                .body(body)
-                .when()
-                .patch(SECURITY_PATH + "/role/" + roleName);
+    public HttpResponse updateRole(String roleName, String body) {
+        try {
+            return http.sendPatch(SECURITY_PATH + "/role/" + roleName, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response dropRole(String roleName) {
-        return given()
-                .when()
-                .delete(SECURITY_PATH + "/role/" + roleName);
+    public HttpResponse dropRole(String roleName) {
+        try {
+            return http.sendDelete(SECURITY_PATH + "/role/" + roleName);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response createUser(String body) {
-        return given()
-                .body(body)
-                .when()
-                .post(SECURITY_PATH + "/user");
+    public HttpResponse createUser(String body) {
+        try {
+            return http.sendPost(SECURITY_PATH + "/user", body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response getUser(String... username) {
+    public HttpResponse getUser(String... username) {
         String path = "";
         if(username.length != 0) {
             path = "/" + username[0];
         }
-        return given()
-                .when()
-                .get(SECURITY_PATH + "/user" + path);
+        try {
+            return http.sendGet(SECURITY_PATH + "/user" + path);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response updateUser(String username, String body) {
-        return given()
-                .body(body)
-                .when()
-                .patch(SECURITY_PATH + "/user/" + username);
+    public HttpResponse updateUser(String username, String body) {
+        try {
+            return http.sendPatch(SECURITY_PATH + "/user/" + username, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response dropUser(String username) {
-        return given()
-                .when()
-                .delete(SECURITY_PATH + "/user/" + username);
+    public HttpResponse dropUser(String username) {
+        try {
+            return http.sendDelete(SECURITY_PATH + "/user/" + username);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response createUdf(String udfName, String body) {
-        return given()
-                .body(body)
-                .when()
-                .post(UDF_PATH + "/" + udfName);
+    public HttpResponse createUdf(String udfName, String body) {
+        try {
+            return http.sendPost(UDF_PATH + "/" + udfName, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response getUdf(String... udfName) {
+    public HttpResponse getUdf(String... udfName) {
         String path = "";
         if(udfName.length != 0) {
             path = "/" + udfName[0];
         }
-        return given()
-                .when()
-                .get(UDF_PATH + path);
+        try {
+            return http.sendGet(UDF_PATH + path);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response updateUdf(String udfName, String body) {
-        return given()
-                .body(body)
-                .when()
-                .patch(UDF_PATH + "/" + udfName);
+    public HttpResponse updateUdf(String udfName, String body) {
+        try {
+            return http.sendPatch(UDF_PATH + "/" + udfName, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 
-    public Response dropUdf(String udfName) {
-        return given()
-                .when()
-                .delete(UDF_PATH + "/" + udfName);
+    public HttpResponse dropUdf(String udfName) {
+        try {
+            return http.sendDelete(UDF_PATH + "/" + udfName);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+    public HttpResponse getStatistic() {
+        return getStatistic(null, null);
+    }
+
+    public HttpResponse getStatistic(List<String> nodes, List<String> metrics) {
+        String param = "";
+        if(nodes != null && !nodes.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            int index = 0;
+            for(String item : nodes) {
+                builder.append(item).append(",");
+            }
+            String temp = builder.toString();
+            param = "?nodes=" + temp.substring(0, temp.length() - 1);
+        }
+
+        if(metrics != null && !metrics.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            for(String item : metrics)
+                builder.append(item).append(",");
+            if(param.length() == 0) {
+                param += "?";
+            } else {
+                param += "&";
+            }
+            String temp = builder.toString();
+            param += "metrics=" + temp.substring(0, temp.length() - 1);
+        }
+
+        try {
+            return http.sendGet(STATISTIC_PATH + param);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse getMetrics() {
+        try {
+            return http.sendGet(STATISTIC_PATH);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
     }
 }
+

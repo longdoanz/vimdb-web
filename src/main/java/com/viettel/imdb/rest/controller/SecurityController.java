@@ -11,12 +11,10 @@ import com.viettel.imdb.rest.util.IMDBClientToken;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author quannh22
@@ -77,7 +75,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getUsers() {
+    public DeferredResult<?> getUsers() {
         return service.getUsers(IMDBClientToken.getClient(getToken()));
     }
 
@@ -105,19 +103,10 @@ public class SecurityController {
         return service.getUser(IMDBClientToken.getClient(getToken()), username);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/user") // todo /user or /user/{username}
+    @RequestMapping(method = RequestMethod.POST, value = "/user")
     @ApiOperation(value = ADD_USER_NOTES, nickname = "addUser")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
-    public DeferredResult<ResponseEntity<?>> addUser(
+    public DeferredResult<?> addUser(
             @ApiParam(required = true, value = ADD_USER_REQUEST_NOTES) @RequestBody AddUserRequest addUserRequest
     ) {
         return service.addUser(IMDBClientToken.getClient(getToken()), addUserRequest);
@@ -135,7 +124,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> editUser(
+    public DeferredResult<?> editUser(
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
             @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest) {
 
@@ -181,7 +170,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<List<Role>> getRoles() {
+    public DeferredResult<?> getRoles() {
 
         return service.getRoles(IMDBClientToken.getClient(getToken()));
     }
@@ -198,7 +187,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getRole(
+    public DeferredResult<?> getRole(
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename) {
 
         return service.getRole(IMDBClientToken.getClient(getToken()), rolename);
@@ -221,7 +210,7 @@ public class SecurityController {
                             "}]\n" +
                             "}")
     })
-    public DeferredResult<ResponseEntity<?>> addRole(
+    public DeferredResult<?> addRole(
             @ApiParam(required = true) @RequestBody Role role) {
 
         return service.addRole(IMDBClientToken.getClient(getToken()), role);
@@ -239,7 +228,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> editRole(
+    public DeferredResult<?> editRole(
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename,
             @ApiParam(required = true, value = EDIT_ROLE_REQUEST_NOTES) @RequestBody Role editRoleRequest) {
 
@@ -258,7 +247,7 @@ public class SecurityController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> deleteRole(
+    public DeferredResult<?> deleteRole(
             @ApiParam(required = true, value = ROLENAME_NOTES) @PathVariable(value = "rolename") String rolename) {
 
         return service.deleteRole(IMDBClientToken.getClient(getToken()), rolename);
@@ -282,7 +271,7 @@ public class SecurityController {
                     examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
     })
-    public DeferredResult<ResponseEntity<?>> getAuditLogs() {
+    public DeferredResult<?> getAuditLogs() {
         return service.getAuditLogs(IMDBClientToken.getClient(getToken()));
     }
 }
