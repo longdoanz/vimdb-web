@@ -11,7 +11,7 @@ import static com.viettel.imdb.rest.common.Common.*;
 
 public class TestHelper extends TestUtil {
     static {
-        NEED_AUTHORIZE = true;
+        NEED_AUTHORIZE = false;
     }
 
 

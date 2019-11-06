@@ -27,18 +27,4 @@ public class DataTest {
         RestAssured.port = 8080;
     }
 
-    @Test
-    public void testCreateTable() {
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .body("{\"name\": \"Lisa Tamaki\",\"salary\": \"20000\"}")
-                .when()
-                .put("/update/3");
-        System.out.println("PUT Response\n" + response.asString());
-        // tests
-        response.then().body("id", Matchers.is(3));
-        response.then().body("name", Matchers.is("Lisa Tamaki"));
-        response.then().body("salary", Matchers.is("20000"));
-    }
 }

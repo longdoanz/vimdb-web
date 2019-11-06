@@ -70,8 +70,8 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter {
                 .globalResponseMessage(RequestMethod.HEAD, default500Error())
                 .globalResponseMessage(RequestMethod.PUT, default500Error())
                 .additionalModels(typeResolver.resolve(RestClientError.class))
-                .securityContexts(Lists.newArrayList(securityContext()))
-                .securitySchemes(Lists.newArrayList(apiKey()))
+//                .securityContexts(Lists.newArrayList(securityContext()))
+//                .securitySchemes(Lists.newArrayList(apiKey()))
                 .alternateTypeRules(alternateRules());
     }
 
