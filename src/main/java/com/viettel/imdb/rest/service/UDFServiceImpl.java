@@ -73,10 +73,11 @@ public class UDFServiceImpl implements UDFService{
         for(index = 0; index < udfList.size(); index++){
             if(udf_name.equals(udfList.get(index).getName())) break;
         }
-        int index_newName = 0;
-        for(index_newName = 0; index_newName < udfList.size(); index_newName++){
-            if(request.getName().equals(udfList.get(index_newName).getName())) break;
-        }
+        int index_newName = udfList.size();
+        if(!udf_name.equals(request.getName()))
+            for(index_newName = 0; index_newName < udfList.size(); index_newName++){
+                if(request.getName().equals(udfList.get(index_newName).getName())) break;
+            }
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
 
         if (index < udfList.size() && index_newName == udfList.size()){

@@ -9,6 +9,7 @@ import com.viettel.imdb.rest.model.UserInfo;
 import com.viettel.imdb.rest.service.SecurityService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
 import io.swagger.annotations.*;
+import io.trane.future.CheckedFutureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -126,7 +127,7 @@ public class SecurityController {
     })
     public DeferredResult<?> editUser(
             @ApiParam(required = true, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
-            @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest) {
+            @ApiParam(required = true, value = EDIT_USER_REQUEST_NOTES) @RequestBody EditUserRequest editUserRequest) throws CheckedFutureException {
 
         return service.editUser(IMDBClientToken.getClient(getToken()),username, editUserRequest);
     }
@@ -204,10 +205,10 @@ public class SecurityController {
                             "  \"privileges\": [{\n" +
                             "    \"permission\": \"read\",\n" +
                             "    \"resource\": {\n" +
-                            "\"name\":\"user\",\n" +
-                            "\"user\":\"USER02\"" +
-                            "}\n" +
-                            "}]\n" +
+                            "      \"name\": \"user\",\n" +
+                            "      \"user\": \"*\"\n" +
+                            "    }\n" +
+                            "  }]\n" +
                             "}")
     })
     public DeferredResult<?> addRole(

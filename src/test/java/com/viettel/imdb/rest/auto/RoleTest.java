@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest.auto;
 
 import com.viettel.imdb.rest.common.HttpResponse;
+import com.viettel.imdb.rest.common.TestHelper;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
 

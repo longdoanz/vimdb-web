@@ -4,6 +4,7 @@ import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.rest.model.AddUserRequest;
 import com.viettel.imdb.rest.model.EditUserRequest;
+import io.trane.future.CheckedFutureException;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**
@@ -17,7 +18,7 @@ public interface SecurityService {
 
     DeferredResult<?> addUser(IMDBClient client, AddUserRequest addUserRequest);
 
-    DeferredResult<?> editUser(IMDBClient client,String username, EditUserRequest editUserRequest);
+    DeferredResult<?> editUser(IMDBClient client,String username, EditUserRequest editUserRequest) throws CheckedFutureException;
 
     DeferredResult<?> deleteUser(IMDBClient client, String username);
 

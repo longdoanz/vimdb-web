@@ -146,20 +146,33 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DeferredResult<?> editUser(IMDBClient client, String username, EditUserRequest editUserRequest) {
+    public DeferredResult<?> editUser(IMDBClient client, String username, EditUserRequest editUserRequest) throws CheckedFutureException {
         Logger.info("editUser({})", editUserRequest);
 
         DeferredResult<?> returnValue = new DeferredResult<>();
         //change password
-        Future<Void> changePasswordFuture = client.changePassword(username, editUserRequest.getPassword().getBytes());
+
+        if(editUserRequest.getPassword() != null) {
+            client.changePassword(username, editUserRequest.getPassword().getBytes()).get
+                    (Duration.ofMinutes(1));
+        }
 
         int roleCount = 0;
         int newRoleListLen = -1;
         if (editUserRequest.getNewRoles() != null) newRoleListLen = editUserRequest.getNewRoles().size();
 
         //add new role
-        List<String> roleList = editUserRequest.getRoles();
-        for (int i = 0; i < newRoleListLen; i++) {
+        List<String> roleList = null;
+        if(editUserRequest.getRoles() == null){
+            try {
+                User user = client.readUser(username).get(Duration.ofMinutes(1));
+                roleList = user.getRolenameList();
+            } catch (CheckedFutureException e) {
+                e.printStackTrace();
+            }
+        }
+        else roleList = editUserRequest.getRoles();
+        for(int i = 0; i < newRoleListLen; i++){
             Role role = editUserRequest.getNewRoles().get(i);
 
             Logger.info(role.getRolename());

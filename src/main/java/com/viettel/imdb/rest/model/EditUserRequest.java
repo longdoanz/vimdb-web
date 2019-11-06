@@ -23,7 +23,21 @@ public class EditUserRequest {
             "    \"read-write.data.MappingSubCust\"\n" +
             "  ]\n")
     private List<String> roles;
-    @ApiModelProperty(value= "newRoles", example = "")
+    @ApiModelProperty(value= "newRoles", example = "[\n" +
+            "    {\n" +
+            "      \"name\": \"read-write.data.SessionSREData\",\n" +
+            "      \"privileges\": [\n" +
+            "       {\n" +
+            "         \"permission\": \"read\",\n" +
+            "         \"resource\": {\n" +
+            "           \"name\": \"data\",\n" +
+            "           \"namespace\": \"NAMESPACE\",\n" +
+            "           \"table\": \"table01\"\n" +
+            "         }\n" +
+            "       }  \n" +
+            "     ]\n" +
+            "    }\n" +
+            "  ]\n")
     private List<Role> newRoles; // todo NOT HERE
 
     public EditUserRequest() {
