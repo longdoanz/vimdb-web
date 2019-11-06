@@ -1,4 +1,4 @@
-package com.viettel.imdb.rest.auto;
+package com.viettel.imdb.rest.common;
 
 import com.viettel.imdb.rest.common.HttpResponse;
 import com.viettel.imdb.rest.common.TestUtil;
