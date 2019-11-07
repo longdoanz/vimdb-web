@@ -39,4 +39,55 @@ public class UdfTest extends TestHelper {
         getUdf(updateUdfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
         dropUdf(updateUdfName).andExpect(HttpStatus.NO_CONTENT.value());
     }
+
+    @Test(priority = 2)
+    public void test_Update_UDF() {
+        String udfName = "UDF_01";
+        String updateContent = "UPDATED_UDF";
+
+        dropUdf(udfName);
+        String body = "{\n" +
+                "  \"content\": \"TOO LONG TO DISPLAY HERE\",\n" +
+                "  \"type\": \"LUA\"\n" +
+                "}";
+
+        createUdf(udfName, body).andExpect(HttpStatus.CREATED.value());
+        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+
+        String updateBody = "{\n" +
+                "  \"content\": \""+updateContent+"\",\n" +
+                "  \"type\": \"LUA\"\n" +
+                "}";
+        updateUdf(udfName, updateBody).andExpect(HttpStatus.NO_CONTENT.value());
+
+        getUdf(udfName).andExpect(HttpStatus.OK).andExpectResponse("content", updateContent);
+
+        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+        dropUdf(udfName).andExpect(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test(priority = 4)
+    public void test_Update_UDF_Content() {
+        String udfName = "UDF_01";
+        String updateContent = "UPDATED_UDF";
+
+        dropUdf(udfName);
+        String body = "{\n" +
+                "  \"content\": \"TOO LONG TO DISPLAY HERE\",\n" +
+                "  \"type\": \"LUA\"\n" +
+                "}";
+
+        createUdf(udfName, body).andExpect(HttpStatus.CREATED.value());
+        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+
+        String updateBody = "{\n" +
+                "  \"content\": \""+updateContent+"\"\n" +
+                "}";
+        updateUdf(udfName, updateBody).andExpect(HttpStatus.NO_CONTENT.value());
+
+        getUdf(udfName).andExpect(HttpStatus.OK).andExpectResponse("content", updateContent);
+
+        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+        dropUdf(udfName).andExpect(HttpStatus.NO_CONTENT.value());
+    }
 }

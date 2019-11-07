@@ -9,6 +9,6 @@ public interface UDFService {
     DeferredResult<ResponseEntity<?>> getUDFs();
     DeferredResult<?> getUdfByName(String udfName);
     DeferredResult<ResponseEntity<?>> insertUDF(String udfName, InsertUDFRequest request);
-    DeferredResult<ResponseEntity<?>> updateUDF(String udfName, EditUDFRequest request);
-    DeferredResult<ResponseEntity<?>> delete(String udfName);
+    void updateUDF(String udfName, EditUDFRequest request);
+    void delete(String udfName);
 }
