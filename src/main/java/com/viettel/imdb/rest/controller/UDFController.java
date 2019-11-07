@@ -85,23 +85,23 @@ public class UDFController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/{udfName}")
     @ApiOperation(value = UPDATE_UDF_NOTES, nickname = "updateFieldList")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public DeferredResult<ResponseEntity<?>> update(
+    public void update(
             @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName,
             @ApiParam(required = true, value = UPDATE_UDF_REQUEST_NOTES) @RequestBody EditUDFRequest request,
             @ApiIgnore @RequestParam Map<String, String> requestParams // additional input - no need by now
     ) {
         Logger.info("update UDF({})", udfName);
-        return service.updateUDF(udfName, request);
+        service.updateUDF(udfName, request);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{udfName}")
     @ApiOperation(value=DROP_UDF_NOTES, nickname = "dropNamespace")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
 
-    public DeferredResult<ResponseEntity<?>> dropUDF(
+    public void dropUDF(
             @ApiParam(required = true, value = UDF_NOTES) @PathVariable(value = "udfName") String udfName
     ) {
         Logger.info("Drop UDF({}, {})", udfName);
-        return service.delete(udfName);
+        service.delete(udfName);
     }
 }
