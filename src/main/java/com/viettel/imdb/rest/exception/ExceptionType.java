@@ -1,6 +1,7 @@
 package com.viettel.imdb.rest.exception;
 
 import com.viettel.imdb.ErrorCode;
+import com.viettel.imdb.rest.common.Translator;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -19,6 +20,16 @@ public class ExceptionType {
         public VIMDBRestClientError(String format) {
             super(format);
             this.message = format;
+            this.error = ErrorCode.INTERNAL_ERROR;
+        }
+
+        public VIMDBRestClientError(String code, Object[] args) {
+            this.message = Translator.toLocale(code, args);
+            this.error = ErrorCode.INTERNAL_ERROR;
+        }
+
+        public VIMDBRestClientError(String code, String args) {
+            this.message = Translator.toLocale(code, args);
             this.error = ErrorCode.INTERNAL_ERROR;
         }
 
@@ -41,8 +52,21 @@ public class ExceptionType {
         }
     }
 
-    public static class InvalidRecordError extends VIMDBRestClientError {
-        public HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+    public static class UnauthorizedError extends VIMDBRestClientError {
+
+        public UnauthorizedError(String message) {
+            super(message);
+            this.message = message;
+        }
+
+        public UnauthorizedError() {
+            this("Unauthorized");
+        }
+
+        @Override
+        public HttpStatus getStatusCode() {
+            return HttpStatus.UNAUTHORIZED;
+        }
     }
 
     public static class InvalidOperationError extends VIMDBRestClientError {
@@ -87,6 +111,15 @@ public class ExceptionType {
         public NotFoundError(String reason) {
             super(reason);
             this.message = reason;
+            this.error = RestErrorCode.NOT_FOUND;
+        }
+
+        public NotFoundError(String code, Object[] args) {
+            this(Translator.toLocale(code, args));
+        }
+
+        public NotFoundError(String code, String args) {
+            this(Translator.toLocale(code, args));
         }
 
         @Override
@@ -136,6 +169,14 @@ public class ExceptionType {
 
         public BadRequestError(String message) {
             super(message);
+        }
+
+        public BadRequestError(String code, Object[] args) {
+            super(Translator.toLocale(code, args));
+        }
+
+        public BadRequestError(String code, String args) {
+            super(Translator.toLocale(code, args));
         }
 
         public BadRequestError(Enum error, String message) {

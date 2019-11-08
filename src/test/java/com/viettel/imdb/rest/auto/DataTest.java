@@ -10,7 +10,6 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.viettel.imdb.rest.auto.Constant.ROOT_URI;
 import static io.restassured.RestAssured.given;
 
 public class DataTest {
@@ -23,8 +22,8 @@ public class DataTest {
                 .build();
 
         RestAssured.requestSpecification = requestSpecification;
-        RestAssured.baseURI = ROOT_URI;
-        RestAssured.port = 8080;
+//        RestAssured.baseURI = ROOT_URI;
+//        RestAssured.port = 8080;
     }
 
 }

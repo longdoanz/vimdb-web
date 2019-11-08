@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.common;
 
+import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -25,5 +26,11 @@ public class Translator {
     public static String toLocale(String msgCode, Object[] args) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(msgCode, args, locale);
+    }
+
+    public static String toLocale(String msgCode, String args) {
+        Locale locale = LocaleContextHolder.getLocale();
+        Logger.error("HERERRERER: {}", messageSource.getMessage(msgCode, new Object[] {args}, locale));
+        return messageSource.getMessage(msgCode, new Object[] {args}, locale);
     }
 }

@@ -5,22 +5,28 @@ import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
 import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UDFServiceImpl implements UDFService{
 
-    List<UDFInfo> udfList;
+    Map<String, UDFInfo> udfInfoMap;
+//    List<UDFInfo> udfList;
 
-    @Autowired
+    /*@Autowired
     public UDFServiceImpl(List<UDFInfo> udfInfoList) {
         this.udfList = udfInfoList;
+    }*/
+
+    public UDFServiceImpl() {
+        udfInfoMap = new ConcurrentHashMap<>();
     }
 
 
@@ -31,85 +37,69 @@ public class UDFServiceImpl implements UDFService{
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);
 //        }
-        return udfList;
+        return new ArrayList<>();
     }
 
     @Override
     public UDFInfo getUdfByName(String udfName) {
-        System.err.println("=-----------------------------------------");
-        DeferredResult<UDFInfo> future = new DeferredResult<>();
-        for(UDFInfo udf : udfList) {
-            if(udf.getName() != null && udf.getName().equals(udfName)) {
-                return udf;
-            }
+        UDFInfo udf = udfInfoMap.get(udfName);
+        if(udf == null) {
+            throw new ExceptionType.NotFoundError("UDF_NOT_FOUND", udfName);
         }
-        throw new ExceptionType.NotFoundError(String.format("UDF \"%s\" not found", udfName));
+        Logger.error("In Service {}",udf);
+        return udf;
     }
 
     @Override
-    public DeferredResult<ResponseEntity<?>> insertUDF(String udf_name, InsertUDFRequest request) {
-        int index = 0;
-        for(index = 0; index < udfList.size(); index++){
-            if(udf_name.equals(udfList.get(index).getName())) break;
+    public void insertUDF(String udf_name, InsertUDFRequest request) {
+        if(udfInfoMap.get(udf_name) != null) {
+            throw new ExceptionType.BadRequestError("UDF_EXISTED", udf_name);
         }
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        if(index == udfList.size()){
-            UDFInfo newUDF = new UDFInfo(udf_name, request.getType(),true, System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
-            udfList.add(newUDF);
-            returnValue.setResult(new ResponseEntity<>(null, HttpStatus.CREATED));
-            return returnValue;
-        }
-        returnValue.setResult(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
-        return returnValue;
+        UDFInfo newUDF = new UDFInfo(udf_name, request.getType(),true, System.currentTimeMillis(),System.currentTimeMillis(), request.getContent());
+        if(udfInfoMap.putIfAbsent(udf_name, newUDF) != null)
+            throw new ExceptionType.BadRequestError("UDF_EXISTED", udf_name);
     }
 
     @Override
-    public void updateUDF(String udf_name, EditUDFRequest request) {
-        int index = 0;
-        for(index = 0; index < udfList.size(); index++){
-            if(udf_name.equals(udfList.get(index).getName())) break;
-        }
-        int index_newName = udfList.size();
-        if(!udf_name.equals(request.getName()) && request.getName() != null)
-            for(index_newName = 0; index_newName < udfList.size(); index_newName++){
-                if(request.getName().equals(udfList.get(index_newName).getName())) break;
-            }
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
+    public void updateUDF(String udfName, EditUDFRequest request) {
+        Logger.info("Request: {}", request);
+        // Isert for preserve
+        if(udfInfoMap.get(udfName) == null)
+            throw new ExceptionType.BadRequestError("UDF_NOT_FOUND", udfName);
 
-        if (index < udfList.size() && index_newName == udfList.size()){
-            String newName = request.getName();
+        UDFInfo newUdf = new UDFInfo();
 
-            UDFInfo udf = udfList.get(index);
-            if(newName != null)
-                udf.setName(newName);
-
-            if(request.getType() != null) {
-                udf.setType(request.getType());
-            }
-
-            if(request.getContent() != null) {
-                udf.setContent(request.getContent());
-            }
-            return;
+        String newName = request.getName();
+        if(newName != null && newName.equals(udfName))
+            newName = null;
+        if(newName != null) {
+            UDFInfo oldUdf = udfInfoMap.putIfAbsent(request.getName(), newUdf);
+            if(oldUdf != null)
+                throw new ExceptionType.BadRequestError("UDF_EXISTED", udfName);
         }
 
-        throw new ExceptionType.BadRequestError(String.format("UDF name \"%s\" existed", request.getName()));
+        String finalNewName = newName;
+        UDFInfo check = udfInfoMap.computeIfPresent(udfName, (key, oldValue) -> {
+            newUdf.setName(finalNewName == null ? oldValue.getName() : request.getName());
+
+            newUdf.setType(request.getType() == null ? oldValue.getType() : request.getType());
+
+            newUdf.setContent(request.getContent() == null ? oldValue.getContent() : request.getContent());
+
+            if(finalNewName != null)
+                udfInfoMap.remove(key);
+            return newUdf;
+        });
+
+        if(check == null) {
+            udfInfoMap.remove(request.getName());
+            throw new ExceptionType.BadRequestError("UDF_NOT_FOUND", udfName);
+        }
     }
 
     @Override
-    public void delete(String udf_name) {
-        int index = 0;
-        for(index = 0; index < udfList.size(); index++){
-            System.out.println("udf_name: "+ udfList.get(index).getName());
-            if(udf_name.equals(udfList.get(index).getName())) break;
-        }
-        DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        if (index < udfList.size()){
-            //UDFInfo updateUDF = new UDFInfo();
-            udfList.remove(index);
-
-            return;
-        }
-        throw new ExceptionType.BadRequestError(String.format("UDF \"%s\" not found", udf_name));
+    public void delete(String udfName) {
+        if(udfInfoMap.remove(udfName) == null)
+            throw new ExceptionType.NotFoundError(String.format("UDF \"%s\" not found", udfName));
     }
 }

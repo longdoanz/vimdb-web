@@ -90,4 +90,32 @@ public class UdfTest extends TestHelper {
         getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
         dropUdf(udfName).andExpect(HttpStatus.NO_CONTENT.value());
     }
+
+
+    @Test(priority = 4)
+    public void test_Update_UDF_Name() {
+        String udfName = "UDF_01";
+        String updateName = "UPDATED_UDF";
+
+        dropUdf(udfName);
+        dropUdf(updateName);
+        String body = "{\n" +
+                "  \"content\": \"123\",\n" +
+                "  \"type\": \"LUA\"\n" +
+                "}";
+
+        createUdf(udfName, body).andExpect(HttpStatus.CREATED.value());
+        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+
+        String updateBody = "{\n" +
+                "  \"name\": \""+updateName+"\",\n" +
+                "  \"content\": \""+updateName+"\"\n" +
+                "}";
+        updateUdf(udfName, updateBody).andExpect(HttpStatus.NO_CONTENT.value());
+        getUdf(udfName).andExpect(HttpStatus.NOT_FOUND);
+        getUdf(updateName).andExpect(HttpStatus.OK).andExpectResponse("content", updateName);
+
+        getUdf(updateName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+        dropUdf(updateName).andExpect(HttpStatus.NO_CONTENT.value());
+    }
 }
