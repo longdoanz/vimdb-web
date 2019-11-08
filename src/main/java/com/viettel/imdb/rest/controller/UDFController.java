@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "UDF related operations", description = "Perform operations related to UDF")
@@ -51,7 +52,7 @@ public class UDFController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getUDFs() {
+    public List<UDFInfo> getUDFs() {
         return service.getUDFs();
     }
 
@@ -66,7 +67,7 @@ public class UDFController {
                     message = "OK"
             )
     })
-    public DeferredResult<?> getUdfByName(@PathVariable String udfName) {
+    public UDFInfo getUdfByName(@PathVariable String udfName) {
         Logger.info("Get UDF ({})", udfName);
         return service.getUdfByName(udfName);
     }

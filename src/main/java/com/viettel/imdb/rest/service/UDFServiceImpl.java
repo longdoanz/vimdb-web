@@ -25,29 +25,25 @@ public class UDFServiceImpl implements UDFService{
 
 
     @Override
-    public DeferredResult<ResponseEntity<?>> getUDFs() {
+    public List<UDFInfo> getUDFs() {
         Logger.info("getUDFs(     )");
 //        for (int i = 0; i < 10; i++){
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);
 //        }
-        DeferredResult res = new DeferredResult<>();
-        res.setResult(udfList);
-        return res;
+        return udfList;
     }
 
     @Override
-    public DeferredResult<?> getUdfByName(String udfName) {
+    public UDFInfo getUdfByName(String udfName) {
         System.err.println("=-----------------------------------------");
         DeferredResult<UDFInfo> future = new DeferredResult<>();
         for(UDFInfo udf : udfList) {
             if(udf.getName() != null && udf.getName().equals(udfName)) {
-                future.setResult(udf);
-                return future;
+                return udf;
             }
         }
-        future.setErrorResult(new ExceptionType.NotFoundError(String.format("UDF \"%s\" not found", udfName)));
-        return future;
+        throw new ExceptionType.NotFoundError(String.format("UDF \"%s\" not found", udfName));
     }
 
     @Override

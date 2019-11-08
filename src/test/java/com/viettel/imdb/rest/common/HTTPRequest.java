@@ -110,6 +110,7 @@ public class HTTPRequest {
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
+        http.setRequestProperty("Accept-Language", "vi");
 //        http.setRequestProperty("Cookie", cookie);
         http.setRequestProperty("Authorization", token);
 
@@ -154,6 +155,7 @@ public class HTTPRequest {
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
+        http.setRequestProperty("Accept-Language", "vi");
         if(token != null && !token.isEmpty()) {
             http.setRequestProperty("Authorization", token);
         }

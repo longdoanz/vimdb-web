@@ -18,8 +18,9 @@ public class DataTest {
         System.out.println(http.getToken());
     }
 
-    @Test void getDataInfitest() throws Exception {
-        HttpResponse res = http.sendGet(buildFromPath("/v1/data/a"));
-    }
+    /*@Test void getDataInfitest() throws Exception {
+        HttpResponse res = http.sendGet(buildFromPath("/api?msg=welcome"));
+        res.prettyPrint();
+    }*/
 
 }

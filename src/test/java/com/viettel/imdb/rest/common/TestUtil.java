@@ -9,6 +9,7 @@ import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class TestUtil {
     protected static boolean NEED_AUTHORIZE = false;
 
 
-    @BeforeMethod
+    @BeforeTest
     public void setUp() throws Exception {
         http = new HTTPRequest(HOST_URL);
 
