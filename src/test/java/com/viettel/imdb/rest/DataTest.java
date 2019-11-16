@@ -1,26 +1,28 @@
 package com.viettel.imdb.rest;
 
+import com.linkedin.paldb.api.PalDB;
+import com.linkedin.paldb.api.StoreReader;
+import com.linkedin.paldb.api.StoreWriter;
 import com.viettel.imdb.rest.common.HTTPRequest;
-import com.viettel.imdb.rest.common.HttpResponse;
-import org.testng.annotations.BeforeMethod;
+import org.pmw.tinylog.Logger;
 import org.testng.annotations.Test;
 
-import static com.viettel.imdb.rest.common.Common.*;
+import java.io.File;
 
 public class DataTest {
     private HTTPRequest http;
-    @BeforeMethod
-    public void setUp() throws Exception {
-        http = new HTTPRequest(HOST_URL, USERNAME, PASSWORD);
-    }
-    @Test
-    public void httpCookie() {
-        System.out.println(http.getToken());
-    }
 
-    /*@Test void getDataInfitest() throws Exception {
-        HttpResponse res = http.sendGet(buildFromPath("/api?msg=welcome"));
-        res.prettyPrint();
-    }*/
+    @Test void getDataInfitest() throws Exception {
+        // Open a db with default options.
+        StoreWriter writer = PalDB.createWriter(new File("store.paldb"));
+        writer.put("foo", "bar");
+        writer.put(1213, new int[] {1, 2, 3});
+        writer.close();
+        StoreReader reader = PalDB.createReader(new File("store.paldb"));
+        String val1 = reader.get("foo");
+        int[] val2 = reader.get(1213);
+        Logger.info("Value: {} value 2: {}", val1, val2);
+        reader.close();
+    }
 
 }
