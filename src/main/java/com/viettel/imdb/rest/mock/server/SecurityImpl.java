@@ -39,12 +39,14 @@ public class SecurityImpl implements Security {
         userMap.put("admin1", new User("admin1", "admin1", new ArrayList<String>() {{
             add("admin");
         }}));
-        userMap.put("admin2", new User("admin2", "admin2", new ArrayList<String>() {{
-            add("admin");
-        }}));
-
         roleMap.put("admin", new Role("admin", new ArrayList<String>() {{
             add("*");
+        }}));
+        roleMap.put("data_admin", new Role("data_admin", new ArrayList<String>() {{
+            add("data.*");
+        }}));
+        roleMap.put("user_admin", new Role("user_admin", new ArrayList<String>() {{
+            add("user.*");
         }}));
         roleMap.put("read-write.data.SessionData", new Role("read-write.data.SessionData", new ArrayList<String>() {{
             add("read.data.SessionData");
@@ -70,9 +72,6 @@ public class SecurityImpl implements Security {
             add(roleMap.get("admin"));
         }}));
         userInfoMap.put("admin1", new UserInfo("admin1", "RBAC", new ArrayList<Role>(){{
-            add(roleMap.get("admin"));
-        }}));
-        userInfoMap.put("admin2", new UserInfo("admin2", "RBAC", new ArrayList<Role>(){{
             add(roleMap.get("admin"));
         }}));
     }
