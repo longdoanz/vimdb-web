@@ -63,6 +63,7 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> removeNode(RemoveClusterNodeRequest request) {
+        Logger.info("remove node {} {}", request.getHost(), request.getPort());
         boolean removed = cluster.removeNode(new NodeSimulatorImpl(request.getHost(), request.getPort()));
 
         RestClientError clientError = null;

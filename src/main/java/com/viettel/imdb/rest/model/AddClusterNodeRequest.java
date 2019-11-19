@@ -52,7 +52,7 @@ public class AddClusterNodeRequest {
     class NewClusterNodeServerInfo {
         @ApiModelProperty(value = "Server host", example = "172.16.28.123")
         private String host;
-        @ApiModelProperty(value = "Server Port", example = "22")
+        @ApiModelProperty(value = "Server Port", example = "10000")
         private int port;
 
         @ApiModelProperty(value = "Binary file option", example = "false")
