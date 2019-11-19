@@ -26,5 +26,6 @@ public enum RestErrorCode {
     USERNAME_EXIST,
     USER_NOT_EXIST,
     NODE_NOT_EXIST,
-    NODE_EXIST
+    NODE_EXIST,
+    NOT_FOUND
 }

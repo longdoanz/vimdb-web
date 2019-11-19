@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.controller;
 
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.BackupRequest;
+import com.viettel.imdb.rest.model.ProcessStatus;
 import com.viettel.imdb.rest.model.RestoreRequest;
 import com.viettel.imdb.rest.service.BackupRestoreService;
 import io.swagger.annotations.*;
@@ -61,7 +62,7 @@ public class BackupRestoreController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<?> backupProcessStatus(
+    public ProcessStatus backupProcessStatus(
             //@ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") int process
             @ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") String process
     ) {
@@ -99,7 +100,7 @@ public class BackupRestoreController {
             )
             // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> restoreprocessStatus(
+    public ProcessStatus restoreprocessStatus(
             @ApiParam(required = true, value = PROCESS_NOTES) @RequestParam(value = "process") String process
             //@ApiParam(required = true, value = RESTORE_DATA_STATUS_NOTES) @PathVariable(value = "process") String process
     ) {

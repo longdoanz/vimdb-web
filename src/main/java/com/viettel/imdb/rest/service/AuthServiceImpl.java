@@ -4,6 +4,7 @@ import com.viettel.imdb.IMDBClient;
 import com.viettel.imdb.common.Pair;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.config.CustomAuthenticationProvider;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.model.AuthenRespone;
@@ -78,25 +79,23 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     public DeferredResult<ResponseEntity<?>> login(String username, String password) {
         Logger.info("login({}, {})", username, password);
         UserDetails user = loadUserByUsername("admin");
-        Logger.info("user ({} {})", user.getUsername(), user.getPassword());
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        Pair<IMDBClient, String> existedClientAndToken = getClient(username, password);
-        if(existedClientAndToken != null) {
+//        Pair<IMDBClient, String> existedClientAndToken = getClient(username, password);
+        /*if(existedClientAndToken != null) {
             //Map<String, Object> body = new HashMap<>();
             AuthenRespone authenRespone = new AuthenRespone(existedClientAndToken.getSecond());
             //body.put("token", existedClientAndToken.getSecond());
             returnValue.setResult(new ResponseEntity<>(authenRespone, HttpStatus.OK));
-            Logger.info("existedClientAndToken, return token");
             return returnValue;
-        }
-
+        }*/
+/*
         if(!isToCreateNewClient()) {
             Map<String, Object> body = new HashMap<>();
             body.put("error", "Cannot connect a new client. Contact admin for more detail");
             returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
             return returnValue;
-        }
+        }*/
 
         //xac thuc
         Authentication authentication = customAuthenticationProvider.authenticate(
@@ -206,8 +205,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     private boolean isToCreateNewClient() {
-        Logger.info("isToCreateNewClient: userPassToTokenMapSize: {}", IMDBClientToken.getUserPassToTokenMapSize());
-        return IMDBClientToken.getUserPassToTokenMapSize() < MAX_ACTIVE_CLIENTS;
+        return true;
     }
 
     private Pair<IMDBClient, String> createNewClientWithToken(String username, String password, String newToken) {
@@ -278,8 +276,6 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
                         })
                 .onFailure(throwable ->{
                     userResult.setUser(null);
-                    //throw new UsernameNotFoundException(username);
-                    throwable.printStackTrace();
                 });
         if (userResult.getUser() == null){
             throw new UsernameNotFoundException(username);

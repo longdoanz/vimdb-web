@@ -17,15 +17,13 @@ import java.util.Timer;
 public class TokenManager {
     Timer timer;
 
-    private final String JWT_SECRET = "lodaaaaaa";
+    private final String JWT_SECRET = "DLKUSDFIOJFMDL";
 
     public static final int IDLE_TIMEOUT_IN_MS = 15 * 60 * 1000;
 
 
     public TokenManager(){
-
     }
-
 
 
     // Tạo ra jwt từ thông tin user
@@ -49,6 +47,15 @@ public class TokenManager {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public Date getExpriredTime(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getExpiration();
     }
 
     public boolean validateToken(String token){

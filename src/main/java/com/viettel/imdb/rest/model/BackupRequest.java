@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.model;
 
+import com.viettel.imdb.rest.sshconect.AuthenticationOption;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -29,7 +30,7 @@ public class BackupRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterAuthInfo", description = " ClusterAuthInfo")
-    class ClusterAuthInfo {
+    public static class ClusterAuthInfo {
         @ApiModelProperty(value = "needAuthen", example = "172.16.28.123")
         private boolean needAuthen;
         @ApiModelProperty(value = "username of cluster", example = "admin")
@@ -44,30 +45,35 @@ public class BackupRequest {
     @Setter
     @ToString
     @ApiModel(value = "ClusterNodeSSHInfo", description = "ssh info including ip, username and raw password")
-    class ClusterNodeSSHInfo {
-        @ApiModelProperty(value = " Host ip", example = "172.16.28.123")
-        private String host;
-        @ApiModelProperty(value = "username of the machine", example = "admin")
+    public static class ClusterNodeSSHInfo {
+        @ApiModelProperty(value = "Host ip", example = "172.16.31.54")
+        private String ip;
+        @ApiModelProperty(value = "", example = "22")
+        private int port;
+        @ApiModelProperty(value = "username of the machine", example = "imdb")
         private String username;
-        @ApiModelProperty(value = "password of the machine", example = "1")
+        @ApiModelProperty(value = "AuthenticationOption", example = "none")
+        private AuthenticationOption authenticationOption;
+        @ApiModelProperty(value = "password of the machine", example = "imdb")
         private String password;
+        @ApiModelProperty(value = "password of the machine", example = "admiz")
+        private String ssKey;
     }
-
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Setter
     @ToString
     @ApiModel(value = "BackupConfig", description = "BackupConfig")
-    class BackupConfig {
+    public static class BackupConfig {
 
         @ApiModelProperty(value = " partitionRangeStart", example = "true")
         private boolean isPartitionRange;
         @ApiModelProperty(value = " partionRangeStart", example = "0")
         private int partitionRangeStart;
-        @ApiModelProperty(value = " backupPartionEnd", example = "4096")
+        @ApiModelProperty(value = " backupPartionEnd", example = "4095")
         private int partitionRangeEnd;
-        @ApiModelProperty(value = " partionList", example = "[1, 10, 20, 12, 123, 2, 1, 2]")
+        @ApiModelProperty(value = " partionList", example = "[1, 10, 20, 12, 123, 2]")
         private List<Integer> parittionList;
         @ApiModelProperty(value = " backupDirectory", example = "/home/imdb/backup/")
         private String backupDirectory;

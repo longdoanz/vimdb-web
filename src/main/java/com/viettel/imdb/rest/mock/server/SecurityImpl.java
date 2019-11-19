@@ -48,26 +48,6 @@ public class SecurityImpl implements Security {
         roleMap.put("user_admin", new Role("user_admin", new ArrayList<String>() {{
             add("user.*");
         }}));
-        roleMap.put("read-write.data.SessionData", new Role("read-write.data.SessionData", new ArrayList<String>() {{
-            add("read.data.SessionData");
-            add("write.data.SessionData");
-        }}));
-        roleMap.put("read-write.user.SessionData", new Role("read-write.user.SessionData", new ArrayList<String>() {{
-            add("read.user.SessionData");
-            add("write.user.SessionData");
-
-        }}));
-        roleMap.put("read-write.data.CustInfo", new Role("read-write.data.CustInfo", new ArrayList<String>() {{
-            add("read.data.CustInfo");
-            add("write.data.CustInfo");
-
-        }}));
-        roleMap.put("read-write.data.MappingSubCust", new Role("read-write.data.MappingSubCust", new ArrayList<String>() {{
-            add("read.data.MappingSubCust");
-            add("write.data.MappingSubCust");
-
-        }}));
-
         userInfoMap.put("admin", new UserInfo("admin", "RBAC", new ArrayList<Role>(){{
             add(roleMap.get("admin"));
         }}));
@@ -104,7 +84,7 @@ public class SecurityImpl implements Security {
     @Override
     public Future<User> readUser(String username) {
         // todo validate
-        if(!userMap.containsKey(username))
+        if(username == null || !userMap.containsKey(username))
             return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
         return Future.value(userMap.get(username));
     }
@@ -119,18 +99,22 @@ public class SecurityImpl implements Security {
 
     @Override
     public Future<Void> createUser(String username, byte[] password, List<String> roleNameList) {
+        if(username == null)
+            return Future.exception(new ClientException(ErrorCode.KEY_INVALID));
         if(userMap.containsKey(username))
             return Future.exception(new ClientException(ErrorCode.KEY_EXIST));
-        for(String roleName : roleNameList)
-            if(!roleMap.containsKey(roleName))
-                return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
-        userMap.put(username, new User(username, new String(password), roleNameList)); // todo multithread here
+        if (roleNameList != null)
+            for(String roleName : roleNameList)
+                if(!roleMap.containsKey(roleName))
+                    return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
+        userMap.put(username, new User(username, new String(password), roleNameList));
 
 
         List<Role> roleList = new ArrayList<Role>();
-        for(String roleName:roleNameList) {
-            roleList.add(roleMap.get(roleName));
-        }
+        if(roleNameList != null)
+            for(String roleName:roleNameList) {
+                roleList.add(roleMap.get(roleName));
+            }
         userInfoMap.put(username, new UserInfo(username, "RBAC", roleList));
         return Future.VOID;
     }

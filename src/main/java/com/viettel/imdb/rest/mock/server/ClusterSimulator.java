@@ -155,7 +155,7 @@ public class ClusterSimulator implements Storage, Security {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    nodes.add(node);
+                    nodes.remove(node);
                     pendingNodes.remove(node);
                     timer.cancel();
                 }

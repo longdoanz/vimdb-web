@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.controller;
 
-import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
@@ -9,11 +8,10 @@ import io.swagger.annotations.*;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "UDF related operations", description = "Perform operations related to UDF")
@@ -40,18 +38,9 @@ public class UDFController {
                     response = UDFInfo.class,
                     message = "OK",
                     responseContainer = "List"
-
-                    //examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            ),
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value={@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
             )
-            // other @ApiResponses
     })
-    public DeferredResult<ResponseEntity<?>> getUDFs() {
+    public List<UDFInfo> getUDFs() {
         return service.getUDFs();
     }
 
@@ -66,7 +55,7 @@ public class UDFController {
                     message = "OK"
             )
     })
-    public DeferredResult<?> getUdfByName(@PathVariable String udfName) {
+    public UDFInfo getUdfByName(@PathVariable String udfName) {
         Logger.info("Get UDF ({})", udfName);
         return service.getUdfByName(udfName);
     }
@@ -75,11 +64,11 @@ public class UDFController {
     @RequestMapping(method = RequestMethod.POST, value = "/{udfName}")
     @ApiOperation(value = ADD_UDF, nickname = "addUDF")
     @ResponseStatus(HttpStatus.CREATED)
-    public DeferredResult<ResponseEntity<?>> insertUDF(
+    public void insertUDF(
             @ApiParam(required = true, value = ADD_UDF_NOTES) @PathVariable String udfName,
             @ApiParam(required = true, value = ADD_UDF_NOTES) @RequestBody InsertUDFRequest request
     ) {
-        return service.insertUDF(udfName, request);
+        service.insertUDF(udfName, request);
     }
 
     @RequestMapping(method = RequestMethod.PATCH, value = "/{udfName}")

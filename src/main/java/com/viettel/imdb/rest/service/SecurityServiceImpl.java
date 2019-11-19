@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.service;
 
 
 import com.viettel.imdb.IMDBClient;
+import com.viettel.imdb.common.ClientException;
 import com.viettel.imdb.core.security.Role;
 import com.viettel.imdb.core.security.User;
 import com.viettel.imdb.rest.common.Result;
@@ -13,7 +14,6 @@ import com.viettel.imdb.rest.model.UserInfo;
 import io.trane.future.CheckedFutureException;
 import io.trane.future.Future;
 import org.pmw.tinylog.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -31,15 +31,27 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
  */
 @Service
 public class SecurityServiceImpl implements SecurityService {
-    private final IMDBClient client;
 
-    @Autowired
-    public SecurityServiceImpl(IMDBClient client) {
-        this.client = client;
-    }
     //==========================================================
     // Main process function
     //==========================================================
+
+    private static String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$";
+
+    public void validatePassword(String password) {
+        if(password == null || password.length() < 6) {
+            throw new ExceptionType.BadRequestError("PASSWORD_AT_LEAST_SIX_CHAR");
+        }
+        if (!password.matches(PASSWORD_REGEX))
+            throw new ExceptionType.BadRequestError("PASSWORD_REQUIRE");
+    }
+
+    public void validateUserName(String username) {
+        if(username == null || username.isEmpty())
+            throw new ExceptionType.BadRequestError("USER_NAME_IS_REQUIRED");
+        if (!username.matches("^[0-9A-Za-z_-]+$"))
+            throw new ExceptionType.BadRequestError("USER_NAME_DONT_MATCH");
+    }
 
     @Override
     public DeferredResult<?> getUsers(IMDBClient client) {
@@ -69,11 +81,20 @@ public class SecurityServiceImpl implements SecurityService {
     public List<Role> getRoles(IMDBClient client, List<String> roleNameList) {
         //Logger.info("getRoles({})", username);
         List<Role> roleList = new ArrayList<>();
+        if(roleNameList == null)
+            return roleList;
         for (String roleName : roleNameList) {
-            client.readRole(roleName)
-                    .onSuccess(roleList::add);
+            try {
+                client.readRole(roleName)
+                        .onSuccess(roleList::add).get(Duration.ofMinutes(1));
+            } catch (Exception e) {
+                if(e instanceof ClientException)
+                    throw new ExceptionType.VIMDBRestClientError(((ClientException)e).getErrorCode(),
+                            "ERROR_ON_GET_ROLE");
+                else
+                    throw new ExceptionType.VIMDBRestClientError("ERROR_ON_GET_ROLE");
+            }
         }
-
         return roleList;
     }
 
@@ -104,9 +125,12 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<?> addUser(IMDBClient client, AddUserRequest addUserRequest) {
         Logger.info("addUser({})", addUserRequest);
+        String username = addUserRequest.getUserName();
+        validateUserName(username);
+        String password = addUserRequest.getPassword();
+        validatePassword(password);
         //add new role
         DeferredResult<?> returnValue = new DeferredResult<>();
-
         int roleCount = 0;
         int newRoleListLen = -1;
         if (addUserRequest.getNewRoles() != null) newRoleListLen = addUserRequest.getNewRoles().size();
@@ -138,7 +162,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         //add user
-        client.createUser(addUserRequest.getUserName(), addUserRequest.getPassword().getBytes(), roleList)
+        client.createUser(username, password.getBytes(), roleList)
                 .onSuccess(aVoid -> returnValue.setResult(null))
                 .onFailure(returnValue::setErrorResult);
 
@@ -147,12 +171,12 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<?> editUser(IMDBClient client, String username, EditUserRequest editUserRequest) throws CheckedFutureException {
-        Logger.info("editUser({})", editUserRequest);
-
+//        Logger.info("editUser({})", editUserRequest);
         DeferredResult<?> returnValue = new DeferredResult<>();
         //change password
-
-        if(editUserRequest.getPassword() != null) {
+        String password = editUserRequest.getPassword();
+        if(password != null) {
+            validatePassword(password);
             client.changePassword(username, editUserRequest.getPassword().getBytes()).get
                     (Duration.ofMinutes(1));
         }
@@ -175,27 +199,17 @@ public class SecurityServiceImpl implements SecurityService {
         for(int i = 0; i < newRoleListLen; i++){
             Role role = editUserRequest.getNewRoles().get(i);
 
-            Logger.info(role.getRolename());
-            Future<Void> addFuture = client.createRole(role.getRolename(), role.getPrivilegeList());
-
             try {
                 client.createRole(role.getRolename(), role.getPrivilegeList()).get(Duration.ofMinutes(1));
-            } catch (CheckedFutureException e) {
+            } catch (Exception e) {
                 Logger.error("Error on create role", e);
-                returnValue.setErrorResult(new ExceptionType.BadRequestError("Error on create role"));
+                if(e instanceof ClientException)
+                    returnValue.setErrorResult(new ExceptionType.BadRequestError(((ClientException) e).getErrorCode(),
+                            "ERROR_ON_CREATE_ROLE", new Object[] {role.getRolename()}));
                 break;
             }
             roleCount++;
             roleList.add(role.getRolename());
-            /*if (result.getHttpStatus() == HttpStatus.CREATED) {
-                roleCount++;
-                roleList.add(role.getRolename());
-            } else {
-                Map<String, Object> body = new HashMap<>();
-                body.put("error", result.getMessage());
-                returnValue.setResult(new ResponseEntity<>(body, result.getHttpStatus()));
-                break;
-            }*/
         }
         //that bai, xoa role
         if (roleCount < newRoleListLen) {
@@ -271,12 +285,11 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DeferredResult<?> deleteRole(IMDBClient client, String roleName) {
-        Logger.info("deleteRole({})", roleName);
-        Future<Void> deleteFuture = client.deleteRole(roleName);
-        Future<Result> resultFuture = deleteFuture
-                .map(aVoid -> new Result(HttpStatus.NO_CONTENT))
-                .onFailure(throwable -> throwableToHttpStatus(throwable));
-        return restResultToDeferredResult2(resultFuture);
+        DeferredResult<?> future = new DeferredResult<>();
+        client.deleteRole(roleName)
+                .onSuccess(aVoid -> future.setResult(null))
+                .onFailure(future::setErrorResult);
+        return future;
     }
 
     @Override

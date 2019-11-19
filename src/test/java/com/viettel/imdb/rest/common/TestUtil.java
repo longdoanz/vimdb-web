@@ -8,6 +8,7 @@ import com.viettel.imdb.rest.model.AddUserRequest;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class TestUtil {
     protected static boolean NEED_AUTHORIZE = false;
 
 
-    @BeforeMethod
+    @BeforeClass
     public void setUp() throws Exception {
         http = new HTTPRequest(HOST_URL);
 

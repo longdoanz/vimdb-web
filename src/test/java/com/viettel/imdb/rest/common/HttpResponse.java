@@ -4,10 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.viettel.imdb.util.IMDBEncodeDecoder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.pmw.tinylog.Logger;
 import org.springframework.http.HttpStatus;
 import org.testng.Assert;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HttpResponse {
     private static IMDBEncodeDecoder encoder = IMDBEncodeDecoder.getInstance();
@@ -55,6 +60,17 @@ public class HttpResponse {
         return this;
     }
 
+    public <T> HttpResponse andExpectResponse(String path, List<T> value) {
+        List<T> res = read(path);
+        Assert.assertEquals(res.size(), value.size(), "Actual and expected size do not equal");
+        for(T item : value) {
+            Assert.assertTrue(res.contains(item), "Unexpected value \nActual: " +
+                    this.response + "\nExpected: " + value);
+        }
+//        Assert.assertEqualsNoOrder(new Object[] {res}, new Object[] {value}, "Unexpected value \nResponse: " + this.response + "\n");
+        return this;
+    }
+
     public HttpStatus getStatus() {
         return status;
     }
@@ -82,9 +98,23 @@ public class HttpResponse {
     }*/
 
     public HttpResponse prettyPrint() {
-        System.out.println(String.format("HttpStatus: %s\n" +
-                "HttpResponse: %s", this.status, this.response)
-        );
+        try {
+            System.out.println(String.format("HttpStatus: %s\n" +
+                    "HttpResponse: %s", this.status, new JSONObject(this.response).toString(4))
+            );
+        } catch (JSONException e) {
+            Logger.info(this.response);
+        }
+        return this;
+    }
+    public HttpResponse prettyPrintArray() {
+        try {
+            System.out.println(String.format("HttpStatus: %s\n" +
+                    "HttpResponse: %s", this.status, new JSONArray(this.response).toString(4))
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return this;
     }
 
