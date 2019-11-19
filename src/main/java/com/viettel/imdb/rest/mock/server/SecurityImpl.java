@@ -86,7 +86,7 @@ public class SecurityImpl implements Security {
     @Override
     public Future<User> readUser(String username) {
         // todo validate
-        if(!userMap.containsKey(username))
+        if(username == null || !userMap.containsKey(username))
             return Future.exception(new ClientException(ErrorCode.KEY_NOT_EXIST));
         return Future.value(userMap.get(username));
     }

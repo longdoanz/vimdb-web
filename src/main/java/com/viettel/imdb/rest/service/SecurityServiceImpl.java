@@ -81,11 +81,20 @@ public class SecurityServiceImpl implements SecurityService {
     public List<Role> getRoles(IMDBClient client, List<String> roleNameList) {
         //Logger.info("getRoles({})", username);
         List<Role> roleList = new ArrayList<>();
+        if(roleNameList == null)
+            return roleList;
         for (String roleName : roleNameList) {
-            client.readRole(roleName)
-                    .onSuccess(roleList::add);
+            try {
+                client.readRole(roleName)
+                        .onSuccess(roleList::add).get(Duration.ofMinutes(1));
+            } catch (Exception e) {
+                if(e instanceof ClientException)
+                    throw new ExceptionType.VIMDBRestClientError(((ClientException)e).getErrorCode(),
+                            "ERROR_ON_GET_ROLE");
+                else
+                    throw new ExceptionType.VIMDBRestClientError("ERROR_ON_GET_ROLE");
+            }
         }
-
         return roleList;
     }
 
