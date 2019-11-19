@@ -37,7 +37,7 @@ public class UDFServiceImpl implements UDFService{
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);
 //        }
-        return new ArrayList<>();
+        return new ArrayList<>(udfInfoMap.values());
     }
 
     @Override

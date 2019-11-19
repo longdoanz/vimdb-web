@@ -62,6 +62,8 @@ public class UdfTest extends TestHelper {
 
         getUdf(udfName).andExpect(HttpStatus.OK).andExpectResponse("content", updateContent);
 
+        getUdf().prettyPrint();
+
         getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
         dropUdf(udfName).andExpect(HttpStatus.NO_CONTENT.value());
     }
