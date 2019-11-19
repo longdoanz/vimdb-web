@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.service;
 
 
 import com.viettel.imdb.rest.RestErrorCode;
+import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
 import com.viettel.imdb.rest.model.AddClusterNodeRequest;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author quannh22
@@ -33,7 +36,6 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
 
-
     @Override
     public DeferredResult<ResponseEntity<?>> getClusterInfo(List<String> nodes) {
         Logger.info("getClusterInfo({})", nodes);
@@ -48,26 +50,54 @@ public class ClusterServiceImpl implements ClusterService {
     public DeferredResult<ResponseEntity<?>> addNode(AddClusterNodeRequest request) {
         Logger.info("addNode: {}", request);
 
-        boolean status = cluster.addNode(new NodeSimulatorImpl(request.getVimdbServerInfo().getHost(), request.getVimdbServerInfo().getPort()));
+        AddClusterNodeRequest.NewClusterNodeServerInfo nodeInfo = request.getVimdbServerInfo();
+        boolean status;
+        if (nodeInfo.isDefaultConfigFile()) {
+            status = cluster.addNode(new NodeSimulatorImpl(request.getSshInfo().getIp(), 10000));
+        } else {
+            String config = nodeInfo.getNewConfigContent();
+            if (config == null || config.isEmpty())
+                throw new ExceptionType.BadRequestError("Config content is required");
+
+            Pattern pattern = Pattern.compile("host.*=\\s*(\\d*)");
+            Matcher matcher = pattern.matcher(config);
+            if (!matcher.matches())
+                throw new ExceptionType.BadRequestError("Host parameter in config is required");
+
+            String ip = matcher.group(0);
+
+            pattern = Pattern.compile("port.*=\\s*(\\d*)");
+            matcher = pattern.matcher(config);
+
+            if (!matcher.matches())
+                throw new ExceptionType.BadRequestError("Port parameter in config is required");
+
+            int port;
+            try {
+                port = Integer.parseInt(matcher.group(0));
+            } catch (Exception ex) {
+                throw new ExceptionType.BadRequestError("Port parameter must be integer");
+            }
+
+            status = cluster.addNode(new NodeSimulatorImpl(ip, port));
+        }
 
 
         RestClientError clientError = null;
-        if(!status) {
-            clientError = new RestClientError(RestErrorCode.NODE_EXIST, "Node existed");
-        }
+        if (!status)
+            throw new ExceptionType.BadRequestError("Node existed");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        returnValue.setResult(new ResponseEntity<>(clientError, status ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST));
+        returnValue.setResult(new ResponseEntity<>(clientError, HttpStatus.ACCEPTED));
         return returnValue;
     }
 
     @Override
     public DeferredResult<ResponseEntity<?>> removeNode(RemoveClusterNodeRequest request) {
-        Logger.info("remove node {} {}", request.getHost(), request.getPort());
         boolean removed = cluster.removeNode(new NodeSimulatorImpl(request.getHost(), request.getPort()));
 
         RestClientError clientError = null;
-        if(!removed) {
+        if (!removed) {
             clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, "Node do not exist");
         }
 

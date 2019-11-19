@@ -30,7 +30,6 @@ public class Translator {
 
     public static String toLocale(String msgCode, String args) {
         Locale locale = LocaleContextHolder.getLocale();
-        Logger.error("HERERRERER: {}", messageSource.getMessage(msgCode, new Object[] {args}, locale));
-        return messageSource.getMessage(msgCode, new Object[] {args}, locale);
+        return messageSource.getMessage(msgCode, new Object[] {args}, msgCode, locale);
     }
 }

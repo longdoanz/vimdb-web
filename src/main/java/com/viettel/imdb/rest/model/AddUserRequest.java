@@ -17,13 +17,12 @@ import java.util.List;
 //@ToString
 //@ApiModel(value="AddUserRequest", description = "  ")
 public class AddUserRequest {
-    @ApiModelProperty(value= "username", example = "admin13")
+    @ApiModelProperty(value= "userName", example = "user01")
     private String userName;
-    @ApiModelProperty(value= "password", example = "admin13")
+    @ApiModelProperty(value= "password", example = "Admin@123")
     private String password;
     @ApiModelProperty(value= "roles", example = "[\n" +
-            "    \"read-write.data.CustInfo\",\n" +
-            "    \"read-write.data.MappingSubCust\"\n" +
+            "    \"admin\"\n" +
             "  ]\n")
     private List<String> roles;
     @ApiModelProperty(value= "newRoles", example = "[\n" +

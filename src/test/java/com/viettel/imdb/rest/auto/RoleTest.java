@@ -28,10 +28,19 @@ public class RoleTest extends TestHelper {
                 "          \"namespace\": \"NAMESPACE\",\n" +
                 "          \"table\": \"SessionData\"\n" +
                 "        }\n" +
-                "      }" +
+                "},\n" +
+                "{\n" +
+                "        \"permission\": \"read\",\n" +
+                "        \"resource\": {\n" +
+                "          \"name\": \"data\",\n" +
+                "          \"namespace\": \"NAMESPACE2\",\n" +
+                "          \"table\": \"SessionData2\"\n" +
+                "        }\n" +
+                "}\n" +
                 "],\n" +
                 "  \"name\": \"" + roleName + "\"\n" +
                 "}";
+        System.out.println(body);
 
         HttpResponse res = createRole(body);
         res.prettyPrint();
@@ -89,6 +98,7 @@ public class RoleTest extends TestHelper {
                 "}";
 
         createRole(body);
+        getRole("ROLE_04");
 
         String updateRoleBody = "{\n" +
                 "  \"name\": \""+ roleName +"\"\n" +
@@ -106,4 +116,11 @@ public class RoleTest extends TestHelper {
         String roleName = "SOMETHING_DO_NOT_EXISTED";
         getRole(roleName).andExpect(HttpStatus.NOT_FOUND);
     }
+//    @Test(priority = 4)
+//    public void test() throws CheckedFutureException {
+//        IMDBClient client = new JavaClient("172.16.31.54", 14080);
+//        Role role = client.readRole("ROLE_02").get(Duration.ofMinutes(1));
+//        Logger.info(role);
+//        getRole("ROLE_04");
+//    }
 }

@@ -7,6 +7,7 @@ import com.viettel.imdb.rest.mock.client.ClientSimulator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.Timer;
@@ -30,7 +31,7 @@ public class IMDBClientToken {
     private static IMDBClientToken clientToken;
     private static Timer timer;
 
-    public static IMDBClient imdbClient = new ClientSimulator(Config.cluster);
+    public static IMDBClient imdbClient;
 
     //@Autowired
     TokenManager tokenManager = new TokenManager();
@@ -39,6 +40,8 @@ public class IMDBClientToken {
         userPassToTokenMap = new ConcurrentHashMap<>();
         timer = new Timer();
         timer.schedule(new RemoveExpiredToken(), 0,1 * 1000);
+
+        imdbClient = new ClientSimulator(Config.cluster);
     }
 
     class RemoveExpiredToken extends TimerTask {

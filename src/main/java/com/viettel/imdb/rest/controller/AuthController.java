@@ -1,6 +1,5 @@
 package com.viettel.imdb.rest.controller;
 
-import com.viettel.imdb.rest.common.Translator;
 import com.viettel.imdb.rest.model.AuthenRequest;
 import com.viettel.imdb.rest.service.AuthService;
 import io.swagger.annotations.Api;
@@ -66,14 +65,5 @@ public class AuthController {
         String password = request.getPassword();
         Logger.info("login authen({}, {})", username, password);
         return service.createAuthenticationToken(username, password);
-    }*/
-    /*@RestController
-    @RequestMapping(value = "/api")
-    public class MainController {
-
-        @GetMapping()
-        public String getMessage(@RequestParam("msg") String msg) {
-            return Translator.toLocale(msg, new Object[] {"LDT", "03"});
-        }
     }*/
 }

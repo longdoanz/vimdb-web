@@ -39,7 +39,7 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new RestClientError(jme.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    private HttpStatus getStatusCodeFromException(ClientException ex) {
+    public static HttpStatus getStatusCodeFromException(ClientException ex) {
         ErrorCode errorCode = ex.getErrorCode();
         switch (errorCode) {
             case TABLE_EXIST:
@@ -55,6 +55,7 @@ public class RestClientErrorHandler extends ResponseEntityExceptionHandler {
             case SEC_INDEX_EXIST:
             case FIELDNAME_INVALID:
             case FIELDNAME_LENGTH_INVALID:
+            case ROLE_NOT_EXIST:
                 return HttpStatus.BAD_REQUEST;
             case TABLE_NOT_EXIST:
             case KEY_NOT_EXIST:

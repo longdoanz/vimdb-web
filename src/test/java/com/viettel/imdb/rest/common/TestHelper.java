@@ -173,9 +173,49 @@ public class TestHelper extends TestUtil {
 
     public HttpResponse getMetrics() {
         try {
-            return http.sendGet(STATISTIC_PATH);
+            return http.sendGet(METRIC_PATH);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+    public HttpResponse backup(String body) {
+        try {
+            return http.sendPost(BACKUP_PATH, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+    public HttpResponse restore(String body) {
+        try {
+            return http.sendPost(RESTORE_PATH, body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+    public HttpResponse backupRestoreStatus(String path) {
+        try {
+            return http.sendGet(path);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+    public HttpResponse addNode(String body){
+        try {
+            return http.sendPost(ADD_NODE, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public HttpResponse removeNode(String body){
+        try {
+            return http.sendPost(REMOVE_NODE, body);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

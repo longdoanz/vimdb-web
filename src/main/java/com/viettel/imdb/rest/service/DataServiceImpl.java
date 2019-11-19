@@ -41,7 +41,7 @@ import static com.viettel.imdb.rest.common.Utils.throwableToHttpStatus;
 @Service
 class DataServiceImpl implements DataService {
 //    SqlParser sqlParser = new SqlParser();
-
+    private static String TABLE_AND_FIELD_PATTERN = "[a-zA-Z_]+\\w*";
     private final IMDBClient client;
     // todo add StatisticClient here
     private final StatisticClient statisticClient;
@@ -56,6 +56,14 @@ class DataServiceImpl implements DataService {
     // Main process function
     //==========================================================
 
+
+    private void validateTableNameName(String name) {
+        if(name == null)
+            throw new ExceptionType.BadRequestError("TABLE_NAME_IS_REQUIRED");
+        if (!name.matches(TABLE_AND_FIELD_PATTERN)) {
+            throw new ExceptionType.BadRequestError("TABLE_NAME_INVALID", name);
+        }
+    }
 
     @Override
     public ResponseEntity<?> getDataInfo(IMDBClient client) {
@@ -100,6 +108,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> createTable(IMDBClient client, String namespace, String tableName) {
         Logger.info("Create table({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         DeferredResult<?> returnValue = new DeferredResult<>();
 
@@ -125,6 +134,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> dropTable(IMDBClient client, String namespace, String tableName) {
         Logger.info("dropTable({}, {})", namespace, tableName);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         DeferredResult<?> returnValue = new DeferredResult<>();
 
@@ -166,6 +176,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> dropIndex(IMDBClient client, String namespace, String tableName, String indexName) {
         Logger.info("dropIndex({}, {}, {})", namespace, tableName, indexName);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         Future<Void> dropIndexFuture = client.dropIndex(tableName, indexName);
         long previousTime = System.nanoTime();
@@ -184,6 +195,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> select(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.info("select({}, {}, {}, {})\n", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         Future<Record> selectFuture = client.select(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();
@@ -205,6 +217,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> insert(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.info("insert({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         Future<Void> insertFuture = client.insert(tableName, key, fieldList);
         long previousTime = System.nanoTime();
@@ -232,6 +245,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> update(IMDBClient client, String namespace, String tableName, String key, List<Field> fieldList) {
         Logger.info("update({}, {}, {}, {})", namespace, tableName, key, fieldList);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         Future<Void> updateFuture = client.update(tableName, key, fieldList);
         long previousTime = System.nanoTime();
@@ -282,6 +296,7 @@ class DataServiceImpl implements DataService {
     @Override
     public DeferredResult<?> scan(IMDBClient client, String namespace, String tableName, String filter, List<String> fields) {
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         FilterModel filterModel = new FilterModel();
         if(filter != null)
@@ -307,6 +322,7 @@ class DataServiceImpl implements DataService {
     public DeferredResult<?> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList) {
         Logger.info("delete({}, {}, {}, {})", namespace, tableName, key, fieldNameList);
         RestValidator.validateNamespace(namespace);
+        validateTableNameName(tableName);
 
         Future<Void> deleteFuture = client.delete(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();

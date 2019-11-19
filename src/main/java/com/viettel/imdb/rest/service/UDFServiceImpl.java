@@ -6,10 +6,8 @@ import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
 import org.pmw.tinylog.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,10 +31,12 @@ public class UDFServiceImpl implements UDFService{
     @Override
     public List<UDFInfo> getUDFs() {
         Logger.info("getUDFs(     )");
+
 //        for (int i = 0; i < 10; i++){
 //            UDFInfo UDF = new UDFInfo();
 //            UDFList.add(UDF);
 //        }
+
         return new ArrayList<>(udfInfoMap.values());
     }
 
@@ -65,7 +65,7 @@ public class UDFServiceImpl implements UDFService{
         Logger.info("Request: {}", request);
         // Isert for preserve
         if(udfInfoMap.get(udfName) == null)
-            throw new ExceptionType.BadRequestError("UDF_NOT_FOUND", udfName);
+            throw new ExceptionType.NotFoundError("UDF_NOT_FOUND", udfName);
 
         UDFInfo newUdf = new UDFInfo();
 
@@ -73,9 +73,9 @@ public class UDFServiceImpl implements UDFService{
         if(newName != null && newName.equals(udfName))
             newName = null;
         if(newName != null) {
-            UDFInfo oldUdf = udfInfoMap.putIfAbsent(request.getName(), newUdf);
+            UDFInfo oldUdf = udfInfoMap.putIfAbsent(newName, newUdf);
             if(oldUdf != null)
-                throw new ExceptionType.BadRequestError("UDF_EXISTED", udfName);
+                throw new ExceptionType.BadRequestError("UDF_EXISTED", newName);
         }
 
         String finalNewName = newName;

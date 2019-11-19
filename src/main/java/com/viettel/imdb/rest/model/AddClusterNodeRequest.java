@@ -1,4 +1,5 @@
 package com.viettel.imdb.rest.model;
+import com.viettel.imdb.rest.sshconect.AuthenticationOption;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -19,6 +20,7 @@ public class AddClusterNodeRequest {
     @ApiModelProperty(value = "NewClusterNodeServerInfo", example = "TOO LONG TO DESCRIBE HERE")
     private NewClusterNodeServerInfo vimdbServerInfo;
 
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
@@ -30,16 +32,15 @@ public class AddClusterNodeRequest {
         private String ip;
         @ApiModelProperty(value = "Port", example = "22")
         private int port;
-
-        @ApiModelProperty(value = "Authentication Option", example = "none/password/sshkey")
-        private String authenticationOption;
-
         @ApiModelProperty(value = "username of the machine", example = "imdb")
         private String username;
+        @ApiModelProperty(value = "AuthenticationOption", example = "none")
+        private AuthenticationOption authenticationOption;
         @ApiModelProperty(value = "password of the machine", example = "imdb")
         private String password;
-        @ApiModelProperty(value = "SSHKey for login", example = "xxxxxMIIEpxxxxx")
-        private String sshkey;
+        @ApiModelProperty(value = "private Key", example = "admind")
+        private String sshKey;
+
     }
 
     @NoArgsConstructor
@@ -48,24 +49,34 @@ public class AddClusterNodeRequest {
     @Setter
     @ToString
     @ApiModel(value = "NewClusterNodeServerInfo", description = "vIMDB server configuration")
-    public static
-    class NewClusterNodeServerInfo {
-        @ApiModelProperty(value = "Server host", example = "172.16.28.123")
-        private String host;
-        @ApiModelProperty(value = "Server Port", example = "10000")
-        private int port;
-
-        @ApiModelProperty(value = "Binary file option", example = "false")
-        private boolean defaultBinary;
-        @ApiModelProperty(value = "Path of vIMDB runnable binary", example = "/home/imdb/bin/vimdb")
+    public
+    static class NewClusterNodeServerInfo {
+        @ApiModelProperty(value = "boolean", example = "false")
+        boolean defaultBinary;
+        @ApiModelProperty(value = "Path of vIMDB runnable binary", example = "/home/imdb/longdt/vimdb2/release/apps/vimdb_with_security")
         private String binary;
-
-        @ApiModelProperty(value = "Binary file option", example = "false")
-        private boolean defaultConfigFile;
-        @ApiModelProperty(value = "Configuration file path", example = "/home/imdb/conf/conf.toml")
+        @ApiModelProperty(value = "boolean", example = "false")
+        boolean defaultConfigFile;
+        @ApiModelProperty(value = "Configuration file path", example = "/home/imdb/longdt/vimdb2/release/apps/vimdb_thurvnode0.toml")
         private String configFile;
-        /*@ApiModelProperty(value = "reload old data or not", example = "true")
-        private boolean reloadOldData;*/
+
+        @ApiModelProperty(value = "Config conntent", example = "cluster_name = \"vIMDB Cluster\"\n" +
+                "host = \"172.16.31.54\"\n" +
+                "port = 29050\n" +
+                "replication_factor = 3\n" +
+                "metric_port = 11111\n" +
+                "seeds = [\n" +
+                "  \"172.16.31.54:29050\"\n" +
+                "  \"172.16.31.54:29051\"\n" +
+                "  \"172.16.31.54:" +
+                "14080\"\n" +
+                "]\n" +
+                "default_log_level = \"info\"\n" +
+                "cluster_backup_log = \"thurv_cluster0.log\"\n" +
+                "backup_data_directory = \"thurv_db0\"\n" +
+                "[log_level]\n" +
+                "vimdb = \"error\"")
+        private String newConfigContent;
     }
 
 }

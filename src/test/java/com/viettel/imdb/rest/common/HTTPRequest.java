@@ -54,7 +54,7 @@ public class HTTPRequest {
             if(res.getResponse().get("token") == null) {
                 Assert.fail("UNAUTHORIZED");
             }
-            token = "Bearer " + res.getResponse().get("token").asText();
+            this.token = "Bearer " + res.getResponse().get("token").asText();
         } catch (Exception ex) {
             ex.printStackTrace();
             Assert.fail("UNAUTHORIZED");
@@ -110,7 +110,7 @@ public class HTTPRequest {
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
-        http.setRequestProperty("Accept-Language", "vi");
+        http.setRequestProperty("Accept-Language", "en");
 //        http.setRequestProperty("Cookie", cookie);
         http.setRequestProperty("Authorization", token);
 
@@ -141,7 +141,7 @@ public class HTTPRequest {
     }
 
     public HttpResponse sendWithData(String method, String path, String body) throws Exception {
-        return sendWithData(method, path, (Map<String, String>) null, body, this.token);
+        return sendWithData(method, path, null, body, this.token);
     }
 
     public HttpResponse sendWithData(String method, String path, Map<String, String> header, String body) throws Exception {
@@ -155,8 +155,8 @@ public class HTTPRequest {
         http.setRequestMethod(method);
         http.setRequestProperty("Content-Type", "application/json");
         http.setRequestProperty("Accept", "application/json");
-        http.setRequestProperty("Accept-Language", "vi");
-        if(token != null && !token.isEmpty()) {
+        http.setRequestProperty("Accept-Language", "en");
+        if(token != null) {
             http.setRequestProperty("Authorization", token);
         }
 

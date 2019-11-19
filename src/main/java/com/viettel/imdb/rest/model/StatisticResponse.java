@@ -74,12 +74,12 @@ public class StatisticResponse {
 //    @ToString
 //    @ApiModel(value="MetricValue", description = "Metric Value")
     public static class MetricValue{
-        @ApiModelProperty(value= "name", example = "metrics list")
+        @ApiModelProperty(value= "name", example = "metric name")
         private String name;
         @ApiModelProperty(value= "type", example = "metrics type")
         private String type;
         @ApiModelProperty(value= "value", example = "metrics value")
-        private long value;
+        private float value;
 
         public MetricValue() {
         }
@@ -91,7 +91,7 @@ public class StatisticResponse {
         // todo set value to default (0) :-?
     }
 
-    public MetricValue(String name, String type, long value) {
+    public MetricValue(String name, String type, float value) {
         this.name = name;
         this.type = type;
         this.value = value;
@@ -113,12 +113,15 @@ public class StatisticResponse {
         this.type = type;
     }
 
-    public long getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(long value) {
+    public void setValue(float value) {
         this.value = value;
+    }
+    public void addValue(float value) {
+        this.value += value;
     }
 
     @Override
@@ -126,7 +129,7 @@ public class StatisticResponse {
         return "MetricValue{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", value='" + value + '\'' +
+                ", value=" + value +
                 '}';
     }
 }

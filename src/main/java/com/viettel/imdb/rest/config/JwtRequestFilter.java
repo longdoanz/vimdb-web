@@ -28,8 +28,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        final String requestTokenHeader = httpServletRequest.getHeader("Authorization");
-        System.out.println("Authorization:"+requestTokenHeader+"cookie: "+httpServletRequest.getHeader("Cookie")+ "Accept:"+httpServletRequest.getHeader("Accept"));
+//        final String requestTokenHeader = httpServletRequest.getHeader("Authorization");
+//        System.out.println("Authorization:"+requestTokenHeader+"cookie: "+httpServletRequest.getHeader("Cookie")+ "Accept:"+httpServletRequest.getHeader("Accept"));
 
         String username = null;
         String jwtToken = null;
@@ -46,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UserDetails userDetails = service.loadUserByUsername(username);
                 if(userDetails != null) {
                     // set thông tin cho Seturity Context
-                    Logger.info("set context");
+//                    Logger.info("set context");
                     UsernamePasswordAuthenticationToken
                             authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));

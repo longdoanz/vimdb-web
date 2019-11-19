@@ -16,7 +16,7 @@ import java.util.List;
 //@ToString
 //@ApiModel(value="EditUserRequest", description = "  ")
 public class EditUserRequest {
-    @ApiModelProperty(value= "password", example = "admin13")
+    @ApiModelProperty(value= "password", example = "Admin@123")
     private String password;
     @ApiModelProperty(value= "roles", example = "[\n" +
             "    \"read-write.data.CustInfo\",\n" +

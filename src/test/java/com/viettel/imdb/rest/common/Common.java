@@ -15,13 +15,19 @@ public class Common {
     public static final String AUTH_PATH = "/v1/auth";
     public static final String SECURITY_PATH = "/v1/security";
     public static final String STATISTIC_PATH = "/v1/statistic";
+    public static final String METRIC_PATH = "/v1/statistic/metrics";
     public static final String UDF_PATH = "/v1/udf";
+    public static final String BACKUP_PATH = "/v1/tool/backup";
+    public static final String RESTORE_PATH = "/v1/tool/restore";
+    public static final String ADD_NODE = "/v1/cluster/add_node";
+    public static final String REMOVE_NODE = "/v1/cluster/remove_node";
     public static final String INDEX_PATH = "indexes";
     public static final String HOST_URL = "http://127.0.0.1:8080";
 
 
-    public static String USERNAME = "admin";
-    public static String PASSWORD = "admin";
+
+    public static String USERNAME = "ldt";
+    public static String PASSWORD = "123";
 
     public static String buildFromPath(String... args) {
         String res = "";

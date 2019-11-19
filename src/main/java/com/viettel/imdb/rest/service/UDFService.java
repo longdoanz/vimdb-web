@@ -4,7 +4,6 @@ import com.viettel.imdb.rest.model.EditUDFRequest;
 import com.viettel.imdb.rest.model.InsertUDFRequest;
 import com.viettel.imdb.rest.model.UDFInfo;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface UDFService {
