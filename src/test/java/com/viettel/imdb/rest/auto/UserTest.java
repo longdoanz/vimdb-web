@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserTest extends TestHelper {
 
-    public void createRole(){
+    public void createRoleUtil(){
         String rolename1 = "role1";
         String rolename2 = "role2";
         dropRole(rolename1);
@@ -255,7 +255,7 @@ public class UserTest extends TestHelper {
         dropUser(username);
         dropRole(newRolename);
 
-        createRole();
+        createRoleUtil();
 
         String body = "{\n" +
                 "  \"userName\": \"" + username + "\",\n" +
@@ -344,7 +344,7 @@ public class UserTest extends TestHelper {
         dropRole(newRole1);
         dropRole(newRole2);
 
-        createRole();
+        createRoleUtil();
 
         String createUserBody = "{\n" +
                 "\n" +
@@ -414,7 +414,7 @@ public class UserTest extends TestHelper {
         dropUser(username);
         dropRole(newRole1);
 
-        createRole();
+        createRoleUtil();
 
         String createUserBody = "{\n" +
                 "\n" +
@@ -526,7 +526,7 @@ public class UserTest extends TestHelper {
         dropRole(newRole1);
         dropRole(newRole2);
 
-        createRole();
+        createRoleUtil();
 
         String createUserBody = "{\n" +
                 "\n" +

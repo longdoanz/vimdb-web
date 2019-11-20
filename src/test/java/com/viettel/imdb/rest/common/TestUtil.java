@@ -21,21 +21,19 @@ import static org.testng.Assert.assertEquals;
  * @since 03/09/2019
  */
 public class TestUtil {
-    public HTTPRequest http = new HTTPRequest(HOST_URL);;
-    private IMDBEncodeDecoder encoder;
+    public HTTPRequest http = new HTTPRequest(HOST_URL);
+    private IMDBEncodeDecoder encoder = IMDBEncodeDecoder.getInstance();;
+//    http = new HTTPRequest(HOST_URL);
 
     protected static boolean NEED_AUTHORIZE = false;
 
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() throws Exception {
-        http = new HTTPRequest(HOST_URL);
-
         if(NEED_AUTHORIZE) {
             http.authorize(USERNAME, PASSWORD);
         }
 
-        encoder = IMDBEncodeDecoder.getInstance();
     }
 
     public HttpResponse createTable(String tableName) throws Exception {
