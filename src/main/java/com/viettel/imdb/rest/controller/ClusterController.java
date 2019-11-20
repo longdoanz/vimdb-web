@@ -64,7 +64,7 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/add_node")
     @ApiOperation(value = ADD_NODE_TO_CLUSTER, nickname = "addNode")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponses(value = {
 
             @ApiResponse(
@@ -83,7 +83,7 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/remove_node")
     @ApiOperation(value = "HTTP DELETE METHOD DO NOT SUPPORT SEND WITH BODY, THIS API WILL BE REMOVE!!!", nickname = "removeNode")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 401,
@@ -99,7 +99,7 @@ public class ClusterController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/remove_node")
     @ApiOperation(value = REMOVE_NODE_FROM_CLUSTER, nickname = "removeNode")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 401,

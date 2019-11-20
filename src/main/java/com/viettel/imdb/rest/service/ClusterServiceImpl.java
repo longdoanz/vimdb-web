@@ -2,6 +2,7 @@ package com.viettel.imdb.rest.service;
 
 
 import com.viettel.imdb.rest.RestErrorCode;
+import com.viettel.imdb.rest.common.Translator;
 import com.viettel.imdb.rest.exception.ExceptionType;
 import com.viettel.imdb.rest.mock.server.ClusterSimulator;
 import com.viettel.imdb.rest.mock.server.NodeSimulatorImpl;
@@ -38,7 +39,6 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> getClusterInfo(List<String> nodes) {
-        Logger.info("getClusterInfo({})", nodes);
         ClusterInfo clusterInfo = cluster.getClusterInfo(nodes);
         DeferredResult returnValue = new DeferredResult<>();
         returnValue.setResult(clusterInfo);
@@ -78,7 +78,7 @@ public class ClusterServiceImpl implements ClusterService {
                 System.out.println(matcher.group(1));
                 port = Integer.parseInt(matcher.group(1));
             } catch (Exception ex) {
-                throw new ExceptionType.BadRequestError("Port parameter must be integer");
+                throw new ExceptionType.BadRequestError("PORT_MUST_BE_INTEGER");
             }
 
             status = cluster.addNode(new NodeSimulatorImpl(ip, port));
@@ -87,7 +87,7 @@ public class ClusterServiceImpl implements ClusterService {
 
         RestClientError clientError = null;
         if (!status)
-            throw new ExceptionType.BadRequestError("Node existed");
+            throw new ExceptionType.BadRequestError("NODE_EXISTED");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
         returnValue.setResult(new ResponseEntity<>(clientError, HttpStatus.ACCEPTED));
@@ -100,11 +100,11 @@ public class ClusterServiceImpl implements ClusterService {
 
         RestClientError clientError = null;
         if (!removed) {
-            clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, "");
+            clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, Translator.toLocale("NODE_DO_NOT_EXIST"));
         }
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
-        returnValue.setResult(new ResponseEntity<>(clientError, removed ? HttpStatus.NO_CONTENT : HttpStatus.BAD_REQUEST));
+        returnValue.setResult(new ResponseEntity<>(clientError, removed ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST));
 
         return returnValue;
     }
