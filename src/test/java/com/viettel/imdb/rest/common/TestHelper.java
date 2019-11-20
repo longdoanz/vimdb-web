@@ -213,7 +213,7 @@ public class TestHelper extends TestUtil {
     }
     public HttpResponse removeNode(String body){
         try {
-            return http.sendPost(REMOVE_NODE, body);
+            return http.sendDelete(REMOVE_NODE, body);
         } catch (Exception e) {
             e.printStackTrace();
         }

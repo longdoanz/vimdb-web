@@ -61,15 +61,14 @@ public class AddClusterNodeRequest {
         private String configFile;
 
         @ApiModelProperty(value = "Config conntent", example = "cluster_name = \"vIMDB Cluster\"\n" +
-                "host = \"172.16.31.54\"\n" +
-                "port = 29050\n" +
+                "host = \"172.16.28.123\"\n" +
+                "port = 10000\n" +
                 "replication_factor = 3\n" +
                 "metric_port = 11111\n" +
                 "seeds = [\n" +
-                "  \"172.16.31.54:29050\"\n" +
-                "  \"172.16.31.54:29051\"\n" +
-                "  \"172.16.31.54:" +
-                "14080\"\n" +
+                "  \"172.16.28.123:29050\"\n" +
+                "  \"172.16.28.123:29051\"\n" +
+                "  \"172.16.28.123:14080\"\n" +
                 "]\n" +
                 "default_log_level = \"info\"\n" +
                 "cluster_backup_log = \"thurv_cluster0.log\"\n" +

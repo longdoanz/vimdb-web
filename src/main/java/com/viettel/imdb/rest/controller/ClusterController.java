@@ -82,7 +82,7 @@ public class ClusterController {
 
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/remove_node")
-    @ApiOperation(value = REMOVE_NODE_FROM_CLUSTER, nickname = "removeNode")
+    @ApiOperation(value = "HTTP DELETE METHOD DO NOT SUPPORT SEND WITH BODY, THIS API WILL BE REMOVE!!!", nickname = "removeNode")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
             @ApiResponse(
@@ -92,6 +92,21 @@ public class ClusterController {
             // other @ApiResponses
     })
     public DeferredResult<ResponseEntity<?>> removeNode(
+            @ApiParam(required = true, value = REMOVE_CLUSTER_NODE_REQUEST_NOTES) @RequestBody RemoveClusterNodeRequest request
+    ) {
+        return service.removeNode(request);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/remove_node")
+    @ApiOperation(value = REMOVE_NODE_FROM_CLUSTER, nickname = "removeNode")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 401,
+                    message = "Unauthorized"
+            )
+    })
+    public DeferredResult<ResponseEntity<?>> postRemoveNode(
             @ApiParam(required = true, value = REMOVE_CLUSTER_NODE_REQUEST_NOTES) @RequestBody RemoveClusterNodeRequest request
     ) {
         return service.removeNode(request);

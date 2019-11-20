@@ -3,6 +3,9 @@ import com.viettel.imdb.rest.sshconect.SSHManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
@@ -108,5 +111,13 @@ public class sshTest {
         System.out.println(result);
         instance.close();
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void test0123() {
+        Pattern pattern = Pattern.compile("host.*\"([0-9.]*)\".*");
+        Matcher m = pattern.matcher("host =    \"172.16.31.54\" ");
+        System.out.println(m.find());
+        System.out.println(m.group(1));
     }
 }
