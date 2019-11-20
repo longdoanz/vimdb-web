@@ -59,22 +59,24 @@ public class ClusterServiceImpl implements ClusterService {
             if (config == null || config.isEmpty())
                 throw new ExceptionType.BadRequestError("Config content is required");
 
-            Pattern pattern = Pattern.compile("host.*=\\s*(\\d*)");
+            Pattern pattern = Pattern.compile("host.*\"([0-9.]*)\".*");
             Matcher matcher = pattern.matcher(config);
-            if (!matcher.matches())
-                throw new ExceptionType.BadRequestError("Host parameter in config is required");
+            if (!matcher.find())
+                throw new ExceptionType.BadRequestError("HOST_PARAM_REQUIRED");
 
-            String ip = matcher.group(0);
+            String ip = matcher.group(1);
+            System.err.println("ip: " + ip);
 
-            pattern = Pattern.compile("port.*=\\s*(\\d*)");
+            pattern = Pattern.compile("port.*=\\s*(\\d*).*");
             matcher = pattern.matcher(config);
 
-            if (!matcher.matches())
-                throw new ExceptionType.BadRequestError("Port parameter in config is required");
+            if (!matcher.find())
+                throw new ExceptionType.BadRequestError("PORT_PARAM_REQUIRED");
 
             int port;
             try {
-                port = Integer.parseInt(matcher.group(0));
+                System.out.println(matcher.group(1));
+                port = Integer.parseInt(matcher.group(1));
             } catch (Exception ex) {
                 throw new ExceptionType.BadRequestError("Port parameter must be integer");
             }
@@ -98,7 +100,7 @@ public class ClusterServiceImpl implements ClusterService {
 
         RestClientError clientError = null;
         if (!removed) {
-            clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, "Node do not exist");
+            clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, "");
         }
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
