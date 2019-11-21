@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.mock.server;
 
+import com.viettel.imdb.common.Field;
 import com.viettel.imdb.common.Filter;
 import com.viettel.imdb.common.KeyRecord;
 import com.viettel.imdb.common.Record;
@@ -32,21 +33,11 @@ public class ClusterSimulator implements Storage, Security {
 
         storage = new DataStorage();
         security = SecurityImpl.getInstance();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            storage.close();
+        }));
     }
 
-    public ClusterSimulator(boolean defaultDRCluster) {
-        initDefaultDRCluster();
-        storage = new DataStorage();
-        security = SecurityImpl.getInstance();
-    }
-
-    public ClusterSimulator(List<NodeSimulator> nodes) {
-        this.nodes = nodes;
-        drClusters = new ArrayList<>();
-        replicationFactor = 2;
-        storage = new DataStorage();
-        security = SecurityImpl.getInstance();
-    }
 
     public ClusterInfo getClusterInfo(List<String> nodesHost) {
         ClusterInfo clusterInfo = new ClusterInfo();
@@ -185,13 +176,13 @@ public class ClusterSimulator implements Storage, Security {
     }
 
     @Override
-    public Future<Void> insert(String tableName, String key, Record record) {
-        return storage.insert(tableName, key, record);
+    public Future<Void> insert(String tableName, String key, List<Field> fieldList) {
+        return storage.insert(tableName, key, fieldList);
     }
 
     @Override
-    public Future<Void> update(String tableName, String key, Record record) {
-        return storage.update(tableName, key, record);
+    public Future<Void> update(String tableName, String key, List<Field> fieldList) {
+        return storage.update(tableName, key, fieldList);
     }
 
     @Override
@@ -204,8 +195,7 @@ public class ClusterSimulator implements Storage, Security {
         NamespaceInformation namespaceInformation = new NamespaceInformation();
         namespaceInformation.setName(NS_DEFAULT);
 
-        List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
-        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.data.size()));
+        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.size()));
         return new ArrayList<NamespaceInformation>() {{
             add(namespaceInformation);
         }};
@@ -215,8 +205,7 @@ public class ClusterSimulator implements Storage, Security {
         NamespaceInformation namespaceInformation = new NamespaceInformation();
         namespaceInformation.setName(NS_DEFAULT);
 
-        List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
-        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.data.size()));
+        storage.getData().forEach((tableName, tableData) -> namespaceInformation.addTableInfo(tableName, tableData.size()));
         return namespaceInformation;
     }
 

@@ -1,5 +1,6 @@
 package com.viettel.imdb.rest.mock.server;
 
+import com.viettel.imdb.common.Field;
 import com.viettel.imdb.common.Filter;
 import com.viettel.imdb.common.KeyRecord;
 import com.viettel.imdb.common.Record;
@@ -15,7 +16,7 @@ public interface Storage {
 
     Future<Record> select(String tableName, String key);
     Future<ResultSet<KeyRecord>> scan(Filter filter, List<String> fields, BiConsumer<String, Record> handler);
-    Future<Void> insert(String tableName, String key, Record record);
-    Future<Void> update(String tableName, String key, Record record);
+    Future<Void> insert(String tableName, String key, List<Field> fieldList);
+    Future<Void> update(String tableName, String key, List<Field> fieldList);
     Future<Void> delete(String tableName, String key);
 }

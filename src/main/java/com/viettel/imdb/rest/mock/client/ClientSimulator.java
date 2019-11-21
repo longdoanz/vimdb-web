@@ -91,7 +91,7 @@ public class ClientSimulator implements IMDBClient {
 
     @Override
     public Future<Void> insert(String tableName, String key, List<Field> fields) {
-        return cluster.insert(tableName, key, new Record(fields));
+        return cluster.insert(tableName, key, fields);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ClientSimulator implements IMDBClient {
 
     @Override
     public Future<Void> update(String tableName, String key, List<Field> fields) {
-        return cluster.update(tableName, key, new Record(fields));
+        return cluster.update(tableName, key, fields);
     }
 
     @Override

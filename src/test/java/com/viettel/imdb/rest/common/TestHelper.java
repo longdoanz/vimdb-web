@@ -5,6 +5,7 @@ import com.viettel.imdb.rest.common.TestUtil;
 import org.testng.Assert;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.viettel.imdb.rest.common.Common.*;
 
@@ -55,6 +56,7 @@ public class TestHelper extends TestUtil {
         return null;
     }
 
+
     public HttpResponse createUser(String body) {
         try {
             return http.sendPost(SECURITY_PATH + "/user", body);
@@ -95,6 +97,7 @@ public class TestHelper extends TestUtil {
         return null;
     }
 
+
     public HttpResponse createUdf(String udfName, String body) {
         try {
             return http.sendPost(UDF_PATH + "/" + udfName, body);
@@ -134,6 +137,8 @@ public class TestHelper extends TestUtil {
         }
         return null;
     }
+
+
     public HttpResponse getStatistic() {
         return getStatistic(null, null);
     }
@@ -173,31 +178,99 @@ public class TestHelper extends TestUtil {
 
     public HttpResponse getMetrics() {
         try {
-            return http.sendGet(METRIC_PATH);
+            return http.sendGet(STATISTIC_PATH);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
         return null;
     }
-    public HttpResponse backup(String body) {
+
+
+    //data
+
+    public HttpResponse getData(String... nameSpace) {
+        String path = "";
+        if(nameSpace.length != 0) {
+            path = "/" + nameSpace[0];
+        }
         try {
-            return http.sendPost(BACKUP_PATH, body);
+            return http.sendGet(DATA_PATH + path);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
         return null;
     }
-    public HttpResponse restore(String body) {
+
+    public HttpResponse createTable(String tableName) {
+        String body = "{\n" +
+                "  \"tableName\": \""+tableName+"\"\n" +
+                "}";;
         try {
-            return http.sendPost(RESTORE_PATH, body);
+            return http.sendPost(DATA_PATH + "/namespace", body);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
         return null;
     }
-    public HttpResponse backupRestoreStatus(String path) {
+
+    public HttpResponse dropTable(String tableName) {
         try {
-            return http.sendGet(path);
+            return http.sendDelete(DATA_PATH_WITH_NAMESPACE + "/" + tableName);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse getRecord(String tableName, String key) {
+        try {
+            return http.sendGet(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse createRecord(String tableName, String key, String body) {
+        try {
+            return http.sendPost(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key), body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse updateRecord(String tableName, String key, String body) {
+        try {
+            return http.sendPatch(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key), body);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse dropRecord(String tableName, String key) {
+        try {
+            return http.sendDelete(buildFromPath(DATA_PATH_WITH_NAMESPACE, tableName, key));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse findRecordPK( String tableName, String ...key) {
+        try {
+            return http.sendGet(DATA_PATH + "/namespace/"+ tableName +"/"+ key);
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+        return null;
+    }
+
+    public HttpResponse findRecordSK( int minRange, int maxRange) // ham chua viet
+    {
+        try {
+            return http.sendGet(DATA_PATH + "/namespace/");
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
@@ -213,7 +286,7 @@ public class TestHelper extends TestUtil {
     }
     public HttpResponse removeNode(String body){
         try {
-            return http.sendPost(REMOVE_NODE, body);
+            return http.sendDelete(REMOVE_NODE, body);
         } catch (Exception e) {
             e.printStackTrace();
         }
