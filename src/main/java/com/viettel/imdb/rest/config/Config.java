@@ -140,8 +140,8 @@ public class Config extends WebSecurityConfigurerAdapter {
     static {
         nodes = new ArrayList<>();
 
-        int clusterSize = ThreadLocalRandom.current().nextInt(3, 7);
-        int startIP = ThreadLocalRandom.current().nextInt(65, 72);
+        int clusterSize = ThreadLocalRandom.current().nextInt(3, 5);
+        int startIP = ThreadLocalRandom.current().nextInt(68, 72);
 
         for (int i = 0; i < clusterSize; i++) {
             nodes.add(new NodeSimulatorImpl("172.16.28." + startIP++, 10000));

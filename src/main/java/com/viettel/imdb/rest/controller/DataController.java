@@ -106,9 +106,10 @@ public class DataController {
     @ApiOperation(value = GET_TABLE_IN_NAMESPACE_NOTES, nickname = "getTableListInNamespace")
     @ResponseStatus(value = HttpStatus.OK)
     public DeferredResult<?> getTableList(
-            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
+            @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
+            @RequestParam(value = "tables", defaultValue = "") List<String> tables) {
 
-        return service.getTableListInNamespace(IMDBClientToken.getClient(getToken()), namespace);
+        return service.getTableListInNamespace(IMDBClientToken.getClient(getToken()), namespace, tables);
     }
 
 
@@ -222,24 +223,13 @@ public class DataController {
     @RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{tablename}")
     @ApiOperation(value = SCAN_NOTES, nickname = "scan")
     @ResponseStatus(value = HttpStatus.OK)
-    @ApiResponses(value = {
-            @ApiResponse(
-                    code = 777,
-                    response = RestClientError.class,
-                    message = "Key does not exist",
-                    examples = @Example(value = {@ExampleProperty(mediaType = "Example json", value = "{'inDoubt': false, 'message': 'A message' }")})
-            )
-            // other @ApiResponses
-    })
     public DeferredResult<?> scan(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
             @ApiParam(value = SCAN_MODEL_NOTES) @RequestParam(value = "filter", required = false) String filter,
             @RequestParam(value = "fields", defaultValue = "") List<String> fields) {
 
-//        restScanModel.setNamespace(namespace);
-//        restScanModel.setTable(tableName);
-        Logger.error("scan({}, {}, {}", namespace, tableName, filter);
+        Logger.info("scan({}, {}, {}", namespace, tableName, filter);
         return service.scan(IMDBClientToken.getClient(getToken()), namespace, tableName, filter, fields);
     }
 

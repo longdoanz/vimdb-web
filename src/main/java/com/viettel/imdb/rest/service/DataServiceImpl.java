@@ -81,11 +81,11 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<?> getTableListInNamespace(IMDBClient client, String namespace) {
+    public DeferredResult<?> getTableListInNamespace(IMDBClient client, String namespace, List<String> tables) {
         RestValidator.validateNamespace(namespace);
 
         DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
-        res.setResult(new ResponseEntity<>(((ClientSimulator)client).getTableList(namespace), HttpStatus.OK));
+        res.setResult(new ResponseEntity<>(((ClientSimulator)client).getTableList(namespace, tables), HttpStatus.OK));
         return res;
     }
 
@@ -197,20 +197,21 @@ class DataServiceImpl implements DataService {
         RestValidator.validateNamespace(namespace);
         validateTableNameName(tableName);
 
+        DeferredResult<Record> res = new DeferredResult<>();
         Future<Record> selectFuture = client.select(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = selectFuture
-                .map(record -> {
+        selectFuture
+                .onSuccess(record -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_read_success", 1);
                     statisticClient.addLatencyInUsToRandomNode("read", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.OK, record);
+                    res.setResult(record);
                 })
-                .rescue(throwable -> {
+                .onFailure(throwable -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_read_failed", 1);
                     statisticClient.addLatencyInUsToRandomNode("read", (System.nanoTime() - previousTime) / 1000);
-                    return throwableToHttpStatus(throwable);
+                    res.setErrorResult(throwable);
                 });
-        return restResultToDeferredResult(resultFuture);
+        return res;
     }
 
     @Override
@@ -219,20 +220,21 @@ class DataServiceImpl implements DataService {
         RestValidator.validateNamespace(namespace);
         validateTableNameName(tableName);
 
+        DeferredResult<Void> res = new DeferredResult<>();
         Future<Void> insertFuture = client.insert(tableName, key, fieldList);
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = insertFuture
-                .map(aVoid -> {
+        insertFuture
+                .onSuccess(aVoid -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_write_success", 1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.CREATED);
+                    res.setResult(null);
                 })
-                .rescue(throwable -> {
+                .onFailure(throwable -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_write_failed", 1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return throwableToHttpStatus(throwable);
+                    res.setErrorResult(throwable);
                 });
-        return restResultToDeferredResult(resultFuture);
+        return res;
     }
 
     @Override
@@ -247,20 +249,21 @@ class DataServiceImpl implements DataService {
         RestValidator.validateNamespace(namespace);
         validateTableNameName(tableName);
 
+        DeferredResult<Void> res = new DeferredResult<>();
         Future<Void> updateFuture = client.update(tableName, key, fieldList);
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = updateFuture
-                .map(aVoid -> {
+        updateFuture
+                .onSuccess(aVoid -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_write_success", 1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.NO_CONTENT);
+                    res.setResult(null);
                 })
-                .rescue(throwable -> {
+                .onFailure(throwable -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_write_failed", 1);
                     statisticClient.addLatencyInUsToRandomNode("write", (System.nanoTime() - previousTime) / 1000);
-                    return throwableToHttpStatus(throwable);
+                    res.setErrorResult(throwable);
                 });
-        return restResultToDeferredResult(resultFuture);
+        return res;
     }
 
     @Override
@@ -324,20 +327,21 @@ class DataServiceImpl implements DataService {
         RestValidator.validateNamespace(namespace);
         validateTableNameName(tableName);
 
+        DeferredResult<Void> res = new DeferredResult<>();
         Future<Void> deleteFuture = client.delete(tableName, key, fieldNameList);
         long previousTime = System.nanoTime();
-        Future<Result> resultFuture = deleteFuture
-                .map(aVoid -> {
+        deleteFuture
+                .onSuccess(aVoid -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_delete_success", 1);
                     statisticClient.addLatencyInUsToRandomNode("delete", (System.nanoTime() - previousTime) / 1000);
-                    return new Result(HttpStatus.NO_CONTENT);
+                    res.setResult(null);
                 })
-                .rescue(throwable -> {
+                .onFailure(throwable -> {
                     statisticClient.addStatisticValueToRandomNode("vimdb_request_delete_failed", 1);
                     statisticClient.addLatencyInUsToRandomNode("delete", (System.nanoTime() - previousTime) / 1000);
-                    return throwableToHttpStatus(throwable);
+                    res.setErrorResult(throwable);
                 });
-        return restResultToDeferredResult(resultFuture);
+        return res;
     }
 
     @Override
