@@ -66,9 +66,9 @@ public class ClusterSimulator implements Storage, Security {
 
         List<ClusterInfo.ClusterNodeInfo> nodesInfo = new ArrayList<>();
         int index = 0;
-        for(NodeSimulator node : nodes) {
-            if(nodesHost == null || nodesHost.contains(node.getAddress())) {
-                index ++;
+        for (NodeSimulator node : nodes) {
+            if (nodesHost == null || nodesHost.contains(node.getAddress())) {
+                index++;
                 ClusterInfo.ClusterNodeInfo clusterNodeInfo = clusterInfo.new ClusterNodeInfo();
                 clusterNodeInfo.setName("node" + index);
                 clusterNodeInfo.setIp(node.getHost());
@@ -82,27 +82,27 @@ public class ClusterSimulator implements Storage, Security {
                 clusterNodeInfo.setDiskUsagePercentage(new Random().nextFloat() * 100);
 
                 ClusterInfo.ClusterNodeDataInfo clusterNodeDataInfo = clusterInfo.new ClusterNodeDataInfo();
-                clusterNodeDataInfo.setTables(ThreadLocalRandom.current().nextLong(2000));
+                clusterNodeDataInfo.setTables(ThreadLocalRandom.current().nextLong(200));
                 clusterNodeDataInfo.setRecords(ThreadLocalRandom.current().nextLong(200000));
-                clusterNodeDataInfo.setMaster(ThreadLocalRandom.current().nextLong(20));
+                clusterNodeDataInfo.setMaster(ThreadLocalRandom.current().nextLong(100000));
                 clusterNodeInfo.setData(clusterNodeDataInfo);
 
                 ClusterInfo.ClusterNodePerformanceInfo clusterNodePerformanceInfo = clusterInfo.new ClusterNodePerformanceInfo();
-                clusterNodePerformanceInfo.setWrite(ThreadLocalRandom.current().nextLong(200000));
                 clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
-                clusterNodePerformanceInfo.setRead(ThreadLocalRandom.current().nextLong(200000));
-                clusterNodePerformanceInfo.setWriteSuccess(ThreadLocalRandom.current().nextLong(200000));
-                clusterNodePerformanceInfo.setDelete(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setWrite(ThreadLocalRandom.current().nextLong(20000)
+                        + clusterNodePerformanceInfo.getWriteSuccess());
+                clusterNodePerformanceInfo.setReadSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setRead(ThreadLocalRandom.current().nextLong(1000) + clusterNodePerformanceInfo.getReadSuccess());
                 clusterNodePerformanceInfo.setDeleteSuccess(ThreadLocalRandom.current().nextLong(200000));
-                clusterNodePerformanceInfo.setScan(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setDelete(ThreadLocalRandom.current().nextLong(1000) + clusterNodePerformanceInfo.getDeleteSuccess());
                 clusterNodePerformanceInfo.setScanSuccess(ThreadLocalRandom.current().nextLong(200000));
+                clusterNodePerformanceInfo.setScan(ThreadLocalRandom.current().nextLong(1000) + clusterNodePerformanceInfo.getScanSuccess());
                 clusterNodeInfo.setPerformance(clusterNodePerformanceInfo);
 
                 nodesInfo.add(clusterNodeInfo);
             }
         }
         clusterInfo.setNodes(nodesInfo);
-
 
         return clusterInfo;
     }
@@ -216,7 +216,7 @@ public class ClusterSimulator implements Storage, Security {
         namespaceInformation.setName(NS_DEFAULT);
 //        List<NamespaceInformation.TableInformation> tableInfo = namespaceInformation.getTables();
         storage.getData().forEach((tableName, tableData) -> {
-            if(tables.isEmpty() || (tables.contains(tableName)))
+            if (tables.isEmpty() || (tables.contains(tableName)))
                 namespaceInformation.addTableInfo(tableName, tableData.data.size());
         });
         return namespaceInformation;
