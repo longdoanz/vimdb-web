@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.mapdb.*;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -142,8 +140,8 @@ public class Config extends WebSecurityConfigurerAdapter {
     static {
         nodes = new ArrayList<>();
 
-        int clusterSize = ThreadLocalRandom.current().nextInt(3, 5);
-        int startIP = ThreadLocalRandom.current().nextInt(68, 72);
+        int clusterSize = ThreadLocalRandom.current().nextInt(2, 4);
+        int startIP = ThreadLocalRandom.current().nextInt(69, 72);
 
         for (int i = 0; i < clusterSize; i++) {
             nodes.add(new NodeSimulatorImpl("172.16.28." + startIP++, 10000));

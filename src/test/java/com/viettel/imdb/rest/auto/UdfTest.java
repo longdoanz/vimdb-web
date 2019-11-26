@@ -3,6 +3,8 @@ package com.viettel.imdb.rest.auto;
 import com.viettel.imdb.rest.common.TestHelper;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
+import com.viettel.imdb.rest.common.HttpResponse;
+import org.testng.Assert;
 
 public class UdfTest extends TestHelper {
 
@@ -100,6 +102,7 @@ public class UdfTest extends TestHelper {
         dropUdf(udfName);
         String body = "{\n" +
                 "  \"content\": \"TOO LONG TO DISPLAY HERE\",\n" +
+                "  \"content\": \"TOO LONG TO DISPLAY HERE2\",\n" +
                 "  \"type\": \"LUA\"\n" +
                 "}";
 
@@ -113,7 +116,11 @@ public class UdfTest extends TestHelper {
 
         getUdf(udfName).andExpect(HttpStatus.OK).andExpectResponse("content", updateContent);
 
-        getUdf(udfName).andExpect(HttpStatus.OK.value()).andExpectResponse("type", "LUA");
+        HttpResponse res = getUdf(udfName).andExpect(HttpStatus.OK.value())
+                .andExpectResponse("type", "LUA").prettyPrint();
+        long createdTime = res.read("createdOn");
+        long updatedTime = res.read("lastUpdate");
+        Assert.assertNotEquals(createdTime, updatedTime, "Must not equal");
         dropUdf(udfName).andExpect(HttpStatus.NO_CONTENT.value());
     }
 

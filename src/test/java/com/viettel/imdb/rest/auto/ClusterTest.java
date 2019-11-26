@@ -33,8 +33,8 @@ public class ClusterTest extends TestHelper {
     public void testRemoveNode() {
         String body = "{\n" +
                 "  \"host\": \"172.16.28.123\",\n" +
-                "  \"password\": \"admin\",\n" +
                 "  \"port\": 29050,\n" +
+                "  \"password\": \"admin\",\n" +
                 "  \"username\": \"admin\"\n" +
                 "}";
         removeNode(body).andExpect(HttpStatus.ACCEPTED);

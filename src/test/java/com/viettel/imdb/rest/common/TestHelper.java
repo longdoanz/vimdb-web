@@ -1,11 +1,8 @@
 package com.viettel.imdb.rest.common;
 
-import com.viettel.imdb.rest.common.HttpResponse;
-import com.viettel.imdb.rest.common.TestUtil;
 import org.testng.Assert;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.viettel.imdb.rest.common.Common.*;
 
@@ -286,7 +283,7 @@ public class TestHelper extends TestUtil {
     }
     public HttpResponse removeNode(String body){
         try {
-            return http.sendDelete(REMOVE_NODE, body);
+            return http.sendPost(REMOVE_NODE, body);
         } catch (Exception e) {
             e.printStackTrace();
         }
