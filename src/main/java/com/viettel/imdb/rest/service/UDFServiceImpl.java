@@ -86,6 +86,9 @@ public class UDFServiceImpl implements UDFService{
 
             newUdf.setContent(request.getContent() == null ? oldValue.getContent() : request.getContent());
 
+            newUdf.setLastUpdate(System.currentTimeMillis());
+            newUdf.setCreatedOn(oldValue.getCreatedOn());
+
             if(finalNewName != null)
                 udfInfoMap.remove(key);
             return newUdf;

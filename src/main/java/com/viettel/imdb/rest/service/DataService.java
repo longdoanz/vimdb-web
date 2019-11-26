@@ -19,7 +19,7 @@ public interface DataService {
 
     DeferredResult<?> createNamespace(IMDBClient client, String namespace);
 
-    DeferredResult<?> getTableListInNamespace(IMDBClient client, String namespace);
+    DeferredResult<?> getTableListInNamespace(IMDBClient client, String namespace, List<String> tables);
 
     DeferredResult<?> dropNamespace(IMDBClient client, String namespace);
 

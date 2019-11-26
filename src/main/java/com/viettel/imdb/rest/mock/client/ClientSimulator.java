@@ -207,8 +207,8 @@ public class ClientSimulator implements IMDBClient {
     }
 
 
-    public NamespaceInformation getTableList(String ns) {
-        return cluster.getTableList(ns);
+    public NamespaceInformation getTableList(String ns, List<String> tables) {
+        return cluster.getTableList(ns, tables);
     }
 
     public Future<List<User>> getUsers() {

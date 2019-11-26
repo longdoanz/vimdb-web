@@ -2,7 +2,6 @@ package com.viettel.imdb.rest.config;
 
 import com.viettel.imdb.rest.model.CustomUserDetails;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
-import com.viettel.imdb.rest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

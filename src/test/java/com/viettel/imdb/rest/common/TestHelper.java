@@ -1,7 +1,5 @@
 package com.viettel.imdb.rest.common;
 
-import com.viettel.imdb.rest.common.HttpResponse;
-import com.viettel.imdb.rest.common.TestUtil;
 import org.testng.Assert;
 
 import java.util.List;

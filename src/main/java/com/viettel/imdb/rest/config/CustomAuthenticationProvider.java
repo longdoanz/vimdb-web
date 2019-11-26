@@ -2,13 +2,11 @@ package com.viettel.imdb.rest.config;
 
 import com.viettel.imdb.rest.model.CustomUserDetails;
 import com.viettel.imdb.rest.service.AuthServiceImpl;
-import com.viettel.imdb.rest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,12 +17,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 //
 //    @Value("${super.admin.pass}")
 //    private String superAdminPassword;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthServiceImpl authService;

@@ -38,12 +38,6 @@ public class AuthController {
     @ApiOperation(value = LOGIN_NOTES, nickname = "login")
     @ResponseStatus(HttpStatus.OK)
     public DeferredResult<ResponseEntity<?>> login(
-//        @ApiParam(required = false, value = USERNAME_NOTES) @PathVariable(value = "username") String username,
-//        @ApiParam(required = false, value = PASSWORD_NOTES) @PathVariable(value = "password") String password,
-//            @RequestParam(value = "username") String username,
-//            @RequestParam(value = "password") String password
-
-            //@RequestParam MultiValueMap<String, String> requestParams
             @ApiParam(required = true, value = AUTHEN_REQUEST_NOTES) @RequestBody AuthenRequest request
     ) {
         String username= request.getUsername();
@@ -53,17 +47,4 @@ public class AuthController {
         return service.login(username, password);
     }
 
-
-    /*@RequestMapping(method = RequestMethod.POST, value = "/authenticate") // todo why not work with "/" only :-?
-    @ApiOperation(value = LOGIN_NOTES, nickname = "authenticate")
-    @ResponseStatus(HttpStatus.OK)
-    public DeferredResult<ResponseEntity<?>> createAuthenticationToken(
-            @ApiParam(required = true, value = AUTHEN_REQUEST_NOTES) @RequestBody AuthenRequest request
-    ){
-
-        String username= request.getUsername();
-        String password = request.getPassword();
-        Logger.info("login authen({}, {})", username, password);
-        return service.createAuthenticationToken(username, password);
-    }*/
 }
