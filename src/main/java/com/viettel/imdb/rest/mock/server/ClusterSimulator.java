@@ -149,7 +149,7 @@ public class ClusterSimulator implements Storage, Security {
             return false;
         }
         if (node.stop()) {
-            pendingNodes.remove(node);
+            pendingNodes.add(node);
             // Simulate like cluster remove node after 50HB
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
