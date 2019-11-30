@@ -2,7 +2,6 @@ package com.viettel.imdb.rest.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.viettel.imdb.rest.common.Utils;
-import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.model.TableModel;
 import com.viettel.imdb.rest.service.DataService;
 import com.viettel.imdb.rest.util.IMDBClientToken;
@@ -234,10 +233,10 @@ public class DataController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/json"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/text"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
-    public DeferredResult<?> runCmd(
+    public String runCmd(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @RequestBody JsonNode body) {
 
         return service.cmd(IMDBClientToken.getClient(getToken()), body);

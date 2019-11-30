@@ -26,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -345,45 +344,24 @@ class DataServiceImpl implements DataService {
     }
 
     @Override
-    public DeferredResult<?> cmd(IMDBClient client, JsonNode req) {
-        String cmd = req.get("cmd").asText();
+    public String cmd(IMDBClient client, JsonNode req) {
+        JsonNode jsonNode = req.get("cmd");
 
-        if(cmd == null) {
+        if(jsonNode == null) {
             throw new ExceptionType.BadRequestError();
         }
-//        sqlParser.createStatement(cmd);
 
-        DeferredResult<ResponseEntity<?>> res = new DeferredResult<>();
-        ObjectMapper mapper = new ObjectMapper();
+        String cmd = jsonNode.asText();
 
-        String value = "{\n" +
-                "  \"status\": 0,\n" +
-                "  " +
-                "\"data\": [\n" +
-                "    {\n" +
-                "      \"custId\": 1,\n" +
-                "      \"custs\": [\n" +
-                "        {\n" +
-                "          \"name\": \"Record 01\",\n" +
-                "          \"value\": \"tooooooooooooooooooooooooooo long value\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "      " +
-                "    \"name\": \"Record 02\",\n" +
-                "          \"value\": \"tooooooooooooooooooooooooooo long value 2\"\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+        String value =
+                "-------------------------------------------------------------------------\n" +
+                "|    Column 1     |    Column 2     |    Column 3     |    Column 4     |\n" +
+                "-------------------------------------------------------------------------\n" +
+                "|                 |                 |                 |                 |\n" +
+                "|   ON GOING      |                 |                 |                 |\n" +
+                "|                 |                 |                 |                 |\n" +
+                "-------------------------------------------------------------------------";
 
-        JsonNode node = null;
-        try {
-            node = mapper.readTree(value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        res.setResult(new ResponseEntity<>(node, HttpStatus.OK));
-        return res;
+        return value;
     }
 }
