@@ -55,5 +55,5 @@ public interface DataService {
 
     DeferredResult<?> delete(IMDBClient client, String namespace, String tableName, String key, List<String> fieldNameList);
 
-    DeferredResult<?> cmd(IMDBClient client, JsonNode req);
+    String cmd(IMDBClient client, JsonNode req);
 }

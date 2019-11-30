@@ -83,7 +83,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
             }
         }
 
-        if (config.getRestoreDirectory() == null || config.getRestoreDirectory().trim() == "")
+        if (config.getRestoreDirectory() == null || config.getRestoreDirectory().trim().equals(""))
             throw new ExceptionType.BadRequestError("Restore Directory Invalid");
 
         config.setRestoreDirectory(config.getRestoreDirectory().trim());
@@ -106,7 +106,7 @@ public class BackupRestoreServiceImpl implements BackupRestoreService {
             if (nodeSSHInfo.getPassword() == null || nodeSSHInfo.getPassword().equals(""))
                 throw new ExceptionType.BadRequestError("password is required");
         if (nodeSSHInfo.getAuthenticationOption() == AuthenticationOption.sshKey)
-            if (nodeSSHInfo.getSsKey() == null || nodeSSHInfo.getSsKey().equals(""))
+            if (nodeSSHInfo.getSshKey() == null || nodeSSHInfo.getSshKey().equals(""))
                 throw new ExceptionType.BadRequestError("SSHKey is required");
     }
 

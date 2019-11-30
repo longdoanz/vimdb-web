@@ -96,8 +96,14 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> removeNode(RemoveClusterNodeRequest request) {
-        boolean removed = cluster.removeNode(new NodeSimulatorImpl(request.getHost(), request.getPort()));
-
+        if (request.getUsername().isEmpty() || request.getPassword().isEmpty()) {
+            throw new ExceptionType.BadRequestError("Username and password is required");
+        }
+        boolean removed = false;
+        if (request.getUsername().equals("admin") && request.getPassword().equals("admin"))
+            removed = cluster.removeNode(new NodeSimulatorImpl(request.getHost(), request.getPort()));
+        else
+            throw new ExceptionType.BadRequestError("Username or password do not correct");
         RestClientError clientError = null;
         if (!removed) {
             clientError = new RestClientError(RestErrorCode.NODE_NOT_EXIST, Translator.toLocale("NODE_DO_NOT_EXIST"));

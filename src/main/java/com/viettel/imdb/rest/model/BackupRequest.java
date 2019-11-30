@@ -57,7 +57,7 @@ public class BackupRequest {
         @ApiModelProperty(value = "password of the machine", example = "imdb")
         private String password;
         @ApiModelProperty(value = "password of the machine", example = "admiz")
-        private String ssKey;
+        private String sshKey;
     }
     @NoArgsConstructor
     @AllArgsConstructor
