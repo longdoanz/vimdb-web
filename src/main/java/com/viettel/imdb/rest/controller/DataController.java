@@ -232,7 +232,7 @@ public class DataController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"text/plain"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd")
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
     public String runCmd(
