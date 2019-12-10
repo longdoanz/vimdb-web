@@ -348,7 +348,7 @@ class DataServiceImpl implements DataService {
         JsonNode jsonNode = req.get("cmd");
 
         if(jsonNode == null) {
-            throw new ExceptionType.BadRequestError();
+            throw new ExceptionType.BadRequestError("Missing param");
         }
 
         String cmd = jsonNode.asText();
@@ -358,7 +358,7 @@ class DataServiceImpl implements DataService {
                 "|    Column 1     |    Column 2     |    Column 3     |    Column 4     |\n" +
                 "-------------------------------------------------------------------------\n" +
                 "|                 |                 |                 |                 |\n" +
-                "|   ON GOING      |                 |                 |                 |\n" +
+                "|   ON GOING      |                 |                 |       END       |\n" +
                 "|                 |                 |                 |                 |\n" +
                 "-------------------------------------------------------------------------";
 
