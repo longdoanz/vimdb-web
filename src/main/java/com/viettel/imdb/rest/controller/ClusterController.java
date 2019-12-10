@@ -81,7 +81,7 @@ public class ClusterController {
     }
 
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/remove_node")
+    /*@RequestMapping(method = RequestMethod.DELETE, value = "/remove_node")
     @ApiOperation(value = "HTTP DELETE METHOD DO NOT SUPPORT SEND WITH BODY, THIS API WILL BE REMOVE!!!", nickname = "removeNode")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiResponses(value = {
@@ -95,7 +95,7 @@ public class ClusterController {
             @ApiParam(required = true, value = REMOVE_CLUSTER_NODE_REQUEST_NOTES) @RequestBody RemoveClusterNodeRequest request
     ) {
         return service.removeNode(request);
-    }
+    }*/
 
     @RequestMapping(method = RequestMethod.POST, value = "/remove_node")
     @ApiOperation(value = REMOVE_NODE_FROM_CLUSTER, nickname = "removeNode")

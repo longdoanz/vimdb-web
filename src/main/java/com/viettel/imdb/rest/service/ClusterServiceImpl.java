@@ -48,7 +48,7 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> addNode(AddClusterNodeRequest request) {
-        Logger.info("addNode: {}", request);
+//        Logger.info("addNode: {}", request);
 
         AddClusterNodeRequest.NewClusterNodeServerInfo nodeInfo = request.getVimdbServerInfo();
         boolean status;
