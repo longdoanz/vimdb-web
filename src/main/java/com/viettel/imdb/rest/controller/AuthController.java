@@ -42,7 +42,7 @@ public class AuthController {
     ) {
         String username= request.getUsername();
         String password = request.getPassword();
-        Logger.info("login({}, {})", username, password);
+//        Logger.info("login({}, {})", username, password);
 
         return service.login(username, password);
     }

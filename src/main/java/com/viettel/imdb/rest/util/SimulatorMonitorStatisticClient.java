@@ -216,6 +216,8 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
         // latency area
         private AtomicLong totalLatencyInUs;
         private AtomicLong countLatency;
+        private Random rand;
+        Timer timer = new Timer();
 
         public NodeStatistic(String host) {
             this.host = host;
@@ -227,6 +229,15 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
             addMetrics("system_total_disk", 1000000000); // 1000GB DISK
             totalLatencyInUs = new AtomicLong(0);
             countLatency = new AtomicLong(0);
+
+            rand = new Random();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    for(String metric : PREDEFINED_METRIC_NAMES)
+                        updateMetrics(metric, (5 - rand.nextInt(7)));
+                }
+            }, 5000, 10000);
         }
 
         public StatisticResponse.MetricValue getMetricValue(String metricName) {

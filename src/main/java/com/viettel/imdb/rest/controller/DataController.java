@@ -206,7 +206,6 @@ public class DataController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}/{tablename}/{key}")
     @ApiOperation(value = DELETE_NOTES, nickname = "delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @ApiIgnore
     public DeferredResult<?> delete(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace,
             @ApiParam(required = true, value = TABLE_NOTES) @PathVariable("tablename") String tableName,
@@ -233,7 +232,7 @@ public class DataController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"application/text"})
+    @RequestMapping(method = RequestMethod.POST, value = "/cmd", produces = {"text/plain"})
     @ApiOperation(value = RUN_CMD_NOTES, nickname = "runCmd")
     @ResponseStatus(value = HttpStatus.OK)
     public String runCmd(

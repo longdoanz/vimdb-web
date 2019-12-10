@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public DeferredResult<ResponseEntity<?>> login(String username, String password) {
-        Logger.info("login({}, {})", username, password);
+//        Logger.info("login({}, {})", username, password);
         UserDetails user = loadUserByUsername("admin");
 
         DeferredResult<ResponseEntity<?>> returnValue = new DeferredResult<>();
@@ -116,7 +116,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             returnValue.setResult(new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR));
             return returnValue;
         }
-        Logger.info("create token({}, {})", username, password);
+//        Logger.info("create token({}, {})", username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //Tra token cho user
@@ -210,7 +210,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     private Pair<IMDBClient, String> createNewClientWithToken(String username, String password, String newToken) {
         try {
-            Logger.info("Create client with token");
+//            Logger.info("Create client with token");
             IMDBClient client = new ClientSimulator(new ClusterSimulator());
 
 //            IMDBClient client = new JavaClient(host, new ClientConfig(securityEnabled, username,password));
