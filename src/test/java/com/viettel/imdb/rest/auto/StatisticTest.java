@@ -43,8 +43,8 @@ public class StatisticTest extends TestHelper {
 
 
         HttpResponse res = getStatistic(hosts, metrics)
-                .prettyPrint()
                 .andExpect(HttpStatus.OK)
+                .prettyPrint()
                 /*.andExpectResponse("$.[*].node", new ArrayList<String>() {{
                     add("172.16.31.123:12309");
                     add("172.16.31.54:14080");

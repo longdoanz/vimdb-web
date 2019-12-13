@@ -30,6 +30,7 @@ public class TableData {
     public void update(Promise<Void> future, String key, Record record) {
         if(data.get(key) == null) {
             future.setException(new ClientException(ErrorCode.KEY_NOT_EXIST));
+            return;
         }
         data.replace(key, record);
         future.setValue(null);
@@ -38,6 +39,7 @@ public class TableData {
     public void delete(Promise<Void> future, String key) {
         if(data.get(key) == null) {
             future.setException(new ClientException(ErrorCode.KEY_NOT_EXIST));
+            return;
         }
         data.remove(key);
         future.setValue(null);

@@ -3,6 +3,7 @@ package com.viettel.imdb.rest.controller;
 import com.viettel.imdb.rest.domain.RestClientError;
 import com.viettel.imdb.rest.service.StatisticService;
 import io.swagger.annotations.*;
+import org.pmw.tinylog.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -72,6 +72,7 @@ public class StatisticServiceImpl implements StatisticService{
                     res.setResult(new ResponseEntity<>(metricResponseList, HttpStatus.OK));
                 })
                 .onFailure(throwable -> {
+                    throwable.printStackTrace();
                     res.setResult(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
                 });
         return res;
