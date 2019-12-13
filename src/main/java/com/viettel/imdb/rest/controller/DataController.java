@@ -83,7 +83,7 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     @ApiOperation(value = SCAN_NAMESPACE_NOTES, nickname = "scan")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<?> getDataInfo() {
 
         return service.getDataInfo(IMDBClientToken.getClient(getToken()));
@@ -92,7 +92,7 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.POST, value = "")
     @ApiOperation(value = CREATE_NAMESPACE_NOTES, nickname = "createNamespace")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.CREATED)
     public DeferredResult<?> createNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 
@@ -114,7 +114,7 @@ public class DataController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{namespace}")
     @ApiOperation(value = DROP_NAMESPACE_NOTES, nickname = "dropNamespace")
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public DeferredResult<?> dropNamespace(
             @ApiParam(required = true, value = NAMESPACE_NOTES) @PathVariable(value = "namespace") String namespace) {
 

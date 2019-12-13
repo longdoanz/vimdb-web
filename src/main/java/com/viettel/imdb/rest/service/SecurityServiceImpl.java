@@ -56,21 +56,25 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DeferredResult<?> getUsers(IMDBClient client) {
         // todo fake here
-        Logger.info("getUsers()");
+        Logger.debug("getUsers()");
 
         DeferredResult<List<UserInfo>> returnValue = new DeferredResult<>();
         ((ClientSimulator) client).getUsers()
                 .onSuccess(userList -> {
-                            List<UserInfo> userInfoList = new ArrayList<>();
-                            for (User user : userList) {
-                                UserInfo userInfo = new UserInfo();
-                                userInfo.setUsername(user.getUsername());
-                                List<Role> roleList = getRoles(client, user.getRolenameList());
-                                userInfo.setRoles(roleList);
-                                userInfo.setAuthenticationMethod("RBAC");
-                                userInfoList.add(userInfo);
+                            try {
+                                List<UserInfo> userInfoList = new ArrayList<>();
+                                for (User user : userList) {
+                                    UserInfo userInfo = new UserInfo();
+                                    userInfo.setUsername(user.getUsername());
+                                    List<Role> roleList = getRoles(client, user.getRolenameList());
+                                    userInfo.setRoles(roleList);
+                                    userInfo.setAuthenticationMethod("RBAC");
+                                    userInfoList.add(userInfo);
+                                }
+                                returnValue.setResult(userInfoList);
+                            } catch (Exception ex) {
+                                returnValue.setErrorResult(ex);
                             }
-                            returnValue.setResult(userInfoList);
                         }
                 )
                 .onFailure(returnValue::setErrorResult);
