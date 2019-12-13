@@ -197,7 +197,8 @@ public class SimulatorMonitorStatisticClient implements StatisticClient {
             NodeStatistic nodeStatistic = nodeToMetricMap.get(server);
             if(nodeStatistic == null) {
 //                Logger.info("Node statistic is null with nodeToMetricMap {} and server {} --- serverList {}", nodeToMetricMap, server, serverList);
-                return Future.exception(new ClientException(ErrorCode.KEY_LENGTH_INVALID));
+                reOfThisServer.setMetrics(Collections.emptyList());
+                continue;
             }
             List<StatisticResponse.MetricValue> allMetrics = nodeStatistic.getNodeStatistic().getMetrics();
             List<String> finalMetricList = metricList;
